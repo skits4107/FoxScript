@@ -919,7 +919,7 @@ class Parser{
         }
         std::unique_ptr<Node> logicExp = logicalExpression();
         if (logicExp == nullptr){
-            std::cerr << "Error: this shouldnt happen. logical expression should alway return a node or an error happens furhter down. happend at " 
+            std::cerr << "Error: this shouldnt happen. logicalExpression should alway return a node or an error happens furhter down. happend at " 
             << currentToken.text << currentToken.startPos << std::endl;
         }
         return logicExp;
