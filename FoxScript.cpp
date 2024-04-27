@@ -681,7 +681,7 @@ class AssignmentStatementNode : public Node{
     public:
     DataType type;
     std::string identifer;
-    AssignmentOp operation;
+    TokenType operation;
     std::unique_ptr<Node> expression;
     void accept(Visitor& visitor) override {}
 };
@@ -729,6 +729,20 @@ class breakStatementNode : public Node{
     std::unique_ptr<Node> expression; //how many loops to break out of
     void accept(Visitor& visitor) override {}
 };
+
+class continueStatementNode : public Node{
+    public:
+    void accept(Visitor& visitor) override {}
+};
+
+class RelationalExpression : public Node{
+    std::unique_ptr<Node> operand1;
+    std::unique_ptr<Node> operand2;
+    TokenType operation;
+    void accept(Visitor& visitor) override {}
+};
+
+
 
 //TODO: implement methods after parser is done
 class EvalVisitor : public Visitor{
@@ -893,12 +907,22 @@ class Parser{
         return castNode;
     }
 
+    std::unique_ptr<Node> logicalExpression(){
+       
+
+    }
+
     std::unique_ptr<Node> expression(){
         std::unique_ptr<TypeCastNode> castNode = typeCast();
         if (castNode != nullptr){
             return castNode;
         }
-        //TODO: check for logicalExpression
+        std::unique_ptr<Node> logicExp = logicalExpression();
+        if (logicExp == nullptr){
+            std::cerr << "Error: this shouldnt happen. logical expression should alway return a node or an error happens furhter down. happend at " 
+            << currentToken.text << currentToken.startPos << std::endl;
+        }
+        return logicExp;
     }
 
     std::unique_ptr<AssignmentStatementNode> assignStatement(){
@@ -926,25 +950,25 @@ class Parser{
 
         switch(currentToken.type){
             case ASSIGN_EQU:
-                as->operation = EQ_OP;
+                as->operation = ASSIGN_EQU;
                 break;
             case ADD_EQ:
-                as->operation = AEQ;
+                as->operation = ADD_EQ;
                 break;
             case SUB_EQ:
-                as->operation = SEQ;
+                as->operation = SUB_EQ;
                 break;
             case MUL_EQ:
-                as->operation = MEQ;
+                as->operation = MUL_EQ;
                 break;
             case DIV_EQ:
-                as->operation = DEQ;
+                as->operation = DIV_EQ;
                 break;
             case EXP_EQ:
-                as->operation = EEQ;
+                as->operation = EXP_EQ;
                 break;
             case MOD_EQ:
-                as->operation = MOEQ;
+                as->operation = MOD_EQ;
                 break;
             default:
                 //if you reached this point and this is invalid then it means there was no data declaration
