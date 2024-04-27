@@ -663,6 +663,7 @@ class TypeCastNode : public Node{
 };
 
 class LogicalExpressionNode : public Node{
+    public:
     std::unique_ptr<Node> operand1;
     std::unique_ptr<Node> operand2;
     TokenType operation;
@@ -907,8 +908,45 @@ class Parser{
         return castNode;
     }
 
+    std::unique_ptr<Node> logicalNot(){
+        bool isNot = false;
+        if (currentToken == NOT){
+            isNot = true;
+            eat(); //eat token
+        }
+
+        //TODO: finish
+
+    }
+
     std::unique_ptr<Node> logicalExpression(){
-       
+        std::unique_ptr<Node> term = logicalNot();
+        if (term == nullptr){
+            std::cerr << "Error: should not happen. logicalNot should return a node or have error before returning"
+            << currentToken.text << currentToken.startPos << std::endl;
+            exit(-1);
+        }
+        //if no logical expresison term pass node up
+        if (currentToken != AND && currentToken != OR){ return term; }
+
+
+        std::unique_ptr<LogicalExpressionNode> exp(new LogicalExpressionNode);
+        exp->operand1 = std::move(term);
+
+        //set operation to 'and' or 'or'
+        exp->operation = currentToken.type;
+        eat(); //eat logic operator token 
+
+        term = logicalNot();
+        if (term == nullptr){
+            std::cerr << "Error: should not happen. logicalNot should return a node or have error before returning"
+            << currentToken.text << currentToken.startPos << std::endl;
+            exit(-1);
+        }
+
+        exp->operand2 = std::move(term);
+        return exp;
+        
 
     }
 
@@ -921,6 +959,7 @@ class Parser{
         if (logicExp == nullptr){
             std::cerr << "Error: this shouldnt happen. logicalExpression should alway return a node or an error happens furhter down. happend at " 
             << currentToken.text << currentToken.startPos << std::endl;
+            exit(-1);
         }
         return logicExp;
     }
