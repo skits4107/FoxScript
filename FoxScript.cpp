@@ -895,7 +895,7 @@ class Parser{
     }
 
     std::unique_ptr<Node> primaryExpression(){
-        
+
     }
 
     std::unique_ptr<Node> exponentialExpression(){
@@ -1084,9 +1084,10 @@ class Parser{
         return logicExp;
     }
 
-    std::unique_ptr<AssignmentStatementNode> assignStatement(){
+    std::unique_ptr<AssignmentStatementNode> assignExpression(){
         std::unique_ptr<AssignmentStatementNode> as;
         as->type = INVALID_TYPE; //there may be no type in statement. semantic analysis wil lreveal if there should be or not
+
         if (currentToken == FLUFF){
             eat(); //eat fluff token
             DataType type = dataDeclaration();
@@ -1094,8 +1095,8 @@ class Parser{
                 std::cerr << "Invalid type at " << currentToken.text << " " << currentToken.startPos << std::endl;
                 exit(-1);
             }
-            eat(); //eat data type declaration token
             as->type = type;
+            eat(); //eat data type declaration token
             if (currentToken != IDENTIFIER){
                 std::cerr << "No identifier at " << currentToken.text << " " << currentToken.startPos << std::endl;
                 exit(-1);
@@ -1104,6 +1105,7 @@ class Parser{
         else if (currentToken != IDENTIFIER){
             return nullptr; //if there was not at an identifier at begining of statement then there may be a different statemtn
         }
+
         as->identifer = currentToken.text; //set identifer
         eat(); //identifier
 
@@ -1148,6 +1150,13 @@ class Parser{
             exit(-1);
         }
         as->expression = std::move(exp); //set expression child of assignment node
+        return as;
+    }
+
+    std::unique_ptr<AssignmentStatementNode> assignStatement(){
+        
+        std::unique_ptr<AssignmentStatementNode> as = assignExpression();
+        if (as == nullptr){return nullptr;} //if it reutrned null it means it might be another statemement
         if (currentToken != SEMICOLON){
             std::cerr << "Error: expected ';' at " << currentToken.text << " " << currentToken.startPos << std::endl;
             exit(-1);
