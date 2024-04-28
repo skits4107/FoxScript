@@ -741,8 +741,10 @@ class ArrayGetElementNode : public Node{
     void accept(Visitor& visitor) override {}
 };
 
-
-
+class IdentifierNode : public Node{
+    public:
+    std::string identifier;
+};
 
 
 
@@ -955,20 +957,53 @@ class Parser{
         if (currentToken == INT){
             std::unique_ptr<IntLiteralNode> node;
             node->val = stoi(currentToken.text);
+            eat();
+
             return node;
         }
         if (currentToken == DOUBLE){
             std::unique_ptr<DoubleLiteralNode> node;
             node->val = stod(currentToken.text);
+            eat();
             return node;
         }
         if (currentToken == FLOAT){
-            std::unique_ptr<DoubleLiteralNode> node;
+            std::unique_ptr<FloatLiteralNode> node;
             node->val = stof(currentToken.text);
+            eat();
             return node;
         }
-        
-        
+        if (currentToken == STRING){
+            std::unique_ptr<StringLiteralNode> node;
+            node->val = currentToken.text;
+            eat();
+            return node;
+        }
+        if (currentToken == CHAR){
+            std::unique_ptr<CharLiteralNode> node;
+            node->val = currentToken.text[0];
+            eat();
+            return node;
+        }
+        if (currentToken == TRUE){
+             std::unique_ptr<BoolLiteralNode> node;
+            node->val = true;
+            eat();
+            return node;
+        }
+        if (currentToken == FALSE){
+            std::unique_ptr<BoolLiteralNode> node;
+            node->val = false;
+            eat();
+            return node;
+        }
+        if (currentToken == IDENTIFIER){
+            std::unique_ptr<IdentifierNode> node;
+            node->identifier = currentToken.text;
+            eat();
+            return node;
+        }
+        return nullptr;
     }
 
     std::unique_ptr<Node> primaryExpression(){
