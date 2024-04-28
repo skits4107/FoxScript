@@ -4,7 +4,7 @@
 #include <cctype>  // For isspace()
 #include <fstream>
 #include <memory>
-#include <any>
+
 
 /*
     sniff = if
@@ -942,14 +942,33 @@ class Parser{
     }
 
     
+    std::unique_ptr<ArrayIndexingNode> arrayIndices(){
 
+    }
     //may have an array get element node. might have to change type
-    std::unique_ptr<Node> arrayGetElement(){
+    std::unique_ptr<ArrayGetElementNode> arrayGetElement(){
         //TODO: this method
     }
 
     std::unique_ptr<Node> simpleExpression(){
         //TODO: this method
+        if (currentToken == INT){
+            std::unique_ptr<IntLiteralNode> node;
+            node->val = stoi(currentToken.text);
+            return node;
+        }
+        if (currentToken == DOUBLE){
+            std::unique_ptr<DoubleLiteralNode> node;
+            node->val = stod(currentToken.text);
+            return node;
+        }
+        if (currentToken == FLOAT){
+            std::unique_ptr<DoubleLiteralNode> node;
+            node->val = stof(currentToken.text);
+            return node;
+        }
+        
+        
     }
 
     std::unique_ptr<Node> primaryExpression(){
