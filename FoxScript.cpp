@@ -551,15 +551,15 @@ class CodeBlockNode;
 class FuncDecNode;
 class ExpressionNode;
 class TypeCastNode;
-class LogicalExpressionNode;
-class logicalNotNode;
+class LogicalNotNode;
 class AssignmentStatementNode;
 class FuncCallStatementNode;
 class ConditionStatementNode;
 class ForLoopNode;
 class WhileLoopNode;
-class returnStatementNode;
-class breakStatementNode;
+class ReturnStatementNode;
+class BreakStatementNode;
+class ContinueStatementNode;
 enum DataType {INT_T, DOUBLE_T, FLOAT_T, CHAR_T, STRING_T, BOOL_T, VOID_T, INVALID_TYPE};
 enum AssignmentOp {EQ_OP, AEQ, SEQ, MEQ, DEQ, MOEQ, EEQ, INVALID_OP};
 class Visitor{
@@ -573,16 +573,15 @@ class Visitor{
     virtual void visit(ParamterNode& node) = 0;
     virtual void visit(CodeBlockNode& node) = 0;
     virtual void visit(ExpressionNode& node) = 0;
-    virtual void visit(LogicalExpressionNode& node) = 0;
     virtual void visit(TypeCastNode& node) = 0;
-    virtual void visit(logicalNotNode& node) = 0;
+    virtual void visit(LogicalNotNode& node) = 0;
     virtual void visit(AssignmentStatementNode& node) = 0;
     virtual void visit(FuncCallStatementNode& node) = 0;
     virtual void visit(ConditionStatementNode& node) = 0;
     virtual void visit(ForLoopNode& node) = 0;
     virtual void visit(WhileLoopNode& node) = 0;
-    virtual void visit(returnStatementNode& node) = 0;
-    virtual void visit(breakStatementNode& node) = 0;
+    virtual void visit(ReturnStatementNode& node) = 0;
+    virtual void visit(BreakStatementNode& node) = 0;
 };
 
 class Node{
@@ -649,9 +648,12 @@ class FuncDecNode : public Node{
     void accept(Visitor& visitor) override {}
 };
 
+//something with a relational or airthmetic operators
 class ExpressionNode : public Node{
     public:
-    std::unique_ptr<Node> expression; //can be TypeCast or LogicalExpression node
+    std::unique_ptr<Node> operand1;
+    std::unique_ptr<Node> operand2;
+    TokenType operation;
     void accept(Visitor& visitor) override {}
 };
 
@@ -662,17 +664,8 @@ class TypeCastNode : public Node{
         void accept(Visitor& visitor) override {}
 };
 
-class LogicalExpressionNode : public Node{
-    public:
-    std::unique_ptr<Node> operand1;
-    std::unique_ptr<Node> operand2;
-    TokenType operation;
-    void accept(Visitor& visitor) override {}
-};
 
-
-
-class logicalNotNode : public Node{ //a logicalTerm that negates. otherwise the logical term is really another node
+class LogicalNotNode : public Node{ //a logicalTerm that negates. otherwise the logical term is really another node
     public:
     std::unique_ptr<Node> operand1;
     void accept(Visitor& visitor) override {}
@@ -719,53 +712,46 @@ class WhileLoopNode : public Node{
     void accept(Visitor& visitor) override {}
 };
 
-class returnStatementNode : public Node{
+class ReturnStatementNode : public Node{
     public:
     std::unique_ptr<Node> expression; //what to return
     void accept(Visitor& visitor) override {}
 };
 
-class breakStatementNode : public Node{
+class BreakStatementNode : public Node{
     public:
     std::unique_ptr<Node> expression; //how many loops to break out of
     void accept(Visitor& visitor) override {}
 };
 
-class continueStatementNode : public Node{
+class ContinueStatementNode : public Node{
     public:
     void accept(Visitor& visitor) override {}
 };
 
-class RelationalExpression : public Node{
-    std::unique_ptr<Node> operand1;
-    std::unique_ptr<Node> operand2;
-    TokenType operation;
-    void accept(Visitor& visitor) override {}
-};
 
 
 
 //TODO: implement methods after parser is done
 class EvalVisitor : public Visitor{
-    virtual void visit(IntLiteralNode& node) {};
-    virtual void visit(FloatLiteralNode& node) {};
-    virtual void visit(DoubleLiteralNode& node) {};
-    virtual void visit(CharLiteralNode& node) {};
-    virtual void visit(StringLiteralNode& node) {};
-    virtual void visit(BoolLiteralNode& node) {};
-    virtual void visit(ParamterNode& node) {};
-    virtual void visit(CodeBlockNode& node) {};
-    virtual void visit(ExpressionNode& node) {};
-    virtual void visit(LogicalExpressionNode& node) {};
-    virtual void visit(TypeCastNode& node) {};
-    virtual void visit(logicalNotNode& node) {};
-    virtual void visit(AssignmentStatementNode& node) {};
-    virtual void visit(FuncCallStatementNode& node) {};
-    virtual void visit(ConditionStatementNode& node) {};
-    virtual void visit(ForLoopNode& node) {};
-    virtual void visit(WhileLoopNode& node) {};
-    virtual void visit(returnStatementNode& node) {};
-    virtual void visit(breakStatementNode& node) {};
+     void visit(IntLiteralNode& node) override {};
+     void visit(FloatLiteralNode& node) override {};
+     void visit(DoubleLiteralNode& node) override {};
+     void visit(CharLiteralNode& node) override {};
+     void visit(StringLiteralNode& node) override {};
+     void visit(BoolLiteralNode& node) override {};
+     void visit(ParamterNode& node) override {};
+     void visit(CodeBlockNode& node) override {};
+     void visit(ExpressionNode& node) override {};
+     void visit(TypeCastNode& node) override {};
+     void visit(LogicalNotNode& node) override {};
+     void visit(AssignmentStatementNode& node) override {};
+     void visit(FuncCallStatementNode& node) override {};
+     void visit(ConditionStatementNode& node) override {};
+     void visit(ForLoopNode& node) override {};
+     void visit(WhileLoopNode& node) override {};
+     void visit(ReturnStatementNode& node) override {};
+     void visit(BreakStatementNode& node) override {};
 };
 
 class Parser{
@@ -908,6 +894,129 @@ class Parser{
         return castNode;
     }
 
+    std::unique_ptr<Node> primaryExpression(){
+        
+    }
+
+    std::unique_ptr<Node> exponentialExpression(){
+        std::unique_ptr<Node> term = primaryExpression();
+        if (term == nullptr){
+            std::cerr << "Error: shouldnt happen primaryExpression should always return a node or error beofre returning " <<
+            currentToken.text << " " << currentToken.startPos << std::endl;
+            exit(-1);
+        }
+
+        //pass node up if there is no relational operator
+        if (currentToken !=  EXP){ return term;}
+        
+        std::unique_ptr<ExpressionNode> exp(new ExpressionNode);
+        exp->operand1 = std::move(term);
+
+        //set operation
+        exp->operation = currentToken.type;
+        eat(); //eat logic operator token 
+
+        term = primaryExpression();
+        if (term == nullptr){
+            std::cerr << "Error: should not happen. primaryExpression should return a node or have error before returning "
+            << currentToken.text << currentToken.startPos << std::endl;
+            exit(-1);
+        }
+
+        exp->operand2 = std::move(term);
+        return exp;
+    }
+
+    std::unique_ptr<Node> multiplicativeExpression(){
+        std::unique_ptr<Node> term = exponentialExpression();
+        if (term == nullptr){
+            std::cerr << "Error: shouldnt happen exponentialExpression should always return a node or error beofre returning " <<
+            currentToken.text << " " << currentToken.startPos << std::endl;
+            exit(-1);
+        }
+
+        //pass node up if there is no relational operator
+        if (currentToken != STAR && currentToken != DIV && currentToken != MOD ){ return term;}
+        
+        std::unique_ptr<ExpressionNode> exp(new ExpressionNode);
+        exp->operand1 = std::move(term);
+
+        //set operation
+        exp->operation = currentToken.type;
+        eat(); //eat logic operator token 
+
+        term = exponentialExpression();
+        if (term == nullptr){
+            std::cerr << "Error: should not happen. exponentialExpression should return a node or have error before returning "
+            << currentToken.text << currentToken.startPos << std::endl;
+            exit(-1);
+        }
+
+        exp->operand2 = std::move(term);
+        return exp;
+    }
+
+    std::unique_ptr<Node> additiveExpression(){
+        std::unique_ptr<Node> term = multiplicativeExpression();
+        if (term == nullptr){
+            std::cerr << "Error: shouldnt happen multiplicativeExpression should always return a node or error beofre returning " <<
+            currentToken.text << " " << currentToken.startPos << std::endl;
+            exit(-1);
+        }
+
+        //pass node up if there is no relational operator
+        if (currentToken != ADD && currentToken != SUB ){ return term;}
+        
+        std::unique_ptr<ExpressionNode> exp(new ExpressionNode);
+        exp->operand1 = std::move(term);
+
+        //set operation
+        exp->operation = currentToken.type;
+        eat(); //eat logic operator token 
+
+        term = multiplicativeExpression();
+        if (term == nullptr){
+            std::cerr << "Error: should not happen. multiplicativeExpression should return a node or have error before returning "
+            << currentToken.text << currentToken.startPos << std::endl;
+            exit(-1);
+        }
+
+        exp->operand2 = std::move(term);
+        return exp;
+    }
+
+
+    std::unique_ptr<Node> relationalExpression(){
+        std::unique_ptr<Node> term = additiveExpression();
+        if (term == nullptr){
+            std::cerr << "Error: shouldnt happen additiveExpression should always return a node or error beofre returning " <<
+            currentToken.text << " " << currentToken.startPos << std::endl;
+            exit(-1);
+        }
+
+        //pass node up if there is no relational operator
+        if (currentToken != LT && currentToken != GT && currentToken != LEQ && 
+            currentToken != GEQ && currentToken != EQ && currentToken != NEQ){ return term;}
+        
+        std::unique_ptr<ExpressionNode> exp(new ExpressionNode);
+        exp->operand1 = std::move(term);
+
+        //set operation
+        exp->operation = currentToken.type;
+        eat(); //eat relational operator token 
+
+        term = additiveExpression();
+        if (term == nullptr){
+            std::cerr << "Error: should not happen. additiveExpression should return a node or have error before returning "
+            << currentToken.text << currentToken.startPos << std::endl;
+            exit(-1);
+        }
+
+        exp->operand2 = std::move(term);
+        return exp;
+
+    }
+
     std::unique_ptr<Node> logicalNot(){
         bool isNot = false;
         if (currentToken == NOT){
@@ -915,14 +1024,25 @@ class Parser{
             eat(); //eat token
         }
 
-        //TODO: finish
+        std::unique_ptr<Node> relExp = relationalExpression();
+        if (relExp == nullptr){
+            std::cerr << "Error: shouldnt happen relationalExpression should always return a node or error beofre returning " <<
+            currentToken.text << " " << currentToken.startPos << std::endl;
+            exit(-1);
+        }
 
+        if (isNot){
+            std::unique_ptr<LogicalNotNode> node(new LogicalNotNode);
+            node->operand1 = std::move(relExp);
+            return node;
+        }
+        return relExp;
     }
 
     std::unique_ptr<Node> logicalExpression(){
         std::unique_ptr<Node> term = logicalNot();
         if (term == nullptr){
-            std::cerr << "Error: should not happen. logicalNot should return a node or have error before returning"
+            std::cerr << "Error: should not happen. logicalNot should return a node or have error before returning "
             << currentToken.text << currentToken.startPos << std::endl;
             exit(-1);
         }
@@ -930,7 +1050,7 @@ class Parser{
         if (currentToken != AND && currentToken != OR){ return term; }
 
 
-        std::unique_ptr<LogicalExpressionNode> exp(new LogicalExpressionNode);
+        std::unique_ptr<ExpressionNode> exp(new ExpressionNode);
         exp->operand1 = std::move(term);
 
         //set operation to 'and' or 'or'
@@ -939,7 +1059,7 @@ class Parser{
 
         term = logicalNot();
         if (term == nullptr){
-            std::cerr << "Error: should not happen. logicalNot should return a node or have error before returning"
+            std::cerr << "Error: should not happen. logicalNot should return a node or have error before returning "
             << currentToken.text << currentToken.startPos << std::endl;
             exit(-1);
         }
@@ -1012,7 +1132,8 @@ class Parser{
             default:
                 //if you reached this point and this is invalid then it means there was no data declaration
                 //so might still be another type of statemnt starting with an identifier
-                if (as->operation == INVALID_OP){ 
+                if (as->type == INVALID_TYPE){ 
+                    vomit(); //uneat the identifer token
                     return nullptr;
                 }
                 else{ //if there was a data declaration
