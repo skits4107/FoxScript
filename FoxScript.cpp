@@ -894,8 +894,49 @@ class Parser{
         return castNode;
     }
 
+    std::unique_ptr<FuncCallStatementNode> callFunction(){
+        if (currentToken == IDENTIFIER && lookAhead(1) == LPAREN){
+    
+            std::unique_ptr<FuncCallStatementNode> exp(new FuncCallStatementNode());
+            exp->identifier = currentToken.text;
+            eat(); //eat identifier
+            eat(); //eat parentheses
+            if (currentToken == RPAREN){
+                return exp;
+            }
+            std::vector<std::unique_ptr<Node>> args;
+            //expression checks to see if the expression was valid and errors before returning if not
+            std::unique_ptr<Node> arg = expression();
+            //keep getting arguments until RPAREN. if there is no RPAREn then an erro in expression will be reached
+            while (currentToken != RPAREN){
+                args.push_back(std::move(arg));
+                //if the next was not a comma then there is an error
+                if (currentToken != COMMA){
+                    std::cerr << "Error: expected comma at " << currentToken.text << " " << currentToken.startPos << std::endl;
+                    exit(-1);
+                }
+                eat(); //eat comma
+                //expression checks to see if the expression was valid and errors before returning if not
+                arg = expression(); //get the next arg/expression
+            }
+            eat(); //eat RPAREN
+            exp->args = args;
+            return exp;
+
+        }
+        else{
+            return nullptr;
+        }
+    }
+
     std::unique_ptr<Node> primaryExpression(){
         //TODO: this method
+        std::unique_ptr<Node> exp = callFunction();
+        if (exp != nullptr){
+            return exp;
+        }
+        //if it was null might be another expression
+
     }
 
     std::unique_ptr<Node> exponentialExpression(){
