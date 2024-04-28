@@ -906,7 +906,7 @@ class Parser{
             exit(-1);
         }
 
-        //pass node up if there is no relational operator
+        //pass node up if there is no exponent operator
         if (currentToken !=  EXP){ return term;}
         
         std::unique_ptr<ExpressionNode> exp(new ExpressionNode);
@@ -935,7 +935,7 @@ class Parser{
             exit(-1);
         }
 
-        //pass node up if there is no relational operator
+        //pass node up if there is no multiplicative operator
         if (currentToken != STAR && currentToken != DIV && currentToken != MOD ){ return term;}
         
         std::unique_ptr<ExpressionNode> exp(new ExpressionNode);
@@ -964,7 +964,7 @@ class Parser{
             exit(-1);
         }
 
-        //pass node up if there is no relational operator
+        //pass node up if there is no additive operator
         if (currentToken != ADD && currentToken != SUB ){ return term;}
         
         std::unique_ptr<ExpressionNode> exp(new ExpressionNode);
