@@ -729,6 +729,20 @@ class ContinueStatementNode : public Node{
     void accept(Visitor& visitor) override {}
 };
 
+class ArrayIndexingNode : public Node{
+    public:
+    std::vector<std::unique_ptr<Node>> indices;
+    void accept(Visitor& visitor) override {}
+};
+
+class ArrayGetElementNode : public Node{
+    public:
+    std::unique_ptr<ArrayIndexingNode> indeices;
+    void accept(Visitor& visitor) override {}
+};
+
+
+
 
 
 
@@ -926,6 +940,8 @@ class Parser{
             return nullptr;
         }
     }
+
+    
 
     //may have an array get element node. might have to change type
     std::unique_ptr<Node> arrayGetElement(){
