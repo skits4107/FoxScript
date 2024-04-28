@@ -927,6 +927,15 @@ class Parser{
         }
     }
 
+    //may have an array get element node. might have to change type
+    std::unique_ptr<Node> arrayGetElement(){
+        //TODO: this method
+    }
+
+    std::unique_ptr<Node> simpleExpression(){
+        //TODO: this method
+    }
+
     std::unique_ptr<Node> primaryExpression(){
         //TODO: this method
         std::unique_ptr<Node> exp = callFunction();
@@ -934,7 +943,30 @@ class Parser{
             return exp;
         }
         //if it was null might be another expression
-
+        exp = arrayGetElement();
+        if (exp != nullptr){
+            return exp;
+        }
+        exp = simpleExpression();
+        if (exp != nullptr){
+            return exp;
+        }
+        if (currentToken == LPAREN){
+            eat(); //eat apren
+            exp = expression(); //get an expression
+            if (currentToken == RPAREN){
+                eat();
+                return exp;
+            }
+            else{
+                std::cerr << "Error: expected ')' at " << currentToken.text << " " << currentToken.startPos << std::endl;
+                exit(-1);
+            }
+        }
+        //if non of the above are found then there is nothing else that could be a valid expression and returning
+        // nullptr is not needed. 
+        std::cerr << "Error: no valid expression found at " << currentToken.text << " " << currentToken.startPos << std::endl;
+        exit(-1);
     }
 
     std::unique_ptr<Node> exponentialExpression(){
