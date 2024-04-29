@@ -173,7 +173,7 @@ TokenType proccessKeyWord(std::string text){
         return KW_DOUBLE;
     }
     if (text == "char"){
-        return KW_INT;
+        return KW_CHAR;
     }
     if (text == "float"){
         return KW_FLOAT;
@@ -1154,13 +1154,14 @@ class Parser{
             eat(); //eat identifier
             eat(); //eat parentheses
             if (currentToken == RPAREN){
+                eat();
                 return exp;
             }
             //expression checks to see if the expression was valid and errors before returning if not
             std::unique_ptr<Node> arg = expression();
+            (exp->args).push_back(std::move(arg));
             //keep getting arguments until RPAREN. if there is no RPAREn then an erro in expression will be reached
             while (currentToken != RPAREN){
-                (exp->args).push_back(std::move(arg));
                 //if the next was not a comma then there is an error
                 if (currentToken != COMMA){
                     std::cerr << "Error: expected comma at " << currentToken.text << " " << currentToken.startPos << std::endl;
@@ -1169,6 +1170,7 @@ class Parser{
                 eat(); //eat comma
                 //expression checks to see if the expression was valid and errors before returning if not
                 arg = expression(); //get the next arg/expression
+                (exp->args).push_back(std::move(arg));
             }
             eat(); //eat RPAREN
             return exp;

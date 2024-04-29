@@ -1,3 +1,12 @@
-void plunge main(){
-    fluff int a = (10+4);
+void plunge main(fluff int argc, fluff string[] argv){
+    fluff int a = <int>(10+4);
+    fluff char b = 'c';
+    fluff string c = "hello";
+    a += 5;
+    fluff bool b1 = true;
+    fluff bool b2 = false;
+    fluff double d1 = 2.2;
+    fluff float f1 = 2.5f;
+    fluff int d = a^5;
+    fluff int a = add(5, 6);
 }
