@@ -560,10 +560,15 @@ class WhileLoopNode;
 class ReturnStatementNode;
 class BreakStatementNode;
 class ContinueStatementNode;
+class ArrayIndexingNode;
+class ArrayGetElementNode;
+class IdentifierNode;
+class ProgramNode;
 enum DataType {INT_T, DOUBLE_T, FLOAT_T, CHAR_T, STRING_T, BOOL_T, VOID_T, INVALID_TYPE};
 enum AssignmentOp {EQ_OP, AEQ, SEQ, MEQ, DEQ, MOEQ, EEQ, INVALID_OP};
 class Visitor{
     public:
+    virtual void visit(ProgramNode& node) = 0;
     virtual void visit(IntLiteralNode& node) = 0;
     virtual void visit(FloatLiteralNode& node) = 0;
     virtual void visit(DoubleLiteralNode& node) = 0;
@@ -582,6 +587,11 @@ class Visitor{
     virtual void visit(WhileLoopNode& node) = 0;
     virtual void visit(ReturnStatementNode& node) = 0;
     virtual void visit(BreakStatementNode& node) = 0;
+    virtual void visit(FuncDecNode& node) = 0;
+    virtual void visit(ContinueStatementNode& node) = 0;
+    virtual void visit(ArrayIndexingNode& node) = 0;
+    virtual void visit(ArrayGetElementNode& node) = 0;
+    virtual void visit(IdentifierNode& node) = 0;
 };
 
 class Node{
@@ -590,40 +600,61 @@ class Node{
     virtual void accept(Visitor& visitor) = 0;
 };
 
+class ProgramNode : public Node{
+    public:
+    std::vector<std::unique_ptr<Node>> statements;
+
+    void accept(Visitor& visitor) override {
+        visitor.visit(*this);
+    }
+};
+
 class IntLiteralNode : public Node{
     public:
     int val;
-    void accept(Visitor& visitor) override {}
+    void accept(Visitor& visitor) override {
+        visitor.visit(*this);
+    }
 };
 
 class FloatLiteralNode : public Node{
     public:
     float val;
-    void accept(Visitor& visitor) override {}
+    void accept(Visitor& visitor) override {
+        visitor.visit(*this);
+    }
 };
 
 class DoubleLiteralNode : public Node{
     public:
     double val;
-    void accept(Visitor& visitor) override {}
+   void accept(Visitor& visitor) override {
+        visitor.visit(*this);
+    }
 };
 
 class CharLiteralNode : public Node{
     public:
     char val;
-    void accept(Visitor& visitor) override {}
+    void accept(Visitor& visitor) override {
+        visitor.visit(*this);
+    }
 };
 
 class StringLiteralNode : public Node{
     public:
     std::string val;
-    void accept(Visitor& visitor) override {}
+    void accept(Visitor& visitor) override {
+        visitor.visit(*this);
+    }
 };
 
 class BoolLiteralNode : public Node{
     public:
     bool val;
-    void accept(Visitor& visitor) override {}
+    void accept(Visitor& visitor) override {
+        visitor.visit(*this);
+    }
 };
 
 class ParamterNode : public Node{
@@ -631,13 +662,17 @@ class ParamterNode : public Node{
     DataType type;
     std::string identifer;
     int dim;
-    void accept(Visitor& visitor) override {}
+    void accept(Visitor& visitor) override {
+        visitor.visit(*this);
+    }
 };
 
 class CodeBlockNode : public Node{
     public:
     std::vector<std::unique_ptr<Node>> statements;
-    void accept(Visitor& visitor) override {}
+    void accept(Visitor& visitor) override {
+        visitor.visit(*this);
+    }
 };
 
 class FuncDecNode : public Node{
@@ -645,7 +680,10 @@ class FuncDecNode : public Node{
     DataType type;
     std::vector<std::unique_ptr<ParamterNode>> params; 
     std::unique_ptr<CodeBlockNode> body;
-    void accept(Visitor& visitor) override {}
+    std::string identifier;
+    void accept(Visitor& visitor) override {
+        visitor.visit(*this);
+    }
 };
 
 //something with a relational or airthmetic operators
@@ -654,21 +692,27 @@ class ExpressionNode : public Node{
     std::unique_ptr<Node> operand1;
     std::unique_ptr<Node> operand2;
     TokenType operation;
-    void accept(Visitor& visitor) override {}
+   void accept(Visitor& visitor) override {
+        visitor.visit(*this);
+    }
 };
 
 class TypeCastNode : public Node{
     public:
         DataType type;
         std::unique_ptr<Node> expression;
-        void accept(Visitor& visitor) override {}
+    void accept(Visitor& visitor) override {
+        visitor.visit(*this);
+    }
 };
 
 
 class LogicalNotNode : public Node{ //a logicalTerm that negates. otherwise the logical term is really another node
     public:
     std::unique_ptr<Node> operand1;
-    void accept(Visitor& visitor) override {}
+    void accept(Visitor& visitor) override {
+        visitor.visit(*this);
+    }
 };
 
 class AssignmentStatementNode : public Node{
@@ -677,14 +721,18 @@ class AssignmentStatementNode : public Node{
     std::string identifer;
     TokenType operation;
     std::unique_ptr<Node> expression;
-    void accept(Visitor& visitor) override {}
+    void accept(Visitor& visitor) override {
+        visitor.visit(*this);
+    }
 };
 
 class FuncCallStatementNode : public Node{
     public:
     std::string identifier;
     std::vector<std::unique_ptr<Node>> args;
-    void accept(Visitor& visitor) override {}
+    void accept(Visitor& visitor) override {
+        visitor.visit(*this);
+    }
 };
 
 class ConditionStatementNode : public Node{ //can be used for elif as well
@@ -692,7 +740,9 @@ class ConditionStatementNode : public Node{ //can be used for elif as well
     std::unique_ptr<Node> expression;
     std::unique_ptr<CodeBlockNode> block;
     std::unique_ptr<Node> elseBlock; //may also be another condition node as it can represent an elif as well
-    void accept(Visitor& visitor) override {}
+    void accept(Visitor& visitor) override {
+        visitor.visit(*this);
+    }
 
 };
 
@@ -702,73 +752,259 @@ class ForLoopNode : public Node{
     std::unique_ptr<Node> condition;
     std::unique_ptr<Node> increment;
     std::unique_ptr<CodeBlockNode> block;
-    void accept(Visitor& visitor) override {}
+    void accept(Visitor& visitor) override {
+        visitor.visit(*this);
+    }
 };
 
 class WhileLoopNode : public Node{
     public:
     std::unique_ptr<Node> expresion;
     std::unique_ptr<CodeBlockNode> block;
-    void accept(Visitor& visitor) override {}
+    void accept(Visitor& visitor) override {
+        visitor.visit(*this);
+    }
 };
 
 class ReturnStatementNode : public Node{
     public:
     std::unique_ptr<Node> expression; //what to return
-    void accept(Visitor& visitor) override {}
+    void accept(Visitor& visitor) override {
+        visitor.visit(*this);
+    }
 };
 
 class BreakStatementNode : public Node{
     public:
     std::unique_ptr<Node> expression; //how many loops to break out of
-    void accept(Visitor& visitor) override {}
+    void accept(Visitor& visitor) override {
+        visitor.visit(*this);
+    }
 };
 
 class ContinueStatementNode : public Node{
     public:
-    void accept(Visitor& visitor) override {}
+    void accept(Visitor& visitor) override {
+        visitor.visit(*this);
+    }
 };
 
 class ArrayIndexingNode : public Node{
     public:
     std::vector<std::unique_ptr<Node>> indices;
-    void accept(Visitor& visitor) override {}
+    void accept(Visitor& visitor) override {
+        visitor.visit(*this);
+    }
 };
 
 class ArrayGetElementNode : public Node{
     public:
     std::unique_ptr<ArrayIndexingNode> indeices;
-    void accept(Visitor& visitor) override {}
+    void accept(Visitor& visitor) override {
+        visitor.visit(*this);
+    }
 };
 
 class IdentifierNode : public Node{
     public:
     std::string identifier;
+    void accept(Visitor& visitor) override {
+        visitor.visit(*this);
+    }
 };
 
 
 
 //TODO: implement methods after parser is done
 class EvalVisitor : public Visitor{
-     void visit(IntLiteralNode& node) override {};
-     void visit(FloatLiteralNode& node) override {};
-     void visit(DoubleLiteralNode& node) override {};
-     void visit(CharLiteralNode& node) override {};
-     void visit(StringLiteralNode& node) override {};
-     void visit(BoolLiteralNode& node) override {};
-     void visit(ParamterNode& node) override {};
-     void visit(CodeBlockNode& node) override {};
-     void visit(ExpressionNode& node) override {};
-     void visit(TypeCastNode& node) override {};
-     void visit(LogicalNotNode& node) override {};
-     void visit(AssignmentStatementNode& node) override {};
-     void visit(FuncCallStatementNode& node) override {};
-     void visit(ConditionStatementNode& node) override {};
-     void visit(ForLoopNode& node) override {};
-     void visit(WhileLoopNode& node) override {};
-     void visit(ReturnStatementNode& node) override {};
-     void visit(BreakStatementNode& node) override {};
+    public:
+    virtual void visit(ProgramNode& node) override {}
+     void visit(IntLiteralNode& node) override {}
+     void visit(FloatLiteralNode& node) override {}
+     void visit(DoubleLiteralNode& node) override {}
+     void visit(CharLiteralNode& node) override {}
+     void visit(StringLiteralNode& node) override {}
+     void visit(BoolLiteralNode& node) override {}
+     void visit(ParamterNode& node) override {}
+     void visit(CodeBlockNode& node) override {}
+     void visit(ExpressionNode& node) override {}
+     void visit(TypeCastNode& node) override {}
+     void visit(LogicalNotNode& node) override {}
+     void visit(AssignmentStatementNode& node) override {}
+     void visit(FuncCallStatementNode& node) override {}
+     void visit(ConditionStatementNode& node) override {}
+     void visit(ForLoopNode& node) override {}
+     void visit(WhileLoopNode& node) override {}
+     void visit(ReturnStatementNode& node) override {}
+     void visit(BreakStatementNode& node) override {}
+     void visit(FuncDecNode& node) override {}
+     void visit(ContinueStatementNode& node) override {}
+     void visit(ArrayIndexingNode& node) override {}
+     void visit(ArrayGetElementNode& node) override {}
+     void visit(IdentifierNode& node) override {}
 };
+
+class PrintVisitor : public Visitor{
+    std::string spaces = "";
+    public:
+     void visit(ProgramNode& node) override{
+
+        std::cout << spaces << "Program{" << std::endl;
+
+        spaces += " ";
+
+        for (int i=0; i < node.statements.size(); i++){
+            node.statements[i]->accept(*this);
+        }
+        spaces.pop_back();
+        std::cout << spaces << "}" << std::endl;
+     }
+
+     void visit(IntLiteralNode& node) override {
+        std::cout << spaces << "Int literal{" << std::endl;
+        std::cout << spaces << " " << node.val << std::endl;
+
+        
+        std::cout << spaces << "}" << std::endl;
+     }
+
+     void visit(FloatLiteralNode& node) override {
+        std::cout << spaces << "Int literal{" << std::endl;
+        std::cout << spaces << " " << node.val << std::endl;
+
+        
+        std::cout << spaces << "}" << std::endl;
+     }
+     void visit(DoubleLiteralNode& node) override {
+        std::cout << spaces << "Double literal{" << std::endl;
+        std::cout << spaces << " " << node.val << std::endl;
+
+        
+        std::cout << spaces << "}" << std::endl;
+     }
+     void visit(CharLiteralNode& node) override {
+        std::cout << spaces << "Char literal{" << std::endl;
+        std::cout << spaces << " " << node.val << std::endl;
+
+        
+        std::cout << spaces << "}" << std::endl;
+     }
+     void visit(StringLiteralNode& node) override {
+        std::cout << spaces << "String literal{" << std::endl;
+        std::cout << spaces << " " << node.val << std::endl;
+
+        
+        std::cout << spaces << "}" << std::endl;
+     }
+     void visit(BoolLiteralNode& node) override {
+        std::cout << spaces << "Bool literal{" << std::endl;
+        std::cout << spaces << " " << node.val << std::endl;
+
+        
+        std::cout << spaces << "}" << std::endl;
+     }
+     void visit(ParamterNode& node) override {
+        std::cout << spaces << "Param node{" << std::endl;
+        std::cout << spaces << " node dim: "<< node.dim << std::endl;
+        std::cout << spaces << " node type: "<< node.type << std::endl; 
+        std::cout << spaces << " node identifer: "<< node.identifer << std::endl; 
+        std::cout << spaces << "}" << std::endl;
+     }
+
+     void visit(CodeBlockNode& node) override {
+        std::cout << spaces << "Code block node{" << std::endl;
+        spaces += " ";
+
+        for (int i=0; i < node.statements.size(); i++){
+            node.statements[i]->accept(*this);
+        }
+        spaces.pop_back();
+        std::cout << spaces << "}" << std::endl;
+     }
+
+     void visit(ExpressionNode& node) override {
+        std::cout << spaces << "Expression node{" << std::endl;
+        std::cout << spaces << " node operation: "<< node.operation << std::endl; 
+        spaces += " ";
+        node.operand1->accept(*this);
+        node.operand2->accept(*this);
+        spaces.pop_back();
+
+        std::cout << spaces << "}" << std::endl;
+     }
+
+     void visit(TypeCastNode& node) override {
+        std::cout << spaces << "Type cast node{" << std::endl;
+        std::cout << spaces << " type: " << node.type << std::endl;
+        spaces += " ";
+
+        node.expression->accept(*this);
+        spaces.pop_back();
+
+        std::cout << spaces << "}" << std::endl;
+     }
+     void visit(LogicalNotNode& node) override {
+        std::cout << spaces << "Logical not node{" << std::endl;
+        spaces += " ";
+
+        node.operand1->accept(*this);
+        spaces.pop_back();
+
+        std::cout << spaces << "}" << std::endl;
+     }
+     void visit(AssignmentStatementNode& node) override {
+        std::cout << spaces << "Assignment node{" << std::endl;
+        std::cout << spaces << " node operation: "<< node.operation << std::endl; 
+        std::cout << spaces << " node identifier: "<< node.identifer << std::endl;
+        std::cout << spaces << " node type: "<< node.type << std::endl;
+        spaces += " ";
+        node.expression->accept(*this);
+        spaces.pop_back();
+
+        std::cout << spaces << "}" << std::endl;
+     }
+     void visit(FuncCallStatementNode& node) override {
+        
+        std::cout << spaces << "FuncCall node{" << std::endl;
+        std::cout << spaces << " node identifier: "<< node.identifier << std::endl;
+        spaces += " ";
+        for (int i=0; i < node.args.size(); i++){
+            node.args[i]->accept(*this);
+        };
+        spaces.pop_back();
+
+        std::cout << spaces << "}" << std::endl;
+     }
+     void visit(ConditionStatementNode& node) override {}
+     void visit(ForLoopNode& node) override {}
+     void visit(WhileLoopNode& node) override {}
+     void visit(ReturnStatementNode& node) override {}
+     void visit(BreakStatementNode& node) override {}
+     void visit(FuncDecNode& node) override {
+
+        std::cout << spaces << "FuncDeclaration node{" << std::endl;
+         std::cout << spaces << " node identifier: "<< node.identifier << std::endl;
+        std::cout << spaces << " node type: "<< node.type << std::endl;
+        spaces += " ";
+        for (int i=0; i < node.params.size(); i++){
+            node.params[i]->accept(*this);
+        };
+        node.body->accept(*this);
+        spaces.pop_back();
+
+        std::cout << spaces << "}" << std::endl;
+     }
+     void visit(ContinueStatementNode& node) override {}
+     void visit(ArrayIndexingNode& node) override {}
+     void visit(ArrayGetElementNode& node) override {}
+     void visit(IdentifierNode& node) override {
+        std::cout << spaces << "Identifier node{" << std::endl;
+        std::cout << spaces << " node type: "<< node.identifier << std::endl;
+        std::cout << spaces << "}" << std::endl;
+     }
+
+};
+
 
 class Parser{
     private:
@@ -955,50 +1191,50 @@ class Parser{
     std::unique_ptr<Node> simpleExpression(){
         //TODO: this method
         if (currentToken == INT){
-            std::unique_ptr<IntLiteralNode> node;
+            std::unique_ptr<IntLiteralNode> node(new IntLiteralNode);
             node->val = stoi(currentToken.text);
             eat();
 
             return node;
         }
         if (currentToken == DOUBLE){
-            std::unique_ptr<DoubleLiteralNode> node;
+            std::unique_ptr<DoubleLiteralNode> node(new DoubleLiteralNode);
             node->val = stod(currentToken.text);
             eat();
             return node;
         }
         if (currentToken == FLOAT){
-            std::unique_ptr<FloatLiteralNode> node;
+            std::unique_ptr<FloatLiteralNode> node(new FloatLiteralNode);
             node->val = stof(currentToken.text);
             eat();
             return node;
         }
         if (currentToken == STRING){
-            std::unique_ptr<StringLiteralNode> node;
+            std::unique_ptr<StringLiteralNode> node(new StringLiteralNode);
             node->val = currentToken.text;
             eat();
             return node;
         }
         if (currentToken == CHAR){
-            std::unique_ptr<CharLiteralNode> node;
+            std::unique_ptr<CharLiteralNode> node(new CharLiteralNode);
             node->val = currentToken.text[0];
             eat();
             return node;
         }
         if (currentToken == TRUE){
-             std::unique_ptr<BoolLiteralNode> node;
+             std::unique_ptr<BoolLiteralNode> node(new BoolLiteralNode);
             node->val = true;
             eat();
             return node;
         }
         if (currentToken == FALSE){
-            std::unique_ptr<BoolLiteralNode> node;
+            std::unique_ptr<BoolLiteralNode> node(new BoolLiteralNode);
             node->val = false;
             eat();
             return node;
         }
         if (currentToken == IDENTIFIER){
-            std::unique_ptr<IdentifierNode> node;
+            std::unique_ptr<IdentifierNode> node(new IdentifierNode);
             node->identifier = currentToken.text;
             eat();
             return node;
@@ -1226,7 +1462,7 @@ class Parser{
     }
 
     std::unique_ptr<AssignmentStatementNode> assignExpression(){
-        std::unique_ptr<AssignmentStatementNode> as;
+        std::unique_ptr<AssignmentStatementNode> as(new AssignmentStatementNode);
         as->type = INVALID_TYPE; //there may be no type in statement. semantic analysis wil lreveal if there should be or not
 
         if (currentToken == FLUFF){
@@ -1311,6 +1547,7 @@ class Parser{
             eat();
             return assignStatementNode;
         }
+        return nullptr;
         //TODO: check for other statements
    }
 
@@ -1349,6 +1586,8 @@ class Parser{
             std::cerr << "Error: invalid function defenition at " << currentToken.text << " " << currentToken.startPos << std::endl;
             exit(-1);
         }
+        std::unique_ptr<FuncDecNode> declaration(new FuncDecNode());
+        declaration->identifier = currentToken.text;
         eat(); //eat identifier token (function name)
         if (currentToken != LPAREN){
             std::cerr << "Error: invalid function defenition at " << currentToken.text << " " << currentToken.startPos << std::endl;
@@ -1357,7 +1596,6 @@ class Parser{
         eat(); //eat '('
         
         std::unique_ptr<ParamterNode> param = parameter();
-        std::unique_ptr<FuncDecNode> declaration(new FuncDecNode());
         //if there is a=paramter add it and check for another paramter until there are none
         if (param != nullptr){
             (declaration->params).push_back(std::move(param));
@@ -1386,9 +1624,22 @@ class Parser{
         return declaration;
     }
 
-    std::unique_ptr<Node> program(){
-        std::unique_ptr<FuncDecNode> funcDec = functionDeclaration();
-        //TODO: check other statements
+    std::unique_ptr<ProgramNode> program(){
+         std::unique_ptr<ProgramNode> prog(new ProgramNode);
+        while (currentToken != END_FILE){
+            std::unique_ptr<FuncDecNode> funcDec = functionDeclaration();
+            if (funcDec != nullptr){
+                (prog->statements).push_back(std::move(funcDec));
+            }
+            if (currentToken == END_FILE){break;}
+
+            std::unique_ptr<Node> stmnt = statement();
+            if (stmnt != nullptr){
+                std::unique_ptr<Node> stmnt = statement();
+            }
+        }
+        eat();
+        return prog;
     }
 
     public:
@@ -1399,7 +1650,7 @@ class Parser{
         currentToken = (this->tokens)[currIndex];
     }
 
-    std::unique_ptr<Node> parse(){
+    std::unique_ptr<ProgramNode> parse(){
         return program();
     }
 };
@@ -1422,6 +1673,11 @@ int main(int argc, char** argv){
             for (int i=0; i<tokens.size(); i++){
                 std::cout << "Token(" << tokens[i].type << ", " << tokens[i].text << ", " << tokens[i].startPos << ')'<< std::endl;
             }
+
+            Parser parser(tokens);
+            std::unique_ptr<ProgramNode> node = parser.parse();
+            PrintVisitor printVisitor;
+            node->accept(printVisitor);
         }
         else{
             std::cerr << "Error: invalid file " << fileName << std::endl;
