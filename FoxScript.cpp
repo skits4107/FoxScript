@@ -800,6 +800,7 @@ class ArrayIndexingNode : public Node{
 class ArrayGetElementNode : public Node{
     public:
     std::unique_ptr<ArrayIndexingNode> indeices;
+    std::string identifer;
     void accept(Visitor& visitor) override {
         visitor.visit(*this);
     }
@@ -811,6 +812,13 @@ class IdentifierNode : public Node{
     void accept(Visitor& visitor) override {
         visitor.visit(*this);
     }
+};
+
+class ArrayAssignmentNode : public Node{
+    public:
+    std::unique_ptr<ArrayGetElementNode> element;
+    TokenType operation;
+    std::unique_ptr<Node> expression;
 };
 
 
@@ -995,8 +1003,24 @@ class PrintVisitor : public Visitor{
         std::cout << spaces << "}" << std::endl;
      }
      void visit(ContinueStatementNode& node) override {}
-     void visit(ArrayIndexingNode& node) override {}
-     void visit(ArrayGetElementNode& node) override {}
+     void visit(ArrayIndexingNode& node) override {
+        std::cout << spaces << "ArrayIndexing node{" << std::endl;
+        spaces += " ";
+        for (int i=0; i < node.indices.size(); i++){
+            node.indices[i]->accept(*this);
+        };
+        spaces.pop_back();
+
+        std::cout << spaces << "}" << std::endl;
+     }
+     void visit(ArrayGetElementNode& node) override {
+        std::cout << spaces << "ArrayGetElement node{" << std::endl;
+        std::cout << spaces << " node identifier: "<< node.identifer << std::endl;
+        spaces += " ";
+        node.indeices->accept(*this);
+        spaces.pop_back();
+        std::cout << spaces << "}" << std::endl;
+     }
      void visit(IdentifierNode& node) override {
         std::cout << spaces << "Identifier node{" << std::endl;
         std::cout << spaces << " node type: "<< node.identifier << std::endl;
@@ -1183,15 +1207,59 @@ class Parser{
 
     
     std::unique_ptr<ArrayIndexingNode> arrayIndices(){
+        if (currentToken != LSQ_BRACE){
+            return nullptr; //might be another kind of statement or expression
+        }
+        eat();
+        
+        std::unique_ptr<Node> exp = expression();
+        
+        if (currentToken != RSQ_BRACE){
+            std::cerr << "Error no closing square brace at " << currentToken.text << currentToken.startPos << std::endl;
+            exit(-1);
+        }
+        eat();
+       
 
+        std::unique_ptr<ArrayIndexingNode> node(new ArrayIndexingNode);
+        node->indices.push_back(std::move(exp));
+
+        //keep going through all indices
+        while(currentToken == LSQ_BRACE){
+            std::cout << currentToken.text << std::endl;
+            eat();
+            std::cout << currentToken.text << std::endl;
+            std::unique_ptr<Node> exp = expression();
+            std::cout << currentToken.text << std::endl;
+            node->indices.push_back(std::move(exp));
+            if (currentToken != RSQ_BRACE){
+                std::cerr << "Error no closing square brace at " << currentToken.text << currentToken.startPos << std::endl;
+                exit(-1);
+            }
+            eat();
+            std::cout << currentToken.text << std::endl;
+        }
+        std::cout << "hello?" << currentToken.text << std::endl;
+        return node;
     }
     //may have an array get element node. might have to change type
     std::unique_ptr<ArrayGetElementNode> arrayGetElement(){
-        //TODO: this method
+        if (currentToken != IDENTIFIER){
+            return nullptr; //might be another kind of statement or expression
+        }
+        std::unique_ptr<ArrayGetElementNode> node(new ArrayGetElementNode);
+        node->identifer = currentToken.text;
+        eat();
+        std::unique_ptr<ArrayIndexingNode> indices = arrayIndices();
+        if (indices == nullptr){
+            vomit();
+            return nullptr; //again could still be another kind of statement or expression
+        }
+        node->indeices = std::move(indices);
+        return node;
     }
 
     std::unique_ptr<Node> simpleExpression(){
-        //TODO: this method
         if (currentToken == INT){
             std::unique_ptr<IntLiteralNode> node(new IntLiteralNode);
             node->val = stoi(currentToken.text);
@@ -1255,6 +1323,7 @@ class Parser{
         if (exp != nullptr){
             return exp;
         }
+        std::cout << "primary "<< currentToken.text << std::endl;
         exp = simpleExpression();
         if (exp != nullptr){
             return exp;
@@ -1540,15 +1609,34 @@ class Parser{
             std::cerr << "Error: expected ';' at " << currentToken.text << " " << currentToken.startPos << std::endl;
             exit(-1);
         }
+        eat();
         return as;
+    }
+
+    std::unique_ptr<FuncCallStatementNode> funcCallStatment(){
+        std::unique_ptr<FuncCallStatementNode> callExp = callFunction();
+        if (callExp == nullptr){
+            return nullptr;
+        }
+        if (currentToken != SEMICOLON){
+            std::cerr << "Error: expected ';' at " << currentToken.text << " " << currentToken.startPos << std::endl;
+            exit(-1);
+        }
+        eat();
+        return callExp;
     }
 
    std::unique_ptr<Node> statement(){
         std::unique_ptr<AssignmentStatementNode> assignStatementNode = assignStatement();
         if (assignStatementNode != nullptr){
-            eat();
             return assignStatementNode;
         }
+
+        std::unique_ptr<FuncCallStatementNode> callStatment = funcCallStatment();
+        if (callStatment != nullptr){
+            return callStatment;
+        }
+
         return nullptr;
         //TODO: check for other statements
    }
