@@ -1,3 +1,7 @@
+int plunge add(fluff int a, fluff int b){
+    fluff int c = a+b;
+}
+
 void plunge main(fluff int argc, fluff string[] argv){
     fluff int a = <int>(10+4);
     fluff char b = 'c';

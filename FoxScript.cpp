@@ -1708,6 +1708,10 @@ class Parser{
         std::unique_ptr<CodeBlockNode> block(new CodeBlockNode);
         while (currentToken != RBRACE){
             std::unique_ptr<Node> Statement = statement();
+            if (Statement == nullptr){
+                std::cerr << "Error: no statement at " << currentToken.text << " " << currentToken.startPos << std::endl;
+                exit(-1);
+            }
             (block->statements).push_back(std::move(Statement));
         }
         eat(); //eat closing brace
@@ -1783,7 +1787,7 @@ class Parser{
 
             std::unique_ptr<Node> stmnt = statement();
             if (stmnt != nullptr){
-                std::unique_ptr<Node> stmnt = statement();
+                (prog->statements).push_back(std::move(stmnt));
             }
         }
         eat();
