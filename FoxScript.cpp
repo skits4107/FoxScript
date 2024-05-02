@@ -983,7 +983,18 @@ class PrintVisitor : public Visitor{
 
         std::cout << spaces << "}" << std::endl;
      }
-     void visit(ConditionStatementNode& node) override {}
+     void visit(ConditionStatementNode& node) override {
+        std::cout << spaces << "Conditional node{" << std::endl;
+        spaces += " ";
+        node.expression->accept(*this);
+        node.block->accept(*this);
+        if (node.elseBlock != nullptr){
+            node.elseBlock->accept(*this);
+        }
+        
+        spaces.pop_back();
+        std::cout << spaces << "}" << std::endl;
+     }
      void visit(ForLoopNode& node) override {}
      void visit(WhileLoopNode& node) override {}
      void visit(ReturnStatementNode& node) override {}
@@ -1226,23 +1237,18 @@ class Parser{
 
         //keep going through all indices
         while(currentToken == LSQ_BRACE){
-            std::cout << currentToken.text << std::endl;
             eat();
-            std::cout << currentToken.text << std::endl;
             std::unique_ptr<Node> exp = expression();
-            std::cout << currentToken.text << std::endl;
             node->indices.push_back(std::move(exp));
             if (currentToken != RSQ_BRACE){
                 std::cerr << "Error no closing square brace at " << currentToken.text << currentToken.startPos << std::endl;
                 exit(-1);
             }
             eat();
-            std::cout << currentToken.text << std::endl;
         }
-        std::cout << "hello?" << currentToken.text << std::endl;
         return node;
     }
-    //may have an array get element node. might have to change type
+    
     std::unique_ptr<ArrayGetElementNode> arrayGetElement(){
         if (currentToken != IDENTIFIER){
             return nullptr; //might be another kind of statement or expression
@@ -1313,7 +1319,6 @@ class Parser{
     }
 
     std::unique_ptr<Node> primaryExpression(){
-        //TODO: this method
         std::unique_ptr<Node> exp = callFunction();
         if (exp != nullptr){
             return exp;
@@ -1323,7 +1328,6 @@ class Parser{
         if (exp != nullptr){
             return exp;
         }
-        std::cout << "primary "<< currentToken.text << std::endl;
         exp = simpleExpression();
         if (exp != nullptr){
             return exp;
@@ -1626,7 +1630,57 @@ class Parser{
         return callExp;
     }
 
-   std::unique_ptr<Node> statement(){
+    std::unique_ptr<CodeBlockNode> elseStatement(){
+        if (currentToken != WHIMPER){
+            return nullptr;
+        }
+        eat();
+        std::unique_ptr<CodeBlockNode> block = codeBlock();
+        return block;
+    }
+
+    std::unique_ptr<ConditionStatementNode> elseIfStatement(){
+        if (currentToken != SEEK){
+            return nullptr;
+        }
+        eat();
+        std::unique_ptr<ConditionStatementNode> statement = conditionBody();
+        return statement;
+    }
+
+    std::unique_ptr<ConditionStatementNode> conditionBody(){
+        std::unique_ptr<Node> exp = expression();
+        std::unique_ptr<CodeBlockNode> block = codeBlock();
+
+        std::unique_ptr<ConditionStatementNode> statement(new ConditionStatementNode);
+        statement->expression = std::move(exp);
+        statement->block = std::move(block);
+        statement->elseBlock = nullptr;
+
+        std::unique_ptr<CodeBlockNode> elseBlock = elseStatement();
+        if (elseBlock != nullptr){
+            statement->elseBlock = std::move(elseBlock);
+            return statement;
+        }
+
+        std::unique_ptr<ConditionStatementNode> other = elseIfStatement();
+        if (other != nullptr){
+            statement->elseBlock = std::move(other);
+        }
+
+        return statement;
+    }
+
+    std::unique_ptr<ConditionStatementNode> conditionStatement(){
+        if (currentToken != SNIFF){
+            return nullptr;
+        }
+        eat();
+        std::unique_ptr<ConditionStatementNode> node = conditionBody();
+        return node;
+    }
+
+    std::unique_ptr<Node> statement(){
         std::unique_ptr<AssignmentStatementNode> assignStatementNode = assignStatement();
         if (assignStatementNode != nullptr){
             return assignStatementNode;
@@ -1636,10 +1690,14 @@ class Parser{
         if (callStatment != nullptr){
             return callStatment;
         }
+        std::unique_ptr<ConditionStatementNode> conditional = conditionStatement();
+        if (conditional != nullptr){
+            return conditional;
+        }
 
         return nullptr;
         //TODO: check for other statements
-   }
+    }
 
     std::unique_ptr<CodeBlockNode> codeBlock(){
         if (currentToken != LBRACE){
