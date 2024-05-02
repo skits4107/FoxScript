@@ -1709,7 +1709,7 @@ class Parser{
         while (currentToken != RBRACE){
             std::unique_ptr<Node> Statement = statement();
             if (Statement == nullptr){
-                std::cerr << "Error: no statement at " << currentToken.text << " " << currentToken.startPos << std::endl;
+                std::cerr << "Error: no known statement at " << currentToken.text << " " << currentToken.startPos << std::endl;
                 exit(-1);
             }
             (block->statements).push_back(std::move(Statement));
