@@ -1,8 +1,8 @@
-int plunge add(fluff int a, fluff int b){
+int trick add(fluff int a, fluff int b){
     fluff int c = a+b;
 }
 
-void plunge main(fluff int argc, fluff string[] argv){
+void trick main(fluff int argc, fluff string[] argv){
     fluff int a = <int>(10+4);
     fluff char b = 'c';
     fluff string c = "hello";
@@ -11,14 +11,15 @@ void plunge main(fluff int argc, fluff string[] argv){
     fluff bool b2 = false;
     fluff double d1 = 2.2;
     fluff float f1 = 2.5f;
-    fluff int d = a^5;
+    fluff int d_a = a^5;
+    //stuffy stuffy
     fluff int a = add(5, 6);
     add(5+6, 7+8);
     fluff int abc = arr[1][2];
     sniff a<9{
         fluff int inCond = 67;
     }
-    seek (a>9){
+    whimper sniff (a>9){
         fluff int inCond2 = 43;
     }
     whimper{

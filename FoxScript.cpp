@@ -11,9 +11,9 @@
     whimper = else
     bark = return
     fluff = var/let
-    plunge = function/def
+    trick = function/def 
     pack = class
-    hunt = for
+    prowl = for 
     chase = while
     burrow = struct
     inherit = extends
@@ -26,10 +26,12 @@
     vanish = delete
     territory = namespace
     fox = self/this (pass by reference and not pointer)
-    stop = break
-    pounce = continue
+    pounce = break 
+    hunt = continue 
     forage = import
-    seek = elif
+    scurry = throw //need to implement
+    venture = try //need to implement
+    escape = catch //need to implement
 
 
 
@@ -56,16 +58,16 @@ pack Animal{
         fox.sound - sound;
     }
 
-    show void plunge makeSound(){
+    show void trick makeSound(){
         howl(name+" went "+sound);
     }
 }
 
-int plunge add(fluff int a, fluff int b){
+int trick add(fluff int a, fluff int b){
     bark a+b;
 }
 
-int plunge main(fluff int argc, fluff char** argv){
+int trick main(fluff int argc, fluff char** argv){
     fluff int a = 10;
     fluff int b = 5;
     fluff int c = a+b;
@@ -79,9 +81,12 @@ int plunge main(fluff int argc, fluff char** argv){
     fluff int charInt = (int)character;
 
 
-    hunt(fluff int i=0; i<=c; i++){
+    prowl(fluff int i=0; i<=c; i++){
         sniff(i % 2 ==0){
             howl("even");
+        }
+        whimper sniff 1>2{
+            howl("something")
         }
         whimper{
             howl("odd");
@@ -98,9 +103,9 @@ enum TokenType {
     INT, FLOAT, STRING, CHAR, DOUBLE,
 
     // Keywords
-    SNIFF, WHIMPER, HUNT, CHASE, BARK, TRUE, FALSE, CUB, PLUNGE, FOX, 
-    BURROW, INHERIT, GROWL, SHOW, KITSUNE, SEEK,
-    DEN, FLUFF, TERRITORY, PACK, GUARDED, STOP, POUNCE, FORAGE,
+    SNIFF, WHIMPER, HUNT, CHASE, BARK, TRUE, FALSE, CUB, TRICK, FOX, 
+    BURROW, INHERIT, GROWL, SHOW, KITSUNE,
+    DEN, FLUFF, TERRITORY, PACK, GUARDED, POUNCE, FORAGE, PROWL,
 
     KW_INT,    // Keyword for integer type declaration
     KW_FLOAT,  // Keyword for float type declaration
@@ -193,9 +198,6 @@ TokenType proccessKeyWord(std::string text){
     if (text == "whimper"){
         return WHIMPER;
     }
-    if (text == "seek"){
-        return SEEK;
-    }
     if (text == "hunt"){
         return HUNT;
     }
@@ -208,8 +210,8 @@ TokenType proccessKeyWord(std::string text){
     if (text == "cub"){
         return CUB;
     }
-    if (text == "plunge"){
-        return PLUNGE;
+    if (text == "trick"){
+        return TRICK;
     }
     if (text == "fox"){
         return FOX;
@@ -255,9 +257,6 @@ TokenType proccessKeyWord(std::string text){
     }
     if (text == "not"){
         return NOT;
-    }
-    if(text == "stop"){
-        return STOP;
     }
     if(text == "pounce"){
         return POUNCE;
@@ -485,7 +484,7 @@ std::vector<Token> lex(std::string input){
         else if (isalpha(currChar)){
             std::string text = std::string(1, currChar);
             currentPos++;
-            while(currentPos < input.length() && isalnum(input[currentPos])){
+            while(currentPos < input.length() && (isalnum(input[currentPos]) || input[currentPos] == '_')){
                 text += input[currentPos];
                 currentPos++;
             }
@@ -1631,21 +1630,22 @@ class Parser{
     }
 
     std::unique_ptr<CodeBlockNode> elseStatement(){
-        if (currentToken != WHIMPER){
-            return nullptr;
+        if (currentToken == WHIMPER && lookAhead(1) == LBRACE){
+            eat(); //consume whimper but not brace as codebLOCK DOES THAT
+            std::unique_ptr<CodeBlockNode> block = codeBlock();
+            return block;
         }
-        eat();
-        std::unique_ptr<CodeBlockNode> block = codeBlock();
-        return block;
+        return nullptr;
     }
 
     std::unique_ptr<ConditionStatementNode> elseIfStatement(){
-        if (currentToken != SEEK){
-            return nullptr;
+        if (currentToken == WHIMPER && lookAhead(1) == SNIFF){
+            eat(); //consume whimper
+            eat(); //consume sniff
+            std::unique_ptr<ConditionStatementNode> statement = conditionBody();
+            return statement;
         }
-        eat();
-        std::unique_ptr<ConditionStatementNode> statement = conditionBody();
-        return statement;
+        return nullptr;
     }
 
     std::unique_ptr<ConditionStatementNode> conditionBody(){
@@ -1726,7 +1726,7 @@ class Parser{
             return nullptr; 
         }
         eat(); //eat data type token
-        if (currentToken != PLUNGE){
+        if (currentToken != TRICK){
             //error and exit. 
             //no other statements have a dataType as the first token
             // so if there was one then it must be an attempt a function declaration
