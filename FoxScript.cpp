@@ -1680,6 +1680,64 @@ class Parser{
         return node;
     }
 
+    std::unique_ptr<ContinueStatementNode> continueStatement(){
+        if (currentToken != HUNT){
+            return nullptr;
+        }
+        eat();
+        if (currentToken != SEMICOLON){
+            std::cerr << "Error: expected semicolon at " << currentToken.text << " " << currentToken.startPos << std::endl;
+            exit(-1);
+        }
+        std::unique_ptr<ContinueStatementNode> st(new ContinueStatementNode);
+        return st;
+    }
+
+    std::unique_ptr<BreakStatementNode> breakStatement(){
+        if (currentToken != POUNCE){
+            return nullptr;
+        }
+        eat();
+        std::unique_ptr<Node> exp = expression();
+        if (currentToken != SEMICOLON){
+            std::cerr << "Error: expected semicolon at " << currentToken.text << " " << currentToken.startPos << std::endl;
+            exit(-1);
+        }
+        std::unique_ptr<BreakStatementNode> bs(new BreakStatementNode);
+        bs->expression = std::move(exp);
+        return bs;
+    }
+
+    std::unique_ptr<ReturnStatementNode> returnStatement(){
+        if (currentToken != BARK){
+            return nullptr;
+        }
+        eat();
+        std::unique_ptr<Node> exp = expression();
+        if (currentToken != SEMICOLON){
+            std::cerr << "Error: expected semicolon at " << currentToken.text << " " << currentToken.startPos << std::endl;
+            exit(-1);
+        }
+        std::unique_ptr<ReturnStatementNode> bs(new ReturnStatementNode);
+        bs->expression = std::move(exp);
+        return bs;
+    }
+
+    std::unique_ptr<ForLoopNode> forLoop(){
+        if (currentToken != PROWL){
+            return nullptr;
+        }
+        eat();
+        if (currentToken != LPAREN){
+            std::cerr << "Error: expected '(' at " << currentToken.text << " " << currentToken.startPos << std::endl;
+            exit(-1);
+        }
+        std::unique_ptr<AssignmentStatementNode> ae = assignExpression();
+        //TODO: finish
+    }
+
+
+
     std::unique_ptr<Node> statement(){
         std::unique_ptr<AssignmentStatementNode> assignStatementNode = assignStatement();
         if (assignStatementNode != nullptr){
