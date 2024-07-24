@@ -1727,12 +1727,37 @@ class Parser{
         if (currentToken != PROWL){
             return nullptr;
         }
-        eat();
+        eat(); //eat prowl
         if (currentToken != LPAREN){
             std::cerr << "Error: expected '(' at " << currentToken.text << " " << currentToken.startPos << std::endl;
             exit(-1);
         }
+        eat(); //eat parent
         std::unique_ptr<AssignmentStatementNode> ae = assignExpression();
+        if (ae == nullptr){
+            std::cerr << "Error: invalid assignment expression at " << currentToken.text << " " << currentToken.startPos << std::endl;
+        }
+        if (currentToken != SEMICOLON){
+            std::cerr << "Error: expected ';' at " << currentToken.text << " " << currentToken.startPos << std::endl;
+            exit(-1);
+        }
+        eat(); //eat semicolon
+
+
+        std::unique_ptr<Node> exp = expression();
+
+        if (currentToken != SEMICOLON){
+            std::cerr << "Error: expected ';' at " << currentToken.text << " " << currentToken.startPos << std::endl;
+            exit(-1);
+        }
+        eat(); //eat semicolon
+
+        std::unique_ptr<AssignmentStatementNode> ae2 = assignExpression();
+        if (ae2 == nullptr){
+            //TODO: check for inc and ec statement
+        }
+
+
         //TODO: finish
     }
 
