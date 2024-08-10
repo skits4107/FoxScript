@@ -264,6 +264,9 @@ TokenType proccessKeyWord(std::string text){
     if (text == "forage"){
         return FORAGE;
     }
+    if (text == "prowl"){
+        return PROWL;
+    }
     return IDENTIFIER;
 }
 
@@ -563,6 +566,9 @@ class ArrayIndexingNode;
 class ArrayGetElementNode;
 class IdentifierNode;
 class ProgramNode;
+class ArrayAssignmentNode;
+
+class IncDecStatementNode;
 enum DataType {INT_T, DOUBLE_T, FLOAT_T, CHAR_T, STRING_T, BOOL_T, VOID_T, INVALID_TYPE};
 enum AssignmentOp {EQ_OP, AEQ, SEQ, MEQ, DEQ, MOEQ, EEQ, INVALID_OP};
 class Visitor{
@@ -815,7 +821,7 @@ class IdentifierNode : public Node{
     }
 };
 
-//TODO: add accept methods
+
 class ArrayAssignmentNode : public Node{
     public:
     std::unique_ptr<ArrayGetElementNode> element;
@@ -1011,7 +1017,16 @@ class PrintVisitor : public Visitor{
         spaces.pop_back();
         std::cout << spaces << "}" << std::endl;
      }
-     void visit(ForLoopNode& node) override {}
+     void visit(ForLoopNode& node) override {
+        std::cout << spaces << "For loop node{" << std::endl;
+        spaces+=" ";
+        node.assignSatement->accept(*this);
+        node.condition->accept(*this);
+        node.block->accept(*this);
+        spaces.pop_back();
+        std::cout << spaces << "}" << std::endl;
+
+     }
      void visit(WhileLoopNode& node) override {}
      void visit(ReturnStatementNode& node) override {}
      void visit(BreakStatementNode& node) override {}
@@ -1054,7 +1069,12 @@ class PrintVisitor : public Visitor{
         std::cout << spaces << "}" << std::endl;
      }
 
-     void visit(IncDecStatementNode& node) override {};
+     void visit(IncDecStatementNode& node) override {
+        std::cout << spaces << "Identifier node{" << std::endl;
+        std::cout << spaces << " node type: "<< node.identifer << std::endl;
+        std::cout << spaces << " operation: "<< node.operation << std::endl;
+        std::cout << spaces << "}" << std::endl;
+     };
      void visit(ArrayAssignmentNode& node) override {};
 
 };
@@ -1615,6 +1635,7 @@ class Parser{
                 }
         }
         eat(); //eat operator token
+       
         std::unique_ptr<Node> exp = expression(); //get an expression
         if (exp == nullptr){
             std::cerr << "Error expected expression at " << currentToken.text << " " << currentToken.startPos << std::endl;
@@ -1761,6 +1782,7 @@ class Parser{
             std::cerr << "Error: expected '++' or '--' at " << currentToken.text << " " << currentToken.startPos << std::endl;
             exit(-1);
         }
+        eat();
         return node;
 
     }
@@ -1775,7 +1797,9 @@ class Parser{
             exit(-1);
         }
         eat(); //eat parent
+         std::cout << currentToken.text << std::endl;
         std::unique_ptr<AssignmentStatementNode> ae = assignExpression();
+
         if (ae == nullptr){
             std::cerr << "Error: invalid assignment expression at " << currentToken.text << " " << currentToken.startPos << std::endl;
         }
