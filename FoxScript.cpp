@@ -591,6 +591,8 @@ class Visitor{
     virtual void visit(ArrayIndexingNode& node) = 0;
     virtual void visit(ArrayGetElementNode& node) = 0;
     virtual void visit(IdentifierNode& node) = 0;
+    virtual void visit(IncDecStatementNode& node) = 0;
+    virtual void visit(ArrayAssignmentNode& node) = 0;
 };
 
 class Node{
@@ -747,7 +749,7 @@ class ConditionStatementNode : public Node{ //can be used for elif as well
 
 class ForLoopNode : public Node{
     public:
-    std::unique_ptr<AssignmentStatementNode> assignSatement;
+    std::unique_ptr<Node> assignSatement;
     std::unique_ptr<Node> condition;
     std::unique_ptr<Node> increment;
     std::unique_ptr<CodeBlockNode> block;
@@ -813,11 +815,24 @@ class IdentifierNode : public Node{
     }
 };
 
+//TODO: add accept methods
 class ArrayAssignmentNode : public Node{
     public:
     std::unique_ptr<ArrayGetElementNode> element;
     TokenType operation;
     std::unique_ptr<Node> expression;
+    void accept(Visitor& visitor) override {
+        visitor.visit(*this);
+    }
+};
+
+class IncDecStatementNode : public Node{
+    public:
+    std::string identifer;
+    bool operation; //true for inc and false for neg
+    void accept(Visitor& visitor) override {
+        visitor.visit(*this);
+    }
 };
 
 
@@ -849,6 +864,8 @@ class EvalVisitor : public Visitor{
      void visit(ArrayIndexingNode& node) override {}
      void visit(ArrayGetElementNode& node) override {}
      void visit(IdentifierNode& node) override {}
+     void visit(IncDecStatementNode& node) override {};
+     void visit(ArrayAssignmentNode& node) override {};
 };
 
 class PrintVisitor : public Visitor{
@@ -1036,6 +1053,9 @@ class PrintVisitor : public Visitor{
         std::cout << spaces << " node type: "<< node.identifier << std::endl;
         std::cout << spaces << "}" << std::endl;
      }
+
+     void visit(IncDecStatementNode& node) override {};
+     void visit(ArrayAssignmentNode& node) override {};
 
 };
 
@@ -1723,6 +1743,28 @@ class Parser{
         return bs;
     }
 
+    std::unique_ptr<IncDecStatementNode> incDec(){
+        if (currentToken != IDENTIFIER){
+            return nullptr;
+        }
+        std::unique_ptr<IncDecStatementNode> node(new IncDecStatementNode);
+        node->identifer = currentToken.text;
+        eat();
+
+        if (currentToken == INC){
+            node->operation = true;
+        }
+        else if (currentToken == DEC){
+            node->operation = false;
+        }
+        else{
+            std::cerr << "Error: expected '++' or '--' at " << currentToken.text << " " << currentToken.startPos << std::endl;
+            exit(-1);
+        }
+        return node;
+
+    }
+
     std::unique_ptr<ForLoopNode> forLoop(){
         if (currentToken != PROWL){
             return nullptr;
@@ -1752,13 +1794,30 @@ class Parser{
         }
         eat(); //eat semicolon
 
-        std::unique_ptr<AssignmentStatementNode> ae2 = assignExpression();
+        std::unique_ptr<Node> ae2 = assignExpression();
         if (ae2 == nullptr){
-            //TODO: check for inc and ec statement
+            //TODO: check for inc and dec statement
+            ae2 = incDec();
+            if (ae2 == nullptr){
+                std::cerr << "Error: no third statement in for loop at " << currentToken.text << " " << currentToken.startPos << std::endl;
+                exit(-1);
+            }
         }
 
+        if (currentToken != RPAREN){
+            std::cerr << "Error: expected ')' at " << currentToken.text << " " << currentToken.startPos << std::endl;
+            exit(-1);
+        }
+        eat();
 
-        //TODO: finish
+        std::unique_ptr<CodeBlockNode> block = codeBlock();
+
+        std::unique_ptr<ForLoopNode> node(new ForLoopNode);
+        node->assignSatement = std::move(ae2);
+        node->condition = std::move(exp);
+        node->block = std::move(block);
+
+        return node;
     }
 
 
@@ -1776,6 +1835,11 @@ class Parser{
         std::unique_ptr<ConditionStatementNode> conditional = conditionStatement();
         if (conditional != nullptr){
             return conditional;
+        }
+
+        std::unique_ptr<ForLoopNode> forLoopStatement = forLoop();
+        if (forLoopStatement != nullptr){
+            return forLoopStatement;
         }
 
         return nullptr;
