@@ -1,5 +1,7 @@
 #pragma once
 
+//prototype classes for all the nodes and visitors.
+
 //visitors
 class Visitor;
 class PrintVisitor;
