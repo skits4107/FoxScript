@@ -9,15 +9,18 @@ int main(int argc, char** argv){
 
     //TODO: add future argument checks.
     if (argc < 2){
-        std::cerr << "Error: Invalid number of arguments" << std::endl; 
+        std::cerr << "Error: Invalid number of arguments" << std::endl;
+        return -1;
     }
 
+
+
     std::string fileName = argv[1];
-        
     std::ifstream file(fileName);
     
     if (!file.is_open()){
          std::cerr << "Error: invalid file " << fileName << std::endl;
+         return -1;
     }
 
     std::string input = "";
