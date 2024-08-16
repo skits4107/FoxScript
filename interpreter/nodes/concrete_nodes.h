@@ -169,6 +169,9 @@ class ArrayGetElementNode : public Node{
     void accept(Visitor& visitor) override;
 };
 
+
+//used when there is an identifier but isnt for another node (like an assignment node or func declaration or func call node)
+//such as when you use a variable inside an expression or function call paramter
 class IdentifierNode : public Node{
     public:
     std::string identifier;
