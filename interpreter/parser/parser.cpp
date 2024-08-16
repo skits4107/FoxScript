@@ -714,7 +714,7 @@ std::unique_ptr<ForLoopNode> Parser::forLoop(){
         exit(-1);
     }
     eat(); //eat parent
-        std::cout << currentToken.text << std::endl;
+        
     std::unique_ptr<AssignmentStatementNode> ae = assignExpression();
 
     if (ae == nullptr){
