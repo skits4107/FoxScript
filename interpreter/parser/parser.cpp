@@ -644,6 +644,7 @@ std::unique_ptr<ContinueStatementNode> Parser::continueStatement(){
         std::cerr << "Error: expected semicolon at " << currentToken.text << " " << currentToken.startPos << std::endl;
         exit(-1);
     }
+    eat();
     std::unique_ptr<ContinueStatementNode> st(new ContinueStatementNode);
     return st;
 }
@@ -658,6 +659,7 @@ std::unique_ptr<BreakStatementNode> Parser::breakStatement(){
         std::cerr << "Error: expected semicolon at " << currentToken.text << " " << currentToken.startPos << std::endl;
         exit(-1);
     }
+    eat();
     std::unique_ptr<BreakStatementNode> bs(new BreakStatementNode);
     bs->expression = std::move(exp);
     return bs;
@@ -673,6 +675,7 @@ std::unique_ptr<ReturnStatementNode> Parser::returnStatement(){
         std::cerr << "Error: expected semicolon at " << currentToken.text << " " << currentToken.startPos << std::endl;
         exit(-1);
     }
+    eat();
     std::unique_ptr<ReturnStatementNode> bs(new ReturnStatementNode);
     bs->expression = std::move(exp);
     return bs;
