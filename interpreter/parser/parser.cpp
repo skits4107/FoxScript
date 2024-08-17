@@ -719,6 +719,7 @@ std::unique_ptr<ForLoopNode> Parser::forLoop(){
 
     if (ae == nullptr){
         std::cerr << "Error: invalid assignment expression at " << currentToken.text << " " << currentToken.startPos << std::endl;
+        exit(-1);
     }
     if (currentToken != SEMICOLON){
         std::cerr << "Error: expected ';' at " << currentToken.text << " " << currentToken.startPos << std::endl;
@@ -761,6 +762,28 @@ std::unique_ptr<ForLoopNode> Parser::forLoop(){
     return node;
 }
 
+std::unique_ptr<WhileLoopNode> Parser::whileLoop(){
+    if (currentToken != CHASE){
+        return nullptr; //might not be while loop
+    }
+    eat();
+    std::unique_ptr<Node>  exp = expression();
+    if (exp == nullptr){
+        std::cerr << "Error: no valid expression at " << currentToken.text << " " << currentToken.startPos << std::endl;
+        exit(-1);
+    }
+    std::unique_ptr<CodeBlockNode> block = codeBlock();
+    if (block == nullptr){
+        std::cerr << "Error: no valid code block at " << currentToken.text << " " << currentToken.startPos << std::endl;
+        exit(-1);
+    }
+
+    std::unique_ptr<WhileLoopNode> whileNode(new WhileLoopNode);
+    whileNode->expresion = std::move(exp);
+    whileNode->block = std::move(block);
+    return whileNode;
+}
+
 
 
 std::unique_ptr<Node> Parser::statement(){
@@ -782,6 +805,12 @@ std::unique_ptr<Node> Parser::statement(){
     if (forLoopStatement != nullptr){
         return forLoopStatement;
     }
+
+    std::unique_ptr<WhileLoopNode> whileLoopStatement = whileLoop();
+    if (whileLoopStatement != nullptr){
+        return whileLoopStatement;
+    }
+
 
     return nullptr;
     //TODO: check for other statements

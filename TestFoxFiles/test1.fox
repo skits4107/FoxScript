@@ -29,4 +29,7 @@ void trick main(fluff int argc, fluff string[] argv){
     prowl(fluff int i=0; i<5; i++){
         paw_print(i); //paw_print doesnt exist yet
     }
+    chase (jump==5) {
+        paw_print(jump);
+    }
 }

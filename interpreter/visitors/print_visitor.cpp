@@ -139,15 +139,20 @@ void PrintVisitor::visit(ForLoopNode& node) {
 }
 
 void PrintVisitor::visit(WhileLoopNode& node) {
-    // Implementation left empty as in the original
+    std::cout << spaces << "While loop node{" << std::endl;
+    spaces += " "; 
+    node.expresion->accept(*this);
+    node.block->accept(*this);
+    spaces.pop_back();
+    std::cout << spaces << "}" << std::endl;
 }
 
 void PrintVisitor::visit(ReturnStatementNode& node) {
-    // Implementation left empty as in the original
+    // TODO
 }
 
 void PrintVisitor::visit(BreakStatementNode& node) {
-    // Implementation left empty as in the original
+    // TODO
 }
 
 void PrintVisitor::visit(FuncDecNode& node) {
@@ -164,7 +169,7 @@ void PrintVisitor::visit(FuncDecNode& node) {
 }
 
 void PrintVisitor::visit(ContinueStatementNode& node) {
-    // Implementation left empty as in the original
+   // TODO
 }
 
 void PrintVisitor::visit(ArrayIndexingNode& node) {
@@ -200,5 +205,5 @@ void PrintVisitor::visit(IncDecStatementNode& node) {
 }
 
 void PrintVisitor::visit(ArrayAssignmentNode& node) {
-    // Implementation left empty as in the original
+    // TODO
 }

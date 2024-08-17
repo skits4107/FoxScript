@@ -42,6 +42,7 @@ private:
     std::unique_ptr<ReturnStatementNode> returnStatement();
     std::unique_ptr<IncDecStatementNode> incDec();
     std::unique_ptr<ForLoopNode> forLoop();
+    std::unique_ptr<WhileLoopNode> whileLoop();
     std::unique_ptr<Node> statement();
     std::unique_ptr<CodeBlockNode> codeBlock();
     std::unique_ptr<FuncDecNode> functionDeclaration();
