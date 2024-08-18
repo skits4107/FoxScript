@@ -148,11 +148,23 @@ void PrintVisitor::visit(WhileLoopNode& node) {
 }
 
 void PrintVisitor::visit(ReturnStatementNode& node) {
-    // TODO
+    std::cout << spaces << "Return statement node{" << std::endl;
+    if (node.expression != nullptr){
+        spaces += " "; 
+        node.expression->accept(*this);
+        spaces.pop_back();
+    }
+    std::cout << spaces << "}" << std::endl;
 }
 
 void PrintVisitor::visit(BreakStatementNode& node) {
-    // TODO
+    std::cout << spaces << "Break statement node{" << std::endl; 
+    if (node.expression != nullptr){
+        spaces += " "; 
+        node.expression->accept(*this);
+        spaces.pop_back();
+    }
+    std::cout << spaces << "}" << std::endl;
 }
 
 void PrintVisitor::visit(FuncDecNode& node) {
@@ -169,7 +181,7 @@ void PrintVisitor::visit(FuncDecNode& node) {
 }
 
 void PrintVisitor::visit(ContinueStatementNode& node) {
-   // TODO
+   std::cout << spaces << "Continue statement node{}" << std::endl;
 }
 
 void PrintVisitor::visit(ArrayIndexingNode& node) {

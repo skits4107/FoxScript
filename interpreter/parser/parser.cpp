@@ -476,6 +476,9 @@ std::unique_ptr<Node> Parser::logicalExpression(){
 }
 
 std::unique_ptr<Node> Parser::expression(){
+    if (currentToken == SEMICOLON){
+        return nullptr; //might be statemnt with an optional expression
+    }
     std::unique_ptr<TypeCastNode> castNode = typeCast();
     if (castNode != nullptr){
         return castNode;
@@ -809,6 +812,21 @@ std::unique_ptr<Node> Parser::statement(){
     std::unique_ptr<WhileLoopNode> whileLoopStatement = whileLoop();
     if (whileLoopStatement != nullptr){
         return whileLoopStatement;
+    }
+
+    std::unique_ptr<ReturnStatementNode> returnSt = returnStatement();
+    if (returnSt != nullptr){
+        return returnSt;
+    }
+
+    std::unique_ptr<BreakStatementNode> breakSt = breakStatement();
+    if (breakSt != nullptr){
+        return breakSt;
+    }
+
+    std::unique_ptr<ContinueStatementNode> continueSt = continueStatement();
+    if (continueSt != nullptr){
+        return continueSt;
     }
 
 

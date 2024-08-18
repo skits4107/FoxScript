@@ -1,5 +1,6 @@
 int trick add(fluff int a, fluff int b){
     fluff int c = a+b;
+    bark c;
 }
 
 void trick main(fluff int argc, fluff string[] argv){
@@ -20,16 +21,18 @@ void trick main(fluff int argc, fluff string[] argv){
         fluff int inCond = 67;
     }
     whimper sniff (a>9){
-        fluff int inCond2 = 43;
+        fluff int inCond2 = 5;
     }
     whimper{
         fluff char ch5 = 'a';
     }
     fluff int jump=5;
-    prowl(fluff int i=0; i<5; i++){
+    prowl(fluff int i=0; i<5; i+=1){
         paw_print(i); //paw_print doesnt exist yet
+        pounce;
     }
     chase (jump==5) {
         paw_print(jump);
+        hunt;
     }
 }
