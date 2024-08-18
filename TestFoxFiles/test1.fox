@@ -33,7 +33,7 @@ void trick main(fluff int argc, fluff string[] argv){
         paw_print(i); //paw_print doesnt exist yet
         pounce;
     }
-    chase (jump==5) {
+    chase (not jump==5) {
         paw_print(jump);
         hunt;
     }
