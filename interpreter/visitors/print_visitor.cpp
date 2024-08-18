@@ -217,7 +217,14 @@ void PrintVisitor::visit(IncDecStatementNode& node) {
 }
 
 void PrintVisitor::visit(ArrayAssignmentNode& node) {
-    // TODO
+    std::cout << spaces << "Array Assignment node{" << std::endl;
+    std::cout << spaces << " node identifier: " << node.identifer << std::endl;
+    spaces+=" ";
+    node.inidices->accept(*this);
+    if (node.arrBlock != nullptr){
+        node.arrBlock->accept(*this);
+    }
+    spaces.pop_back();
 }
 
 void PrintVisitor::visit(ImportStatementNode& node){

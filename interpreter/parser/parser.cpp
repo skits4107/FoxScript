@@ -506,6 +506,11 @@ std::unique_ptr<AssignmentStatementNode> Parser::assignExpression(){
         as->type = type;
         eat(); //eat data type declaration token
         if (currentToken != IDENTIFIER){
+            if (currentToken == LSQ_BRACE){
+                vomit();
+                vomit();
+                return nullptr; //it might be an array delcaration (handled in a different method)
+            }
             std::cerr << "No identifier at " << currentToken.text << " " << currentToken.startPos << std::endl;
             exit(-1);
         }
@@ -973,6 +978,20 @@ std::unique_ptr<ArrayAssignmentNode> Parser::arrayDeclarationStatement(){
 
 }
 
+std::unique_ptr<IncDecStatementNode> Parser::incDecStatement(){
+    std::unique_ptr<IncDecStatementNode> node = incDec();
+    if (node == nullptr){
+        return nullptr;
+    }
+
+    if (currentToken != SEMICOLON){
+        std::cerr << "Error: expected ';' at " << currentToken.text << " " << currentToken.startPos << std::endl;
+        exit(-1);
+    }
+    eat();
+    return node;
+}
+
 std::unique_ptr<Node> Parser::statement(){
     std::unique_ptr<AssignmentStatementNode> assignStatementNode = assignStatement();
     if (assignStatementNode != nullptr){
@@ -1018,7 +1037,20 @@ std::unique_ptr<Node> Parser::statement(){
         return imp;
     }
 
+    std::unique_ptr<ArrayAssignmentNode> arrAssignStatement = arrayDeclarationStatement();
+    if (arrAssignStatement != nullptr){
+        return arrAssignStatement;
+    }
+
+    std::unique_ptr<ElementAssignmentNode> elementAssignStatement = elementAssignment();
+    if (elementAssignStatement != nullptr){
+        return elementAssignStatement;
+    }
     
+    std::unique_ptr<IncDecStatementNode> node = incDecStatement();
+    if (node != nullptr){
+        return node;
+    }
 
 
     return nullptr;

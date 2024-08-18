@@ -39,4 +39,7 @@ void trick main(fluff int argc, fluff string[] argv){
         hunt;
     }
     fluff string input = paw_in("please give input"); //paw in doesnt exist yet
+    a++;
+    b--;
+    fluff int[2][2] bob;
 }

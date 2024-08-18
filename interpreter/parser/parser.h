@@ -47,6 +47,7 @@ private:
     std::unique_ptr<ArrayBlockNode> arrayBlock();
     std::unique_ptr<ElementAssignmentNode> elementAssignment();
     std::unique_ptr<ArrayAssignmentNode> arrayDeclarationStatement();
+    std::unique_ptr<IncDecStatementNode> incDecStatement();
     std::unique_ptr<Node> statement();
     std::unique_ptr<CodeBlockNode> codeBlock();
     std::unique_ptr<FuncDecNode> functionDeclaration();
