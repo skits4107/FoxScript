@@ -200,7 +200,10 @@ std::vector<Token> Lexer::lex(std::string input){
                 tokens.push_back(Token(LEQ, "<=", tokenStartPos));
                 currentPos++;  // Skip the '='
             }
-            tokens.push_back(Token(LT, "/", tokenStartPos));
+            else{
+                tokens.push_back(Token(LT, "<", tokenStartPos));
+            }
+            //tokens.push_back(Token(LT, "<", tokenStartPos));
         }
         else if (currChar == '>'){
             currentPos++;
@@ -208,7 +211,9 @@ std::vector<Token> Lexer::lex(std::string input){
                 tokens.push_back(Token(GEQ, ">=", tokenStartPos));
                 currentPos++;  // Skip the '='
             }
-            tokens.push_back(Token(GT, "/", tokenStartPos));
+            else{
+                tokens.push_back(Token(GT, ">", tokenStartPos));
+            }
         }
         else if (currChar == '!'){
             currentPos++;

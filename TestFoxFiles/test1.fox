@@ -53,4 +53,13 @@ void trick main(fluff int argc, fluff string[] argv){
                                      2
                                     };
     test[0][0][0][0][0] = 9;
+    prowl(fluff int i=0; i<5; i+=1){
+        prowl(fluff int j=0; j<5; j++){
+            paw_print(i+j); //paw_print doesnt exist yet
+            pounce 2;
+        }
+        sniff (i>=2 and i<=4){
+            paw_print("hello");
+        }
+    }
 }
