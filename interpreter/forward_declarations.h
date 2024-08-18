@@ -34,5 +34,6 @@ class ArrayGetElementNode;
 class IdentifierNode;
 class ProgramNode;
 class ArrayAssignmentNode;
+class ImportStatementNode;
 
 class IncDecStatementNode;

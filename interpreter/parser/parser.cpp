@@ -684,6 +684,25 @@ std::unique_ptr<ReturnStatementNode> Parser::returnStatement(){
     return bs;
 }
 
+std::unique_ptr<ImportStatementNode> Parser::importStatement(){
+    if (currentToken != FORAGE){
+        return nullptr;
+    }
+    std::cout << currentToken.type << std::endl;
+    eat();
+    std::cout << currentToken.type << std::endl;
+    if (currentToken != STRING){
+        std::cerr << "Error: expected string at " << currentToken.text << " " << currentToken.startPos << std::endl;
+        exit(-1);
+    }
+    std::unique_ptr<ImportStatementNode> imp(new ImportStatementNode);
+    //just uses text/string directly as no other type of node would be used so no point in going through the extr steps of a stringLiteral node
+    imp->fileDir = currentToken.text;
+    eat();
+
+    return imp;
+}
+
 std::unique_ptr<IncDecStatementNode> Parser::incDec(){
     if (currentToken != IDENTIFIER){
         return nullptr;
@@ -827,6 +846,11 @@ std::unique_ptr<Node> Parser::statement(){
     std::unique_ptr<ContinueStatementNode> continueSt = continueStatement();
     if (continueSt != nullptr){
         return continueSt;
+    }
+
+    std::unique_ptr<ImportStatementNode> imp = importStatement();
+    if (imp != nullptr){
+        return imp;
     }
 
 

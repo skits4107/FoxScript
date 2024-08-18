@@ -40,6 +40,7 @@ private:
     std::unique_ptr<ContinueStatementNode> continueStatement();
     std::unique_ptr<BreakStatementNode> breakStatement();
     std::unique_ptr<ReturnStatementNode> returnStatement();
+    std::unique_ptr<ImportStatementNode> importStatement();
     std::unique_ptr<IncDecStatementNode> incDec();
     std::unique_ptr<ForLoopNode> forLoop();
     std::unique_ptr<WhileLoopNode> whileLoop();

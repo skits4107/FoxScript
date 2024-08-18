@@ -194,4 +194,12 @@ class IncDecStatementNode : public Node{
     void accept(Visitor& visitor) override;
 };
 
+
+//since string is only thing it might have it doesnt contain any node, just a direct string
+class ImportStatementNode : public Node{
+    public:
+     std::string fileDir;
+     void accept(Visitor& visitor) override;
+};
+
 #endif

@@ -104,3 +104,7 @@ void ArrayAssignmentNode::accept(Visitor& visitor) {
 void IncDecStatementNode::accept(Visitor& visitor) {
     visitor.visit(*this);
 }
+
+void ImportStatementNode::accept(Visitor& visitor) {
+    visitor.visit(*this);
+}

@@ -219,3 +219,9 @@ void PrintVisitor::visit(IncDecStatementNode& node) {
 void PrintVisitor::visit(ArrayAssignmentNode& node) {
     // TODO
 }
+
+void PrintVisitor::visit(ImportStatementNode& node){
+    std::cout << spaces << "Import node{" << std::endl;
+    std::cout << spaces << " file directory: " << node.fileDir << std::endl;
+    std::cout << spaces << "}" << std::endl;
+}

@@ -38,6 +38,7 @@ class PrintVisitor : public Visitor{
      void visit(IdentifierNode& node) override;
      void visit(IncDecStatementNode& node) override;
      void visit(ArrayAssignmentNode& node) override;
+     void visit(ImportStatementNode& node) override;
 
 };
 
