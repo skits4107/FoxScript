@@ -181,9 +181,9 @@ class IdentifierNode : public Node{
 
 class ArrayAssignmentNode : public Node{
     public:
-    std::unique_ptr<ArrayGetElementNode> element;
-    TokenType operation;
-    std::unique_ptr<Node> expression;
+    std::unique_ptr<ArrayIndexingNode> inidices;
+    std::unique_ptr<ArrayBlockNode> arrBlock;
+    std::string identifer;
     void accept(Visitor& visitor) override;
 };
 

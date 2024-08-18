@@ -476,7 +476,7 @@ std::unique_ptr<Node> Parser::logicalExpression(){
 }
 
 std::unique_ptr<Node> Parser::expression(){
-    if (currentToken == SEMICOLON){
+    if (currentToken == SEMICOLON || currentToken == LBRACE){
         return nullptr; //might be statemnt with an optional expression
     }
     std::unique_ptr<TypeCastNode> castNode = typeCast();
@@ -807,13 +807,170 @@ std::unique_ptr<WhileLoopNode> Parser::whileLoop(){
 }
 
 std::unique_ptr<ArrayBlockNode> Parser::arrayBlock(){
+    if (currentToken != LBRACE){
+        //Array block node wil only be called in situations where it is the only valid thing
+        std::cerr << "Error: expected '{' at " << currentToken.text << " " << currentToken.startPos << std::endl;
+        exit(-1);
+    }
+    eat();
+
+    std::vector<std::unique_ptr<Node>> values;
+
+    std::unique_ptr<Node> exp = expression();
+    if (exp != nullptr){
+        while (currentToken != RBRACE){
+             values.push_back(std::move(exp));
+            if (currentToken != COMMA){
+                std::cerr << "Error: expected ',' at " << currentToken.text << " " << currentToken.startPos << std::endl;
+                exit(-1);
+            }
+            eat();
+            exp = expression();
+            if (exp == nullptr){
+                std::cerr << "Error: expected expression at " << currentToken.text << " " << currentToken.startPos << std::endl;
+                exit(-1);
+            }
+        }
+    }
+    //if no expression check for nested array blocks
+    else{
+        std::unique_ptr<Node> arrBlock = arrayBlock();
+        if (arrBlock == nullptr){
+            std::cerr << "Error: expected expression or nested array block at " << currentToken.text << " " << currentToken.startPos << std::endl;
+            exit(-1);
+        }
+        while (currentToken != RBRACE){
+            values.push_back(std::move(arrBlock));
+            if (currentToken != COMMA){
+                std::cerr << "Error: expected ',' at " << currentToken.text << " " << currentToken.startPos << std::endl;
+                exit(-1);
+            }
+            eat();
+            arrBlock = arrayBlock();
+            if (arrBlock == nullptr){
+                std::cerr << "Error: expected array block at " << currentToken.text << " " << currentToken.startPos << std::endl;
+                exit(-1);
+            }
+        }
+    }
+    if (currentToken != RBRACE){
+        std::cerr << "Error: expected '}' at " << currentToken.text << " " << currentToken.startPos << std::endl;
+        exit(-1);
+    }
+    eat();
+
+    std::unique_ptr<ArrayBlockNode> arrBlock(new ArrayBlockNode);
+    arrBlock->values = std::move(values);
+    return arrBlock;
 
 }
 std::unique_ptr<ElementAssignmentNode> Parser::elementAssignment(){
+    std::unique_ptr<ArrayGetElementNode> getElem = arrayGetElement();
+    if (getElem == nullptr){
+        return nullptr;
+    }
+    
+    std::unique_ptr<ElementAssignmentNode> as(new ElementAssignmentNode);
+    as->getElement = std::move(getElem);
 
+    switch(currentToken.type){
+        case ASSIGN_EQU:
+            as->operation = ASSIGN_EQU;
+            break;
+        case ADD_EQ:
+            as->operation = ADD_EQ;
+            break;
+        case SUB_EQ:
+            as->operation = SUB_EQ;
+            break;
+        case MUL_EQ:
+            as->operation = MUL_EQ;
+            break;
+        case DIV_EQ:
+            as->operation = DIV_EQ;
+            break;
+        case EXP_EQ:
+            as->operation = EXP_EQ;
+            break;
+        case MOD_EQ:
+            as->operation = MOD_EQ;
+            break;
+        default:
+            std::cerr << "Error no operation after array element " << currentToken.text << " " << currentToken.startPos << std::endl;
+            exit(-1);    
+    }
+    eat(); //eat operator token
+    
+    std::unique_ptr<Node> exp = expression();
+    if (exp == nullptr){
+        std::cerr << "Error: expected expression at " << currentToken.text << " " << currentToken.startPos << std::endl;
+        exit(-1); 
+    }
+    as->expression = std::move(exp);
+
+    if (currentToken != SEMICOLON){
+         std::cerr << "Error: expected ';' at " << currentToken.text << " " << currentToken.startPos << std::endl;
+        exit(-1); 
+    }
+    eat();
+    return as;
 }
 std::unique_ptr<ArrayAssignmentNode> Parser::arrayDeclarationStatement(){
+    if (currentToken != FLUFF){
+        return nullptr; //might be another type of statement
+    }
+    eat();
+
+    DataType type = dataDeclaration();
+    if (type == INVALID_TYPE){
+        std::cerr << "Error: expected data type at " << currentToken.text << " " << currentToken.startPos << std::endl;
+        exit(-1);
+    }
+    eat();
+
+    std::unique_ptr<ArrayIndexingNode> indexing = arrayIndices();
+    if (indexing == nullptr){
+        vomit();
+        vomit();
+        return nullptr; //at this point fluff and ata declarations might still be another type of assignment
+    }
+
+    if (currentToken != IDENTIFIER){
+        std::cerr << "Error: expected identifer at " << currentToken.text << " " << currentToken.startPos << std::endl;
+        exit(-1);
+    }
+    std::unique_ptr<ArrayAssignmentNode> as(new ArrayAssignmentNode);
+    as->inidices = std::move(indexing);
+    as->identifer = currentToken.text;
+    eat();
+
+    //may not not be initalized with an array block
+    if (currentToken != EQ){
+        if (currentToken != SEMICOLON){
+             std::cerr << "Error: expected ';' at " << currentToken.text << " " << currentToken.startPos << std::endl;
+            exit(-1);
+        }
+        eat();
+        as->arrBlock = nullptr;
+        return as;
+    }
+    eat();
+
+    std::unique_ptr<ArrayBlockNode> arr = arrayBlock();
+
+    if (arr == nullptr){
+        std::cerr << "Error: expected array block at " << currentToken.text << " " << currentToken.startPos << std::endl;
+        exit(-1);
+    }
     
+    if (currentToken != SEMICOLON){
+        std::cerr << "Error: expected ';' at " << currentToken.text << " " << currentToken.startPos << std::endl;
+        exit(-1);
+    }
+    eat();
+    as->arrBlock = std::move(arr);
+    return as;
+
 }
 
 std::unique_ptr<Node> Parser::statement(){
@@ -860,6 +1017,8 @@ std::unique_ptr<Node> Parser::statement(){
     if (imp != nullptr){
         return imp;
     }
+
+    
 
 
     return nullptr;

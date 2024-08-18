@@ -57,4 +57,4 @@ public:
     std::unique_ptr<ProgramNode> parse();
 };
 
-#endif  PARSER_H
+#endif PARSER_H
