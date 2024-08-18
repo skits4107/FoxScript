@@ -42,4 +42,15 @@ void trick main(fluff int argc, fluff string[] argv){
     a++;
     b--;
     fluff int[2][2] bob;
+    fluff int[3] bob2 = {1,2,3};
+    fluff int[2][2] bob5 = {{1,2},{3,4}};
+    bob2[0] = 5;
+    bob[0][0] = 6;
+    bob5[0][1] += 2;
+    bob5[0][1] -= 3;
+
+    fluff int[3][3][3][3][3] test = {1,
+                                     2
+                                    };
+    test[0][0][0][0][0] = 9;
 }

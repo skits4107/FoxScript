@@ -225,6 +225,7 @@ void PrintVisitor::visit(ArrayAssignmentNode& node) {
         node.arrBlock->accept(*this);
     }
     spaces.pop_back();
+    std::cout << spaces << "}" << std::endl;
 }
 
 void PrintVisitor::visit(ImportStatementNode& node){
@@ -240,6 +241,7 @@ void PrintVisitor::visit(ElementAssignmentNode& node) {
     node.getElement->accept(*this);
     node.expression->accept(*this);
     spaces.pop_back();
+    std::cout << spaces << "}" << std::endl;
 }
 
 void PrintVisitor::visit(ArrayBlockNode& node) {
@@ -249,4 +251,5 @@ void PrintVisitor::visit(ArrayBlockNode& node) {
         value->accept(*this);
     }
     spaces.pop_back();
+    std::cout << spaces << "}" << std::endl;
 }

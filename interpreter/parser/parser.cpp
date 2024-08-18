@@ -823,8 +823,8 @@ std::unique_ptr<ArrayBlockNode> Parser::arrayBlock(){
 
     std::unique_ptr<Node> exp = expression();
     if (exp != nullptr){
+        values.push_back(std::move(exp));
         while (currentToken != RBRACE){
-             values.push_back(std::move(exp));
             if (currentToken != COMMA){
                 std::cerr << "Error: expected ',' at " << currentToken.text << " " << currentToken.startPos << std::endl;
                 exit(-1);
@@ -835,6 +835,7 @@ std::unique_ptr<ArrayBlockNode> Parser::arrayBlock(){
                 std::cerr << "Error: expected expression at " << currentToken.text << " " << currentToken.startPos << std::endl;
                 exit(-1);
             }
+            values.push_back(std::move(exp));
         }
     }
     //if no expression check for nested array blocks
@@ -844,8 +845,8 @@ std::unique_ptr<ArrayBlockNode> Parser::arrayBlock(){
             std::cerr << "Error: expected expression or nested array block at " << currentToken.text << " " << currentToken.startPos << std::endl;
             exit(-1);
         }
+        values.push_back(std::move(arrBlock));
         while (currentToken != RBRACE){
-            values.push_back(std::move(arrBlock));
             if (currentToken != COMMA){
                 std::cerr << "Error: expected ',' at " << currentToken.text << " " << currentToken.startPos << std::endl;
                 exit(-1);
@@ -856,6 +857,7 @@ std::unique_ptr<ArrayBlockNode> Parser::arrayBlock(){
                 std::cerr << "Error: expected array block at " << currentToken.text << " " << currentToken.startPos << std::endl;
                 exit(-1);
             }
+            values.push_back(std::move(arrBlock));
         }
     }
     if (currentToken != RBRACE){
@@ -950,7 +952,7 @@ std::unique_ptr<ArrayAssignmentNode> Parser::arrayDeclarationStatement(){
     eat();
 
     //may not not be initalized with an array block
-    if (currentToken != EQ){
+    if (currentToken != ASSIGN_EQU){
         if (currentToken != SEMICOLON){
              std::cerr << "Error: expected ';' at " << currentToken.text << " " << currentToken.startPos << std::endl;
             exit(-1);
