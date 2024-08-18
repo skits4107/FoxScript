@@ -33,6 +33,8 @@ class EvalVisitor : public Visitor{
      void visit(IncDecStatementNode& node) override ;
      void visit(ArrayAssignmentNode& node) override ;
      void visit(ImportStatementNode& node) override;
+     void visit(ElementAssignmentNode& node) override;
+     void visit(ArrayBlockNode& node) override;
 };
 
 #endif

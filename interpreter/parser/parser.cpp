@@ -806,7 +806,15 @@ std::unique_ptr<WhileLoopNode> Parser::whileLoop(){
     return whileNode;
 }
 
+std::unique_ptr<ArrayBlockNode> Parser::arrayBlock(){
 
+}
+std::unique_ptr<ElementAssignmentNode> Parser::elementAssignment(){
+
+}
+std::unique_ptr<ArrayAssignmentNode> Parser::arrayDeclarationStatement(){
+    
+}
 
 std::unique_ptr<Node> Parser::statement(){
     std::unique_ptr<AssignmentStatementNode> assignStatementNode = assignStatement();

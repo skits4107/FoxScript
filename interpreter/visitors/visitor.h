@@ -32,6 +32,9 @@ class Visitor{
     virtual void visit(IncDecStatementNode& node) = 0;
     virtual void visit(ArrayAssignmentNode& node) = 0;
     virtual void visit(ImportStatementNode& node) = 0;
+    virtual void visit(ElementAssignmentNode& node) = 0;
+    virtual void visit(ArrayBlockNode& node) = 0;
+
 };
 
 #endif

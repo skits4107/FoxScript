@@ -35,5 +35,7 @@ class IdentifierNode;
 class ProgramNode;
 class ArrayAssignmentNode;
 class ImportStatementNode;
+class ElementAssignmentNode;
+class ArrayBlockNode;
 
 class IncDecStatementNode;

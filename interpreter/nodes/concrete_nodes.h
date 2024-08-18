@@ -202,4 +202,17 @@ class ImportStatementNode : public Node{
      void accept(Visitor& visitor) override;
 };
 
+class ElementAssignmentNode : public Node{
+    public:
+     std::unique_ptr<ArrayGetElementNode> getElement;
+     TokenType operation;
+     std::unique_ptr<Node> expression;
+     void accept(Visitor& visitor) override;
+};
+class ArrayBlockNode : public Node{
+    public:
+    std::vector<std::unique_ptr<Node>> values;
+    void accept(Visitor& visitor) override;
+};
+
 #endif

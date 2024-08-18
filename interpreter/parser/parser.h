@@ -44,6 +44,9 @@ private:
     std::unique_ptr<IncDecStatementNode> incDec();
     std::unique_ptr<ForLoopNode> forLoop();
     std::unique_ptr<WhileLoopNode> whileLoop();
+    std::unique_ptr<ArrayBlockNode> arrayBlock();
+    std::unique_ptr<ElementAssignmentNode> elementAssignment();
+    std::unique_ptr<ArrayAssignmentNode> arrayDeclarationStatement();
     std::unique_ptr<Node> statement();
     std::unique_ptr<CodeBlockNode> codeBlock();
     std::unique_ptr<FuncDecNode> functionDeclaration();
@@ -54,4 +57,4 @@ public:
     std::unique_ptr<ProgramNode> parse();
 };
 
-#endif // PARSER_H
+#endif  PARSER_H

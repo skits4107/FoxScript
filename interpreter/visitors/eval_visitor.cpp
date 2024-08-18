@@ -30,3 +30,5 @@ void EvalVisitor::visit(IdentifierNode& node)  {}
 void EvalVisitor::visit(IncDecStatementNode& node)  {}
 void EvalVisitor::visit(ArrayAssignmentNode& node) {}
 void EvalVisitor::visit(ImportStatementNode& node) {}
+void EvalVisitor::visit(ElementAssignmentNode& node) {};
+void EvalVisitor::visit(ArrayBlockNode& node) {};

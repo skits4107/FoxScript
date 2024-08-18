@@ -225,3 +225,21 @@ void PrintVisitor::visit(ImportStatementNode& node){
     std::cout << spaces << " file directory: " << node.fileDir << std::endl;
     std::cout << spaces << "}" << std::endl;
 }
+
+void PrintVisitor::visit(ElementAssignmentNode& node) {
+    std::cout << spaces << "Element Assignment node{" << std::endl;
+    std::cout << spaces << " operation: " << node.operation << std::endl;
+    spaces += " ";
+    node.getElement->accept(*this);
+    node.expression->accept(*this);
+    spaces.pop_back();
+}
+
+void PrintVisitor::visit(ArrayBlockNode& node) {
+    std::cout << spaces << "Array Block node{" << std::endl;
+    spaces += " ";
+    for (const auto& value : node.values) {
+        value->accept(*this);
+    }
+    spaces.pop_back();
+}
