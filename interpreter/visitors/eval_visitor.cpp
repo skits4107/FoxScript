@@ -45,6 +45,7 @@ Value EvalVisitor::visit(FuncDecNode& node) {
     Value dec = Value(decPtr);
 
     if(currentEnvironment->getValue(node.identifier).value != nullptr){
+        //TODO: expand on this to account for function overloading
         std::cerr << "Error: function redefinition: " << node.identifier;
         exit(-1); 
     }
