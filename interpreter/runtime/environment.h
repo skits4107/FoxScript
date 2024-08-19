@@ -33,6 +33,8 @@ class Environment : public std::enable_shared_from_this<Environment>{
 
     void setValue(std::string name, Value& val);
 
+    void printEnviroment();
+
 };
 
 

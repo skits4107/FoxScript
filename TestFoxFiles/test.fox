@@ -1,0 +1,8 @@
+int trick add(fluff int a, fluff int b){
+    fluff int c = a+b;
+    bark c;
+}
+
+void trick main(){
+    
+}

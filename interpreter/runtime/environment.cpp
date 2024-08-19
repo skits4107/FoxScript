@@ -20,3 +20,10 @@ ValueContext Environment::getValue(std::string name){
 void Environment::setValue(std::string name, Value& val){
     values[name] = val;
 }
+
+void Environment::printEnviroment(){
+    std::cout << "Environment: " << std::endl;
+    for (auto iter=values.begin(); iter!=values.end(); iter++){
+        std::cout << iter->first << ": " << iter->second.type << std::endl;
+    }
+}

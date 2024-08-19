@@ -68,5 +68,8 @@ int main(int argc, char** argv){
         node->accept(printVisitor);
     }
 
+    EvalVisitor evaluator;
+    node->accept(evaluator);
+
     return 0;
 }

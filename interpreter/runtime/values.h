@@ -9,7 +9,7 @@
 
 
 class Value{
-
+    private:
    using VariantType = std::variant<
         int, double, float, std::string, char, bool,
         FuncDecNode*,
@@ -18,7 +18,6 @@ class Value{
     >;
     
     VariantType data;
-    ValueType type;
 
    template<typename T>
     ValueType deduceType() {
@@ -38,6 +37,9 @@ class Value{
     }
 
     public:
+    ValueType type;
+
+
     template<typename T>
     Value(T value) : data(std::move(value)), type(deduceType<T>()) {}
 

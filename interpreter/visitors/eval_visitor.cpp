@@ -14,6 +14,7 @@ Value EvalVisitor::visit(ProgramNode& node) {
         statement->accept(*this);
     }
 
+    currentEnvironment->printEnviroment();
 
     return Value();
 }
