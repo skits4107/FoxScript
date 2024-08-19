@@ -3,7 +3,7 @@
 
 
 
-void PrintVisitor::visit(ProgramNode& node) {
+Value PrintVisitor::visit(ProgramNode& node) {
     std::cout << spaces << "Program{" << std::endl;
     spaces += " ";
     for (const auto& statement : node.statements) {
@@ -11,53 +11,61 @@ void PrintVisitor::visit(ProgramNode& node) {
     }
     spaces.pop_back();
     std::cout << spaces << "}" << std::endl;
+    return Value();
 }
 
-void PrintVisitor::visit(IntLiteralNode& node) {
+Value PrintVisitor::visit(IntLiteralNode& node) {
     std::cout << spaces << "Int literal{" << std::endl;
     std::cout << spaces << " " << node.val << std::endl;
     std::cout << spaces << "}" << std::endl;
+    return Value();
 }
 
-void PrintVisitor::visit(FloatLiteralNode& node) {
+Value PrintVisitor::visit(FloatLiteralNode& node) {
     std::cout << spaces << "Float literal{" << std::endl;
     std::cout << spaces << " " << node.val << std::endl;
     std::cout << spaces << "}" << std::endl;
+    return Value();
 }
 
-void PrintVisitor::visit(DoubleLiteralNode& node) {
+Value PrintVisitor::visit(DoubleLiteralNode& node) {
     std::cout << spaces << "Double literal{" << std::endl;
     std::cout << spaces << " " << node.val << std::endl;
     std::cout << spaces << "}" << std::endl;
+    return Value();
 }
 
-void PrintVisitor::visit(CharLiteralNode& node) {
+Value PrintVisitor::visit(CharLiteralNode& node) {
     std::cout << spaces << "Char literal{" << std::endl;
     std::cout << spaces << " " << node.val << std::endl;
     std::cout << spaces << "}" << std::endl;
+    return Value();
 }
 
-void PrintVisitor::visit(StringLiteralNode& node) {
+Value PrintVisitor::visit(StringLiteralNode& node) {
     std::cout << spaces << "String literal{" << std::endl;
     std::cout << spaces << " " << node.val << std::endl;
     std::cout << spaces << "}" << std::endl;
+    return Value();
 }
 
-void PrintVisitor::visit(BoolLiteralNode& node) {
+Value PrintVisitor::visit(BoolLiteralNode& node) {
     std::cout << spaces << "Bool literal{" << std::endl;
     std::cout << spaces << " " << node.val << std::endl;
     std::cout << spaces << "}" << std::endl;
+    return Value();
 }
 
-void PrintVisitor::visit(ParamterNode& node) {
+Value PrintVisitor::visit(ParamterNode& node) {
     std::cout << spaces << "Param node{" << std::endl;
     std::cout << spaces << " node dim: " << node.dim << std::endl;
     std::cout << spaces << " node type: " << node.type << std::endl;
     std::cout << spaces << " node identifier: " << node.identifer << std::endl;
     std::cout << spaces << "}" << std::endl;
+    return Value();
 }
 
-void PrintVisitor::visit(CodeBlockNode& node) {
+Value PrintVisitor::visit(CodeBlockNode& node) {
     std::cout << spaces << "Code block node{" << std::endl;
     spaces += " ";
     for (const auto& statement : node.statements) {
@@ -65,9 +73,10 @@ void PrintVisitor::visit(CodeBlockNode& node) {
     }
     spaces.pop_back();
     std::cout << spaces << "}" << std::endl;
+    return Value();
 }
 
-void PrintVisitor::visit(ExpressionNode& node) {
+Value PrintVisitor::visit(ExpressionNode& node) {
     std::cout << spaces << "Expression node{" << std::endl;
     std::cout << spaces << " node operation: " << node.operation << std::endl;
     spaces += " ";
@@ -75,26 +84,29 @@ void PrintVisitor::visit(ExpressionNode& node) {
     node.operand2->accept(*this);
     spaces.pop_back();
     std::cout << spaces << "}" << std::endl;
+    return Value();
 }
 
-void PrintVisitor::visit(TypeCastNode& node) {
+Value PrintVisitor::visit(TypeCastNode& node) {
     std::cout << spaces << "Type cast node{" << std::endl;
     std::cout << spaces << " type: " << node.type << std::endl;
     spaces += " ";
     node.expression->accept(*this);
     spaces.pop_back();
     std::cout << spaces << "}" << std::endl;
+    return Value();
 }
 
-void PrintVisitor::visit(LogicalNotNode& node) {
+Value PrintVisitor::visit(LogicalNotNode& node) {
     std::cout << spaces << "Logical not node{" << std::endl;
     spaces += " ";
     node.operand1->accept(*this);
     spaces.pop_back();
     std::cout << spaces << "}" << std::endl;
+    return Value();
 }
 
-void PrintVisitor::visit(AssignmentStatementNode& node) {
+Value PrintVisitor::visit(AssignmentStatementNode& node) {
     std::cout << spaces << "Assignment node{" << std::endl;
     std::cout << spaces << " node operation: " << node.operation << std::endl;
     std::cout << spaces << " node identifier: " << node.identifer << std::endl;
@@ -103,9 +115,10 @@ void PrintVisitor::visit(AssignmentStatementNode& node) {
     node.expression->accept(*this);
     spaces.pop_back();
     std::cout << spaces << "}" << std::endl;
+    return Value();
 }
 
-void PrintVisitor::visit(FuncCallStatementNode& node) {
+Value PrintVisitor::visit(FuncCallStatementNode& node) {
     std::cout << spaces << "FuncCall node{" << std::endl;
     std::cout << spaces << " node identifier: " << node.identifier << std::endl;
     spaces += " ";
@@ -114,9 +127,10 @@ void PrintVisitor::visit(FuncCallStatementNode& node) {
     }
     spaces.pop_back();
     std::cout << spaces << "}" << std::endl;
+    return Value();
 }
 
-void PrintVisitor::visit(ConditionStatementNode& node) {
+Value PrintVisitor::visit(ConditionStatementNode& node) {
     std::cout << spaces << "Conditional node{" << std::endl;
     spaces += " ";
     node.expression->accept(*this);
@@ -126,9 +140,10 @@ void PrintVisitor::visit(ConditionStatementNode& node) {
     }
     spaces.pop_back();
     std::cout << spaces << "}" << std::endl;
+    return Value();
 }
 
-void PrintVisitor::visit(ForLoopNode& node) {
+Value PrintVisitor::visit(ForLoopNode& node) {
     std::cout << spaces << "For loop node{" << std::endl;
     spaces += " ";
     node.assignSatement->accept(*this);
@@ -136,18 +151,20 @@ void PrintVisitor::visit(ForLoopNode& node) {
     node.block->accept(*this);
     spaces.pop_back();
     std::cout << spaces << "}" << std::endl;
+    return Value();
 }
 
-void PrintVisitor::visit(WhileLoopNode& node) {
+Value PrintVisitor::visit(WhileLoopNode& node) {
     std::cout << spaces << "While loop node{" << std::endl;
     spaces += " "; 
     node.expresion->accept(*this);
     node.block->accept(*this);
     spaces.pop_back();
     std::cout << spaces << "}" << std::endl;
+    return Value();
 }
 
-void PrintVisitor::visit(ReturnStatementNode& node) {
+Value PrintVisitor::visit(ReturnStatementNode& node) {
     std::cout << spaces << "Return statement node{" << std::endl;
     if (node.expression != nullptr){
         spaces += " "; 
@@ -155,9 +172,10 @@ void PrintVisitor::visit(ReturnStatementNode& node) {
         spaces.pop_back();
     }
     std::cout << spaces << "}" << std::endl;
+    return Value();
 }
 
-void PrintVisitor::visit(BreakStatementNode& node) {
+Value PrintVisitor::visit(BreakStatementNode& node) {
     std::cout << spaces << "Break statement node{" << std::endl; 
     if (node.expression != nullptr){
         spaces += " "; 
@@ -165,9 +183,10 @@ void PrintVisitor::visit(BreakStatementNode& node) {
         spaces.pop_back();
     }
     std::cout << spaces << "}" << std::endl;
+    return Value();
 }
 
-void PrintVisitor::visit(FuncDecNode& node) {
+Value PrintVisitor::visit(FuncDecNode& node) {
     std::cout << spaces << "FuncDeclaration node{" << std::endl;
     std::cout << spaces << " node identifier: " << node.identifier << std::endl;
     std::cout << spaces << " node type: " << node.type << std::endl;
@@ -178,13 +197,15 @@ void PrintVisitor::visit(FuncDecNode& node) {
     node.body->accept(*this);
     spaces.pop_back();
     std::cout << spaces << "}" << std::endl;
+    return Value();
 }
 
-void PrintVisitor::visit(ContinueStatementNode& node) {
+Value PrintVisitor::visit(ContinueStatementNode& node) {
    std::cout << spaces << "Continue statement node{}" << std::endl;
+   return Value();
 }
 
-void PrintVisitor::visit(ArrayIndexingNode& node) {
+Value PrintVisitor::visit(ArrayIndexingNode& node) {
     std::cout << spaces << "ArrayIndexing node{" << std::endl;
     spaces += " ";
     for (const auto& index : node.indices) {
@@ -192,31 +213,35 @@ void PrintVisitor::visit(ArrayIndexingNode& node) {
     }
     spaces.pop_back();
     std::cout << spaces << "}" << std::endl;
+    return Value();
 }
 
-void PrintVisitor::visit(ArrayGetElementNode& node) {
+Value PrintVisitor::visit(ArrayGetElementNode& node) {
     std::cout << spaces << "ArrayGetElement node{" << std::endl;
     std::cout << spaces << " node identifier: " << node.identifer << std::endl;
     spaces += " ";
     node.indeices->accept(*this);
     spaces.pop_back();
     std::cout << spaces << "}" << std::endl;
+    return Value();
 }
 
-void PrintVisitor::visit(IdentifierNode& node) {
+Value PrintVisitor::visit(IdentifierNode& node) {
     std::cout << spaces << "Identifier node{" << std::endl;
     std::cout << spaces << " node type: " << node.identifier << std::endl;
     std::cout << spaces << "}" << std::endl;
+    return Value();
 }
 
-void PrintVisitor::visit(IncDecStatementNode& node) {
+Value PrintVisitor::visit(IncDecStatementNode& node) {
     std::cout << spaces << "IncDec node{" << std::endl;
     std::cout << spaces << " node identifier: " << node.identifer << std::endl;
     std::cout << spaces << " operation: " << (node.operation ? "increment" : "decrement") << std::endl;
     std::cout << spaces << "}" << std::endl;
+    return Value();
 }
 
-void PrintVisitor::visit(ArrayAssignmentNode& node) {
+Value PrintVisitor::visit(ArrayAssignmentNode& node) {
     std::cout << spaces << "Array Assignment node{" << std::endl;
     std::cout << spaces << " node identifier: " << node.identifer << std::endl;
     spaces+=" ";
@@ -226,15 +251,17 @@ void PrintVisitor::visit(ArrayAssignmentNode& node) {
     }
     spaces.pop_back();
     std::cout << spaces << "}" << std::endl;
+    return Value();
 }
 
-void PrintVisitor::visit(ImportStatementNode& node){
+Value PrintVisitor::visit(ImportStatementNode& node){
     std::cout << spaces << "Import node{" << std::endl;
     std::cout << spaces << " file directory: " << node.fileDir << std::endl;
     std::cout << spaces << "}" << std::endl;
+    return Value();
 }
 
-void PrintVisitor::visit(ElementAssignmentNode& node) {
+Value PrintVisitor::visit(ElementAssignmentNode& node) {
     std::cout << spaces << "Element Assignment node{" << std::endl;
     std::cout << spaces << " operation: " << node.operation << std::endl;
     spaces += " ";
@@ -242,9 +269,10 @@ void PrintVisitor::visit(ElementAssignmentNode& node) {
     node.expression->accept(*this);
     spaces.pop_back();
     std::cout << spaces << "}" << std::endl;
+    return Value();
 }
 
-void PrintVisitor::visit(ArrayBlockNode& node) {
+Value PrintVisitor::visit(ArrayBlockNode& node) {
     std::cout << spaces << "Array Block node{" << std::endl;
     spaces += " ";
     for (const auto& value : node.values) {
@@ -252,4 +280,5 @@ void PrintVisitor::visit(ArrayBlockNode& node) {
     }
     spaces.pop_back();
     std::cout << spaces << "}" << std::endl;
+    return Value();
 }

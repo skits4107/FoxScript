@@ -1,118 +1,118 @@
 #include "concrete_nodes.h"
 #include "../visitors/visitor.h"
 
-void ProgramNode::accept(Visitor& visitor) {
-    visitor.visit(*this);
+Value ProgramNode::accept(Visitor& visitor) {
+    return visitor.visit(*this);
 }
 
-void IntLiteralNode::accept(Visitor& visitor) {
-    visitor.visit(*this);
+Value IntLiteralNode::accept(Visitor& visitor) {
+    return visitor.visit(*this);
 }
 
-void FloatLiteralNode::accept(Visitor& visitor) {
-    visitor.visit(*this);
+Value FloatLiteralNode::accept(Visitor& visitor) {
+    return visitor.visit(*this);
 }
 
-void DoubleLiteralNode::accept(Visitor& visitor) {
-    visitor.visit(*this);
+Value DoubleLiteralNode::accept(Visitor& visitor) {
+    return visitor.visit(*this);
 }
 
-void CharLiteralNode::accept(Visitor& visitor) {
-    visitor.visit(*this);
+Value CharLiteralNode::accept(Visitor& visitor) {
+    return visitor.visit(*this);
 }
 
-void StringLiteralNode::accept(Visitor& visitor) {
-    visitor.visit(*this);
+Value StringLiteralNode::accept(Visitor& visitor) {
+    return visitor.visit(*this);
 }
 
-void BoolLiteralNode::accept(Visitor& visitor) {
-    visitor.visit(*this);
+Value BoolLiteralNode::accept(Visitor& visitor) {
+    return visitor.visit(*this);
 }
 
-void ParamterNode::accept(Visitor& visitor) {
-    visitor.visit(*this);
+Value ParamterNode::accept(Visitor& visitor) {
+    return visitor.visit(*this);
 }
 
-void CodeBlockNode::accept(Visitor& visitor) {
-    visitor.visit(*this);
+Value CodeBlockNode::accept(Visitor& visitor) {
+    return visitor.visit(*this);
 }
 
-void FuncDecNode::accept(Visitor& visitor) {
-    visitor.visit(*this);
+Value FuncDecNode::accept(Visitor& visitor) {
+    return visitor.visit(*this);
 }
 
-void ExpressionNode::accept(Visitor& visitor) {
-    visitor.visit(*this);
+Value ExpressionNode::accept(Visitor& visitor) {
+    return visitor.visit(*this);
 }
 
-void TypeCastNode::accept(Visitor& visitor) {
-    visitor.visit(*this);
+Value TypeCastNode::accept(Visitor& visitor) {
+    return visitor.visit(*this);
 }
 
-void LogicalNotNode::accept(Visitor& visitor) {
-    visitor.visit(*this);
+Value LogicalNotNode::accept(Visitor& visitor) {
+    return visitor.visit(*this);
 }
 
-void AssignmentStatementNode::accept(Visitor& visitor) {
-    visitor.visit(*this);
+Value AssignmentStatementNode::accept(Visitor& visitor) {
+    return visitor.visit(*this);
 }
 
-void FuncCallStatementNode::accept(Visitor& visitor) {
-    visitor.visit(*this);
+Value FuncCallStatementNode::accept(Visitor& visitor) {
+    return visitor.visit(*this);
 }
 
-void ConditionStatementNode::accept(Visitor& visitor) {
-    visitor.visit(*this);
+Value ConditionStatementNode::accept(Visitor& visitor) {
+    return visitor.visit(*this);
 }
 
-void ForLoopNode::accept(Visitor& visitor) {
-    visitor.visit(*this);
+Value ForLoopNode::accept(Visitor& visitor) {
+    return visitor.visit(*this);
 }
 
-void WhileLoopNode::accept(Visitor& visitor) {
-    visitor.visit(*this);
+Value WhileLoopNode::accept(Visitor& visitor) {
+    return visitor.visit(*this);
 }
 
-void ReturnStatementNode::accept(Visitor& visitor) {
-    visitor.visit(*this);
+Value ReturnStatementNode::accept(Visitor& visitor) {
+    return visitor.visit(*this);
 }
 
-void BreakStatementNode::accept(Visitor& visitor) {
-    visitor.visit(*this);
+Value BreakStatementNode::accept(Visitor& visitor) {
+    return visitor.visit(*this);
 }
 
-void ContinueStatementNode::accept(Visitor& visitor) {
-    visitor.visit(*this);
+Value ContinueStatementNode::accept(Visitor& visitor) {
+    return visitor.visit(*this);
 }
 
-void ArrayIndexingNode::accept(Visitor& visitor) {
-    visitor.visit(*this);
+Value ArrayIndexingNode::accept(Visitor& visitor) {
+    return visitor.visit(*this);
 }
 
-void ArrayGetElementNode::accept(Visitor& visitor) {
-    visitor.visit(*this);
+Value ArrayGetElementNode::accept(Visitor& visitor) {
+    return visitor.visit(*this);
 }
 
-void IdentifierNode::accept(Visitor& visitor) {
-    visitor.visit(*this);
+Value IdentifierNode::accept(Visitor& visitor) {
+    return visitor.visit(*this);
 }
 
-void ArrayAssignmentNode::accept(Visitor& visitor) {
-    visitor.visit(*this);
+Value ArrayAssignmentNode::accept(Visitor& visitor) {
+    return visitor.visit(*this);
 }
 
-void IncDecStatementNode::accept(Visitor& visitor) {
-    visitor.visit(*this);
+Value IncDecStatementNode::accept(Visitor& visitor) {
+    return visitor.visit(*this);
 }
 
-void ImportStatementNode::accept(Visitor& visitor) {
-    visitor.visit(*this);
+Value ImportStatementNode::accept(Visitor& visitor) {
+    return visitor.visit(*this);
 }
  
-void ElementAssignmentNode::accept(Visitor& visitor) {
-    visitor.visit(*this);
+Value ElementAssignmentNode::accept(Visitor& visitor) {
+    return visitor.visit(*this);
 }
 
-void ArrayBlockNode::accept(Visitor& visitor) {
-    visitor.visit(*this);
+Value ArrayBlockNode::accept(Visitor& visitor) {
+    return visitor.visit(*this);
 }

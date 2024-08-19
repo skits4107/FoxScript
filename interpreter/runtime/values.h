@@ -27,10 +27,10 @@ class Value{
     template<typename T>
     Value(T value) : data(std::move(value)), type(deduceType<T>()) {}
 
-    Value() : data(0), type(ValueType::NONE){}
+    Value() : data(0), type(ValueType::NONE_VAL){}
 
     // Special constructor for FuncDecNode pointer
-    Value(FuncDecNode* funcDec) : data(funcDec), type(ValueType::FUNC_DEC) {}
+    Value(FuncDecNode* funcDec) : data(funcDec), type(ValueType::FUNC_DEC_VAL) {}
 
     ~Value() {
         // Note: We don't delete FuncDecNode* here, as we don't own it

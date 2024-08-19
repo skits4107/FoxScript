@@ -7,40 +7,40 @@
 class PrintVisitor : public Visitor{
     std::string spaces = "";
     public:
-     void visit(ProgramNode& node) override;
+     Value visit(ProgramNode& node) override;
 
-     void visit(IntLiteralNode& node) override;
+     Value visit(IntLiteralNode& node) override;
 
-     void visit(FloatLiteralNode& node) override;
-     void visit(DoubleLiteralNode& node) override;
-     void visit(CharLiteralNode& node) override;
-     void visit(StringLiteralNode& node) override;
-     void visit(BoolLiteralNode& node) override;
-     void visit(ParamterNode& node) override;
+     Value visit(FloatLiteralNode& node) override;
+     Value visit(DoubleLiteralNode& node) override;
+     Value visit(CharLiteralNode& node) override;
+     Value visit(StringLiteralNode& node) override;
+     Value visit(BoolLiteralNode& node) override;
+     Value visit(ParamterNode& node) override;
 
-     void visit(CodeBlockNode& node) override;
+     Value visit(CodeBlockNode& node) override;
 
-     void visit(ExpressionNode& node) override;
+     Value visit(ExpressionNode& node) override;
 
-     void visit(TypeCastNode& node) override;
-     void visit(LogicalNotNode& node) override;
-     void visit(AssignmentStatementNode& node) override;
-     void visit(FuncCallStatementNode& node) override;
-     void visit(ConditionStatementNode& node) override;
-     void visit(ForLoopNode& node) override;
-     void visit(WhileLoopNode& node) override;
-     void visit(ReturnStatementNode& node) override;
-     void visit(BreakStatementNode& node) override;
-     void visit(FuncDecNode& node) override;
-     void visit(ContinueStatementNode& node) override;
-     void visit(ArrayIndexingNode& node) override;
-     void visit(ArrayGetElementNode& node) override;
-     void visit(IdentifierNode& node) override;
-     void visit(IncDecStatementNode& node) override;
-     void visit(ArrayAssignmentNode& node) override;
-     void visit(ImportStatementNode& node) override;
-     void visit(ElementAssignmentNode& node) override;
-     void visit(ArrayBlockNode& node) override;
+     Value visit(TypeCastNode& node) override;
+     Value visit(LogicalNotNode& node) override;
+     Value visit(AssignmentStatementNode& node) override;
+     Value visit(FuncCallStatementNode& node) override;
+     Value visit(ConditionStatementNode& node) override;
+     Value visit(ForLoopNode& node) override;
+     Value visit(WhileLoopNode& node) override;
+     Value visit(ReturnStatementNode& node) override;
+     Value visit(BreakStatementNode& node) override;
+     Value visit(FuncDecNode& node) override;
+     Value visit(ContinueStatementNode& node) override;
+     Value visit(ArrayIndexingNode& node) override;
+     Value visit(ArrayGetElementNode& node) override;
+     Value visit(IdentifierNode& node) override;
+     Value visit(IncDecStatementNode& node) override;
+     Value visit(ArrayAssignmentNode& node) override;
+     Value visit(ImportStatementNode& node) override;
+     Value visit(ElementAssignmentNode& node) override;
+     Value visit(ArrayBlockNode& node) override;
 
 };
 

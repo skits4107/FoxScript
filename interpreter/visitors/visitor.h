@@ -6,35 +6,35 @@
 
 class Visitor{
     public:
-    virtual void visit(ProgramNode& node) = 0;
-    virtual void visit(IntLiteralNode& node) = 0;
-    virtual void visit(FloatLiteralNode& node) = 0;
-    virtual void visit(DoubleLiteralNode& node) = 0;
-    virtual void visit(CharLiteralNode& node) = 0;
-    virtual void visit(StringLiteralNode& node) = 0;
-    virtual void visit(BoolLiteralNode& node) = 0;
-    virtual void visit(ParamterNode& node) = 0;
-    virtual void visit(CodeBlockNode& node) = 0;
-    virtual void visit(ExpressionNode& node) = 0;
-    virtual void visit(TypeCastNode& node) = 0;
-    virtual void visit(LogicalNotNode& node) = 0;
-    virtual void visit(AssignmentStatementNode& node) = 0;
-    virtual void visit(FuncCallStatementNode& node) = 0;
-    virtual void visit(ConditionStatementNode& node) = 0;
-    virtual void visit(ForLoopNode& node) = 0;
-    virtual void visit(WhileLoopNode& node) = 0;
-    virtual void visit(ReturnStatementNode& node) = 0;
-    virtual void visit(BreakStatementNode& node) = 0;
-    virtual void visit(FuncDecNode& node) = 0;
-    virtual void visit(ContinueStatementNode& node) = 0;
-    virtual void visit(ArrayIndexingNode& node) = 0;
-    virtual void visit(ArrayGetElementNode& node) = 0;
-    virtual void visit(IdentifierNode& node) = 0;
-    virtual void visit(IncDecStatementNode& node) = 0;
-    virtual void visit(ArrayAssignmentNode& node) = 0;
-    virtual void visit(ImportStatementNode& node) = 0;
-    virtual void visit(ElementAssignmentNode& node) = 0;
-    virtual void visit(ArrayBlockNode& node) = 0;
+    virtual Value visit(ProgramNode& node) = 0;
+    virtual Value visit(IntLiteralNode& node) = 0;
+    virtual Value visit(FloatLiteralNode& node) = 0;
+    virtual Value visit(DoubleLiteralNode& node) = 0;
+    virtual Value visit(CharLiteralNode& node) = 0;
+    virtual Value visit(StringLiteralNode& node) = 0;
+    virtual Value visit(BoolLiteralNode& node) = 0;
+    virtual Value visit(ParamterNode& node) = 0;
+    virtual Value visit(CodeBlockNode& node) = 0;
+    virtual Value visit(ExpressionNode& node) = 0;
+    virtual Value visit(TypeCastNode& node) = 0;
+    virtual Value visit(LogicalNotNode& node) = 0;
+    virtual Value visit(AssignmentStatementNode& node) = 0;
+    virtual Value visit(FuncCallStatementNode& node) = 0;
+    virtual Value visit(ConditionStatementNode& node) = 0;
+    virtual Value visit(ForLoopNode& node) = 0;
+    virtual Value visit(WhileLoopNode& node) = 0;
+    virtual Value visit(ReturnStatementNode& node) = 0;
+    virtual Value visit(BreakStatementNode& node) = 0;
+    virtual Value visit(FuncDecNode& node) = 0;
+    virtual Value visit(ContinueStatementNode& node) = 0;
+    virtual Value visit(ArrayIndexingNode& node) = 0;
+    virtual Value visit(ArrayGetElementNode& node) = 0;
+    virtual Value visit(IdentifierNode& node) = 0;
+    virtual Value visit(IncDecStatementNode& node) = 0;
+    virtual Value visit(ArrayAssignmentNode& node) = 0;
+    virtual Value visit(ImportStatementNode& node) = 0;
+    virtual Value visit(ElementAssignmentNode& node) = 0;
+    virtual Value visit(ArrayBlockNode& node) = 0;
 
 };
 
