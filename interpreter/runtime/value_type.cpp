@@ -1,0 +1,9 @@
+#pragma once
+
+
+
+enum ValueType{
+
+    INT, DOUBLE, FLOAT, STRING, CHAR, BOOL, NONE, FUNC_DEC, INT_ARR, DOUBLE_ARR, FLOAT_ARR, STRING_ARR, CHAR_ARR
+
+};

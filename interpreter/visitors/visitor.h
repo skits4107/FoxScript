@@ -2,6 +2,7 @@
 #define VISITOR_H
 
 #include "../forward_declarations.h"
+#include "../runtime/values.h"
 
 class Visitor{
     public:
