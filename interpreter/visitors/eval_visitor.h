@@ -8,7 +8,7 @@
 
 class EvalVisitor : public Visitor{
 
-    std::shared_ptr<Environment> currentEnvironment;
+    std::shared_ptr<Environment> currentEnvironment = nullptr;
 
     public:
      Value visit(ProgramNode& node) override;

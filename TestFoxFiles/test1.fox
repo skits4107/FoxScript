@@ -5,7 +5,7 @@ int trick add(fluff int a, fluff int b){
     bark c;
 }
 
-void trick main(fluff int argc, fluff string[] argv){
+void trick main(){
     fluff int a = <int>(10+4);
     fluff char b = 'c';
     fluff string c = "hello";
@@ -63,3 +63,5 @@ void trick main(fluff int argc, fluff string[] argv){
         }
     }
 }
+
+main();

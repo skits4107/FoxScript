@@ -14,7 +14,7 @@ private:
 
     Token eat();
     Token vomit();
-    Token lookAhead(int a = 1);
+    Token lookAhead(int a);
     DataType dataDeclaration();
     std::unique_ptr<ParamterNode> parameter();
     std::unique_ptr<TypeCastNode> typeCast();
@@ -58,4 +58,4 @@ public:
     std::unique_ptr<ProgramNode> parse();
 };
 
-#endif PARSER_H
+#endif

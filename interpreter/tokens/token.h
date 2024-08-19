@@ -1,7 +1,7 @@
 #ifndef TOKEN_H
 #define TOKEN_H
 
-#include "token_type.cpp"
+#include "token_type.h"
 #include <iostream>
 
 struct Token{

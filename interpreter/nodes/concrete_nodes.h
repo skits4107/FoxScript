@@ -5,7 +5,7 @@
 #include <iostream>
 #include <vector>
 #include <memory>
-#include "../tokens/token_type.cpp"
+#include "../tokens/token_type.h"
 
 
 enum DataType {INT_T, DOUBLE_T, FLOAT_T, CHAR_T, STRING_T, BOOL_T, VOID_T, INVALID_TYPE};
