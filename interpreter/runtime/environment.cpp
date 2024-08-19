@@ -5,9 +5,9 @@
 Value* Environment::getValue(std::string name){
     Value* val = nullptr;
     if (values.find(name) != values.end() ){
-        *val = values[name];
+        val =  &values[name];
     }
-    if (parent != nullptr){
+    else if (parent != nullptr){
         val = parent->getValue(name);
     }
     return val; 

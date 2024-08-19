@@ -2,7 +2,7 @@
 
 
 
-//TODO: implement methods after parser is done
+//TODO: implement methods
 Value EvalVisitor::visit(ProgramNode& node) {return Value();}
 Value EvalVisitor::visit(IntLiteralNode& node) {return Value();}
 Value EvalVisitor::visit(FloatLiteralNode& node) {return Value();}

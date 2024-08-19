@@ -3,8 +3,13 @@
 
 #include "visitor.h"
 #include "../nodes/concrete_nodes.h"
+#include "../runtime/environment.h"
+#include <memory>
 
 class EvalVisitor : public Visitor{
+
+    std::shared_ptr<Environment> currentEnvironment;
+
     public:
      Value visit(ProgramNode& node) override;
      Value visit(IntLiteralNode& node) override;
