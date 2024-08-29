@@ -22,10 +22,10 @@ class Environment : public std::enable_shared_from_this<Environment>{
 
     std::unordered_map<std::string, Value> values;
 
+    public:
+
     std::shared_ptr<Environment> parent;
     std::shared_ptr<Environment> caller;
-
-    public:
 
     Environment(std::shared_ptr<Environment> p=nullptr, std::shared_ptr<Environment> c=nullptr) : parent(p), caller(c){}
 

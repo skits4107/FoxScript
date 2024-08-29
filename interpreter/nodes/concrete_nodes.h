@@ -6,9 +6,41 @@
 #include <vector>
 #include <memory>
 #include "../tokens/token_type.h"
+#include "../runtime/value_type.h"
 
 
 enum DataType {INT_T, DOUBLE_T, FLOAT_T, CHAR_T, STRING_T, BOOL_T, VOID_T, INVALID_TYPE};
+
+//overloaded operators to compare the types of values to the types of data for example when assigning a value to a varaible
+bool operator==(DataType d, ValueType t){
+    if (d == INT_T && t == INT_VAL){
+        return true;
+    }
+    if (d == DOUBLE_T && t == DOUBLE_VAL){
+        return true;
+    }
+    if (d == FLOAT_T && t == FLOAT_VAL){
+        return true;
+    }
+    if (d == CHAR_T && t == CHAR_VAL){
+        return true;
+    }
+    if (d == STRING_T && t == STRING_VAL){
+        return true;
+    }
+    if (d == BOOL_T && t == BOOL_VAL){
+        return true;
+    }
+    if (d == VOID_T && t == NONE_VAL){
+        return true;
+    }
+    return false;
+}
+
+bool operator!=(DataType d, ValueType t){
+    return !(d==t);
+}
+
 
 class ProgramNode : public Node{
     public:

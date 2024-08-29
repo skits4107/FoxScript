@@ -9,6 +9,10 @@
 class EvalVisitor : public Visitor{
 
     std::shared_ptr<Environment> currentEnvironment = nullptr;
+    bool isReturningValue = false;
+    bool isBreaking = false;
+    //when breaking out of loops you can control how many nested loops you break out of
+    int breakAmount = 0;
 
     public:
      Value visit(ProgramNode& node) override;
