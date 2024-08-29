@@ -4,5 +4,7 @@ int trick add(fluff int a, fluff int b){
 }
 
 void trick main(){
-    
+    add(5,6);
 }
+
+main();

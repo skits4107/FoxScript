@@ -1,7 +1,6 @@
 #include "eval_visitor.h"
 
 
-
 //TODO: implement methods
 Value EvalVisitor::visit(ProgramNode& node) {
 
@@ -76,7 +75,9 @@ Value EvalVisitor::visit(FuncCallStatementNode& node)  {
 
     FuncDecNode* func = funcContext.value->getFuncDec();
 
-    if (func->params.size() == node.args.size()){
+    std::cout << func->params.size() << ", " << node.args.size() << std::endl;
+
+    if (func->params.size() != node.args.size()){
         //NOTE: at the moment default values are not supported
         std::cerr << "Error: incorrect number of paramters of function call at "<< node.identifier << std::endl;
         exit(-1);
@@ -168,7 +169,10 @@ Value EvalVisitor::visit(FuncDecNode& node) {
 Value EvalVisitor::visit(ContinueStatementNode& node) {return Value();}
 Value EvalVisitor::visit(ArrayIndexingNode& node) {return Value();}
 Value EvalVisitor::visit(ArrayGetElementNode& node) {return Value();}
-Value EvalVisitor::visit(IdentifierNode& node)  {return Value();}
+Value EvalVisitor::visit(IdentifierNode& node)  {
+    //TODO: GET working
+    return Value();
+}
 Value EvalVisitor::visit(IncDecStatementNode& node)  {return Value();}
 Value EvalVisitor::visit(ArrayAssignmentNode& node) {return Value();}
 Value EvalVisitor::visit(ImportStatementNode& node) {return Value();}
