@@ -59,7 +59,46 @@ Value EvalVisitor::visit(CodeBlockNode& node) {
 Value EvalVisitor::visit(ExpressionNode& node)  {return Value();}
 Value EvalVisitor::visit(TypeCastNode& node)  {return Value();}
 Value EvalVisitor::visit(LogicalNotNode& node)  {return Value();}
-Value EvalVisitor::visit(AssignmentStatementNode& node)  {return Value();}
+Value EvalVisitor::visit(AssignmentStatementNode& node)  {
+    ValueContext varContext = currentEnvironment->getValue(node.identifer);
+    if (varContext.value == nullptr){
+        if (node.operation != TokenType::ASSIGN_EQU){
+            std::cerr << "Error: no varaible named " << node.identifer << " found." << std::endl;
+            exit(-1);
+        }
+
+        if (node.type == INVALID_TYPE){
+            std::cerr << "Error: no varaible named " << node.identifer << " found." << std::endl;
+            exit(-1);
+        }
+        
+        Value v = node.expression->accept(*this);
+        if (v.type != node.type){
+            std::cerr << "Error: variable " << node.identifer << " is type " << node.type << " but value type " << v.type << " assigned." << std::endl;
+            exit(-1);
+        }
+
+        //no variable but an assignment means we create a new variable
+        currentEnvironment->setValue(node.identifer, v);
+        return Value();
+    }
+
+    if (node.type != INVALID_TYPE){
+        std::cerr << "Error: variable " << node.identifer << " is already defined " << std::endl;
+        exit(-1);
+    }    
+
+    Value v = node.expression->accept(*this);
+
+    //TODO: check for compatible types and operations like adding doubles to ints or something
+    if (v.type != varContext.value->type){
+        std::cerr << "Error: variable " << node.identifer << " is type " << varContext.value->type << " but value type " << v.type << " used." << std::endl;
+        exit(-1);
+    }
+    //TODO: finish
+
+    return Value();
+}
 
 Value EvalVisitor::visit(FuncCallStatementNode& node)  {
     ValueContext funcContext = currentEnvironment->getValue(node.identifier);
@@ -158,7 +197,7 @@ Value EvalVisitor::visit(FuncDecNode& node) {
 
     if(currentEnvironment->getValue(node.identifier).value != nullptr){
         //TODO: expand on this to account for function overloading
-        std::cerr << "Error: function redefinition: " << node.identifier;
+        std::cerr << "Error: function redefinition: " << node.identifier << std::endl;
         exit(-1); 
     }
     currentEnvironment->setValue(node.identifier, dec);
@@ -170,8 +209,14 @@ Value EvalVisitor::visit(ContinueStatementNode& node) {return Value();}
 Value EvalVisitor::visit(ArrayIndexingNode& node) {return Value();}
 Value EvalVisitor::visit(ArrayGetElementNode& node) {return Value();}
 Value EvalVisitor::visit(IdentifierNode& node)  {
-    //TODO: GET working
-    return Value();
+    ValueContext varContext = currentEnvironment->getValue(node.identifier);
+    if (varContext.value == nullptr){
+        std::cerr << "Error: identifier " << node.identifier << std::endl;
+        exit(-1); 
+    }
+    //dereference since it is pointer
+    Value v = *varContext.value;
+    return v;
 }
 Value EvalVisitor::visit(IncDecStatementNode& node)  {return Value();}
 Value EvalVisitor::visit(ArrayAssignmentNode& node) {return Value();}
