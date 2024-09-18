@@ -63,7 +63,7 @@ int main(int argc, char** argv){
             std::cout << "Token(" << tokens[i].type << ", " << tokens[i].text << ", " << tokens[i].startPos << ')'<< std::endl;
         }
 
-        //print out AST
+        //print out AST (debugging)
         PrintVisitor printVisitor;
         node->accept(printVisitor);
     }
