@@ -1,13 +1,14 @@
-CXX = g++
+CXX = g++-11
 CXXFLAGS = -std=c++17 -fpermissive -g
-TARGET = foxScript
+LDFLAGS = -pthread -lstdc++
+TARGET = foxScript.out
 SRCS = main.cpp interpreter/lexer/lexer.cpp interpreter/nodes/concrete_nodes.cpp interpreter/parser/parser.cpp interpreter/tokens/token.cpp interpreter/visitors/eval_visitor.cpp interpreter/visitors/print_visitor.cpp interpreter/runtime/environment.cpp interpreter/runtime/values.cpp
 OBJS = $(SRCS:.cpp=.o)
 
-all: $(TARGET)
+all: clean $(TARGET)
 
 $(TARGET): $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $@ $^
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $^
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
