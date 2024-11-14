@@ -2,7 +2,7 @@ CXX = g++-11
 CXXFLAGS = -std=c++17 -fpermissive -g
 LDFLAGS = -pthread -lstdc++
 TARGET = foxScript.out
-SRCS = main.cpp interpreter/lexer/lexer.cpp interpreter/nodes/concrete_nodes.cpp interpreter/parser/parser.cpp interpreter/tokens/token.cpp interpreter/visitors/eval_visitor.cpp interpreter/visitors/print_visitor.cpp interpreter/runtime/environment.cpp interpreter/runtime/values.cpp
+SRCS = main.cpp interpreter/lexer/lexer.cpp interpreter/nodes/concrete_nodes.cpp interpreter/parser/parser.cpp interpreter/tokens/token.cpp interpreter/visitors/print_visitor.cpp interpreter/runtime/values.cpp
 OBJS = $(SRCS:.cpp=.o)
 
 all: clean $(TARGET)

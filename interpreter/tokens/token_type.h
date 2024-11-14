@@ -4,7 +4,7 @@ enum TokenType {
     // Literals
     INT, FLOAT, STRING, CHAR, DOUBLE,
 
-    // Keywords
+    // Keywords (some are unused for now)
     SNIFF, WHIMPER, HUNT, CHASE, BARK, TRUE, FALSE, CUB, TRICK, FOX, 
     BURROW, INHERIT, GROWL, SHOW, KITSUNE,
     DEN, FLUFF, TERRITORY, PACK, GUARDED, POUNCE, FORAGE, PROWL,

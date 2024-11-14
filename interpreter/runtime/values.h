@@ -6,66 +6,78 @@
 #include <string>
 #include <vector>
 #include "../forward_declarations.h"
+#include <stdexcept>
 
-
-class Value{
-    private:
-   using VariantType = std::variant<
-        int, double, float, std::string, char, bool,
-        FuncDecNode*,
-        std::vector<int>, std::vector<double>, std::vector<float>,
-        std::vector<std::string>, std::vector<char>
-    >;
-    
-    VariantType data;
-
-   template<typename T>
-    ValueType deduceType() {
-        if constexpr (std::is_same_v<T, int>) return ValueType::INT_VAL;
-        else if constexpr (std::is_same_v<T, double>) return ValueType::DOUBLE_VAL;
-        else if constexpr (std::is_same_v<T, float>) return ValueType::FLOAT_VAL;
-        else if constexpr (std::is_same_v<T, std::string>) return ValueType::STRING_VAL;
-        else if constexpr (std::is_same_v<T, char>) return ValueType::CHAR_VAL;
-        else if constexpr (std::is_same_v<T, bool>) return ValueType::BOOL_VAL;
-        else if constexpr (std::is_same_v<T, FuncDecNode*>) return ValueType::FUNC_DEC_VAL;
-        else if constexpr (std::is_same_v<T, std::vector<int>>) return ValueType::INT_ARR_VAL;
-        else if constexpr (std::is_same_v<T, std::vector<double>>) return ValueType::DOUBLE_ARR_VAL;
-        else if constexpr (std::is_same_v<T, std::vector<float>>) return ValueType::FLOAT_ARR_VAL;
-        else if constexpr (std::is_same_v<T, std::vector<std::string>>) return ValueType::STRING_ARR_VAL;
-        else if constexpr (std::is_same_v<T, std::vector<char>>) return ValueType::CHAR_ARR_VAL;
-        else return ValueType::NONE_VAL;
-    }
-
-    public:
+class Value {
+public:
     ValueType type;
 
+    Value();
+    virtual ~Value() = default;
 
-    template<typename T>
-    Value(T value) : data(std::move(value)), type(deduceType<T>()) {}
+    // Binary operations
+    virtual Value* add(Value* other);
+    virtual Value* sub(Value* other);
+    virtual Value* mul(Value* other);
+    virtual Value* div(Value* other);
+    virtual Value* exp(Value* other);
+    virtual Value* mod(Value* other);
+    
+    // Container operations
+    virtual Value* len();
+    virtual Value* get_item(Value* other);
+    virtual Value* set_item(Value* index, Value* value);
 
-    Value() : data(0), type(ValueType::NONE_VAL){}
+    // Logical operations
+    virtual Value* and_op(Value* other);
+    virtual Value* or_op(Value* other);
+    virtual Value* not_op();
 
-    // Special constructor for FuncDecNode pointer
-    Value(FuncDecNode* funcDec) : data(funcDec), type(ValueType::FUNC_DEC_VAL) {}
+    // Comparison operations
+    virtual Value* neq_op(Value* other);
+    virtual Value* eq_op(Value* other);
+    virtual Value* lt_op(Value* other);
+    virtual Value* gt_op(Value* other);
+    virtual Value* leq_op(Value* other);
+    virtual Value* geq_op(Value* other);
 
-    ~Value() {
-        // Note: We don't delete FuncDecNode* here, as we don't own it
-    }
+    // Type conversions
+    virtual Value* to_str();
+    virtual Value* to_int();
+    virtual Value* to_bool();
+    virtual Value* to_float();
+    virtual Value* to_char();
+    virtual Value* to_double();
+};
 
-    template<typename T>
-    T getValue() const {
-        return std::get<T>(data);
-    }
+class IntValue : public Value{
+    public:
+    int val;
 
-    template<typename T>
-    void setValue(T data){
-        this->data = std::move(data);
-    }
+    IntValue();
+    explicit IntValue(int v);
+    
+    // override or possible operations for integer values
+    Value* add(Value* other) override;
+    Value* sub(Value* other) override;
+    Value* mul(Value* other) override;
+    Value* div(Value* other) override;
+    Value* exp(Value* other) override;
+    Value* mod(Value* other) override;
 
-    // Special getter for FuncDecNode to avoid accidental copying of pointer
-    FuncDecNode* getFuncDec() const;
+    Value* neq_op(Value* other) override;
+    Value* eq_op(Value* other) override;
+    Value* lt_op(Value* other) override;
+    Value* gt_op(Value* other) override;
+    Value* leq_op(Value* other) override;
+    Value* geq_op(Value* other) override;
 
-
+    Value* to_str() override;
+    Value* to_int() override;
+    Value* to_bool() override;
+    Value* to_float() override;
+    Value* to_double() override;
+    Value* to_char() override;
 
 };
 

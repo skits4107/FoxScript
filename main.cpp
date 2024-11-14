@@ -1,6 +1,5 @@
 #include "interpreter/nodes/concrete_nodes.h"
 #include "interpreter/visitors/print_visitor.h"
-#include "interpreter/visitors/eval_visitor.h"
 #include "interpreter/lexer/lexer.h"
 #include "interpreter/parser/parser.h"
 #include <fstream>
@@ -67,9 +66,6 @@ int main(int argc, char** argv){
         PrintVisitor printVisitor;
         node->accept(printVisitor);
     }
-
-    EvalVisitor evaluator;
-    node->accept(evaluator);
 
     return 0;
 }

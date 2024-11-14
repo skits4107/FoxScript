@@ -5,7 +5,6 @@
 //visitors
 class Visitor;
 class PrintVisitor;
-class EvalVisitor;
 
 //nodes
 class Node;
