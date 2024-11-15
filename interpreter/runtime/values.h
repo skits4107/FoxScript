@@ -211,6 +211,23 @@ class CharValue : public Value{
 
 };
 
+class StringValue : public Value{
+    public:
+    std::string val;
+
+    StringValue();
+    StringValue(std::string v);
+
+    Value* add(Value* other) override;
+
+    Value* to_str() override;
+    Value* to_int() override;
+    Value* to_bool() override;
+    Value* to_float() override;
+    Value* to_double() override;
+    Value* to_char() override;
+};
+
 
 class ArrValue : public Value{
     Value** arr;
