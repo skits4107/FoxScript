@@ -16,7 +16,6 @@ class CharValue;
 class BoolValue;
 class StringValue;
 class FuncDecValue;
-
 class ArrValue;
 
 class Value {
@@ -48,7 +47,7 @@ public:
     // Container operations
     virtual Value* len();
     virtual Value* get_item(Value* index);
-    virtual Value* set_item(Value* index, Value* value);
+    virtual void set_item(Value* index, Value* value);
 
     // Logical operations
     virtual Value* and_op(Value* other);
@@ -177,8 +176,6 @@ class BoolValue : public Value{
 
     Value* to_str() override;
     Value* to_int() override;
-    Value* to_float() override;
-    Value* to_double() override;
     Value* to_bool() override;
 
 };
@@ -200,7 +197,6 @@ class CharValue : public Value{
 
     Value* to_str() override;
     Value* to_int() override;
-    Value* to_bool() override;
     Value* to_char() override;
 
 };
@@ -219,8 +215,7 @@ class StringValue : public Value{
   
 
     Value* to_str() override;
-    Value* to_int() override;
-    Value* to_bool() override;
+    Value* to_int() override;;
     Value* to_float() override;
     Value* to_double() override;
     Value* to_char() override;
@@ -241,8 +236,15 @@ class ArrValue : public Value{
 
     Value* len() override;
     Value* get_item(Value* index) override;
-    Value* set_item(Value* index, Value* value) override;
+    void set_item(Value* index, Value* value) override;
 
 };
 
+//TODO: come back and finish function value
+class FuncDecValue : public Value{
+    public:
+
+    FuncDecValue();
+
+};
 #endif
