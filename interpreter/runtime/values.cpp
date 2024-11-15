@@ -44,104 +44,22 @@ IntValue::IntValue(int v) : val(v) {
 }
 
 Value* IntValue::add(Value* other) {
-    //type checker ensure types can be added but we still have to check and cast to know how to add
-    switch(other->type){
-        case INT_VAL:
-            IntValue* other_int = static_cast<IntValue*>(other);
-            return new IntValue(val + other_int->val);
-            break;
-        case FLOAT_VAL:
-            FloatValue* other_flt = static_cast<FloatValue*>(other);
-            return new FloatValue(val + other_flt->val);
-            break;
-        case DOUBLE_VAL:
-            DoubleValue* other_dbl = static_cast<DoubleValue*>(other);
-            return new DoubleValue(val + other_dbl->val);
-            break;
-        default:
-            //this shouldnt happen if the type checker does its job
-            throw std::runtime_error("Can't add integer with this type (this shouldnt happen)");
-    }
-
+    return numeric_arithmetic(val, other, [](auto a, auto b) { return a + b; });
 }
 
 Value* IntValue::sub(Value* other) {
-    switch(other->type){
-        case INT_VAL:
-            IntValue* other_int = static_cast<IntValue*>(other);
-            return new IntValue(val - other_int->val);
-            break;
-        case FLOAT_VAL:
-            FloatValue* other_flt = static_cast<FloatValue*>(other);
-            return new FloatValue(val - other_flt->val);
-            break;
-        case DOUBLE_VAL:
-            DoubleValue* other_dbl = static_cast<DoubleValue*>(other);
-            return new DoubleValue(val - other_dbl->val);
-            break;
-        default:
-            //this shouldnt happen if the type checker does its job
-            throw std::runtime_error("Can't add integer with this type (this shouldnt happen)");
-    }
+    return numeric_arithmetic(val, other, [](auto a, auto b) { return a - b; });
 }
 Value* IntValue::mul(Value* other) {
-    switch(other->type){
-        case INT_VAL:
-            IntValue* other_int = static_cast<IntValue*>(other);
-            return new IntValue(val * other_int->val);
-            break;
-        case FLOAT_VAL:
-            FloatValue* other_flt = static_cast<FloatValue*>(other);
-            return new FloatValue(val * other_flt->val);
-            break;
-        case DOUBLE_VAL:
-            DoubleValue* other_dbl = static_cast<DoubleValue*>(other);
-            return new DoubleValue(val * other_dbl->val);
-            break;
-        default:
-            //this shouldnt happen if the type checker does its job
-            throw std::runtime_error("Can't add integer with this type (this shouldnt happen)");
-    }
+    return numeric_arithmetic(val, other, [](auto a, auto b) { return a * b; });
 }
 
 Value* IntValue::div(Value* other) {
-    switch(other->type){
-        case INT_VAL:
-            IntValue* other_int = static_cast<IntValue*>(other);
-            return new IntValue(val / other_int->val);
-            break;
-        case FLOAT_VAL:
-            FloatValue* other_flt = static_cast<FloatValue*>(other);
-            return new FloatValue(val / other_flt->val);
-            break;
-        case DOUBLE_VAL:
-            DoubleValue* other_dbl = static_cast<DoubleValue*>(other);
-            return new DoubleValue(val / other_dbl->val);
-            break;
-        default:
-            //this shouldnt happen if the type checker does its job
-            throw std::runtime_error("Can't add integer with this type (this shouldnt happen)");
-    }
+    return numeric_arithmetic(val, other, [](auto a, auto b) { return a / b; });
 }
 
 Value* IntValue::exp(Value* other) {
-    switch(other->type){
-        case INT_VAL:
-            IntValue* other_int = static_cast<IntValue*>(other);
-            return new IntValue(pow(val, other_int->val));
-            break;
-        case FLOAT_VAL:
-            FloatValue* other_flt = static_cast<FloatValue*>(other);
-            return new FloatValue(pow(val, other_flt->val));
-            break;
-        case DOUBLE_VAL:
-            DoubleValue* other_dbl = static_cast<DoubleValue*>(other);
-            return new DoubleValue(pow(val, other_dbl->val));
-            break;
-        default:
-            //this shouldnt happen if the type checker does its job
-            throw std::runtime_error("Can't add integer with this type (this shouldnt happen)");
-    }
+    return numeric_arithmetic(val, other, [](auto a, auto b) { return pow(a,b); });
 }
 
 Value* IntValue::mod(Value* other) {
@@ -152,59 +70,33 @@ Value* IntValue::mod(Value* other) {
 }
 
 Value*  IntValue::neq_op(Value* other) {
-    //should return boolean whose not op should do fine
-    return eq_op(other)->not_op();
+    //type ensured by type checker stage.
+    IntValue* other_int = static_cast<IntValue*>(other);
+    return new BoolValue(val != other_int->val);
 }
 Value*  IntValue::eq_op(Value* other) {
     //type ensured by type checker stage.
-     //cant check if equal to float or double
     IntValue* other_int = static_cast<IntValue*>(other);
     return new BoolValue(val == other_int->val);
 
 }
 Value*  IntValue::lt_op(Value* other) {
-    return geq_op(other)->not_op();
+    Value* leq_result = geq_op(other);
+    Value* final_result = leq_result->not_op();
+    delete leq_result;
+    return final_result;
 }
 Value*  IntValue::gt_op(Value* other) {
-    return leq_op(other)->not_op();
+    Value* leq_result = leq_op(other);
+    Value* final_result = leq_result->not_op();
+    delete leq_result;
+    return final_result;
 }
 Value*  IntValue::leq_op(Value* other) {
-    switch(other->type){
-        case INT_VAL:
-            IntValue* other_int = static_cast<IntValue*>(other);
-            return new BoolValue(val <= other_int->val);
-            break;
-        case FLOAT_VAL:
-            FloatValue* other_flt = static_cast<FloatValue*>(other);
-            return new BoolValue(val <= other_flt->val);
-            break;
-        case DOUBLE_VAL:
-            DoubleValue* other_dbl = static_cast<DoubleValue*>(other);
-            return new BoolValue(val <= other_dbl->val);
-            break;
-        default:
-            //this shouldnt happen if the type checker does its job
-            throw std::runtime_error("Can't add integer with this type (this shouldnt happen)");
-    }
+    return boolean_arithmetic(val, other, [](auto a, auto b){return a <= b;});
 }
 Value*  IntValue::geq_op(Value* other) {
-    switch(other->type){
-        case INT_VAL:
-            IntValue* other_int = static_cast<IntValue*>(other);
-            return new BoolValue(val <= other_int->val);
-            break;
-        case FLOAT_VAL:
-            FloatValue* other_flt = static_cast<FloatValue*>(other);
-            return new BoolValue(val <= other_flt->val);
-            break;
-        case DOUBLE_VAL:
-            DoubleValue* other_dbl = static_cast<DoubleValue*>(other);
-            return new BoolValue(val <= other_dbl->val);
-            break;
-        default:
-            //this shouldnt happen if the type checker does its job
-            throw std::runtime_error("Can't add integer with this type (this shouldnt happen)");
-    }
+    return boolean_arithmetic(val, other, [](auto a, auto b){return a >= b;});
 }
 
 Value* IntValue::to_str(){
