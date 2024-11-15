@@ -40,21 +40,90 @@ IntValue::IntValue(int v) : val(v) {
 
 
 Value* IntValue::add(Value* other) {
-    if (other->type == INT_VAL) {
-        IntValue* other_int = static_cast<IntValue*>(other);
-        return new IntValue(val + other_int->val);
+    //type checker ensure types can be added but we still have to check and cast to know how to add
+    switch(other->type){
+        case INT_VAL:
+            IntValue* other_int = static_cast<IntValue*>(other);
+            return new IntValue(val + other_int->val);
+            break;
+        case FLOAT_VAL:
+            FloatValue* other_flt = static_cast<FloatValue*>(other);
+            return new FloatValue(val + other_flt->val);
+            break;
+        case DOUBLE_VAL:
+            DoubleValue* other_dbl = static_cast<DoubleValue*>(other);
+            return new DoubleValue(val + other_dbl->val);
+            break;
+        default:
+            //this shouldnt happen if the type checker does its job
+            throw std::runtime_error("Can't add integer with this type (this shouldnt happen)");
     }
-    // TODO: handle float and doubles
-    throw std::runtime_error("Can't add integer with this type");
+
 }
 
 Value* IntValue::sub(Value* other) {
-    if (other->type == INT_VAL) {
-        IntValue* other_int = static_cast<IntValue*>(other);
-        return new IntValue(val - other_int->val);
+    switch(other->type){
+        case INT_VAL:
+            IntValue* other_int = static_cast<IntValue*>(other);
+            return new IntValue(val - other_int->val);
+            break;
+        case FLOAT_VAL:
+            FloatValue* other_flt = static_cast<FloatValue*>(other);
+            return new FloatValue(val - other_flt->val);
+            break;
+        case DOUBLE_VAL:
+            DoubleValue* other_dbl = static_cast<DoubleValue*>(other);
+            return new DoubleValue(val - other_dbl->val);
+            break;
+        default:
+            //this shouldnt happen if the type checker does its job
+            throw std::runtime_error("Can't add integer with this type (this shouldnt happen)");
     }
-    //TOOD: handle float and doubles
-    throw std::runtime_error("Can't subtract integer with this type");
 }
 
-//TODO: finish int val and other types
+
+
+
+ArrValue::ArrValue(int s): size(s){
+    arr = new Value*[s];
+    
+
+    for(int i = 0; i < s; i++) {
+        arr[i] = nullptr;
+    }
+
+}
+
+
+ArrValue::~ArrValue(){
+    for(int i = 0; i < size; i++) {
+        delete arr[i];  // Delete each contained object
+    }
+    delete[] arr;
+}
+
+ArrValue::ArrValue(const ArrValue& other):size(other.size){
+    arr = new Value*[size];
+    for(int i = 0; i < size; i++) {
+        arr[i] = other.arr[i];
+    }
+}
+
+Value* ArrValue::len() {
+    return new IntValue(size);
+}
+
+Value* ArrValue::get_item(Value* index){
+    //type checker ensure index is of Integer type
+    IntValue* i = static_cast<IntValue*>(index); 
+
+    return arr[i->val];
+}
+
+Value* ArrValue::set_item(Value* index, Value* value){
+    //type checker ensure index is of Integer type
+    IntValue* i = static_cast<IntValue*>(index); 
+
+    arr[i->val] = value;
+}
+//TODO: finish other types

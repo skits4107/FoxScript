@@ -8,12 +8,26 @@
 #include "../forward_declarations.h"
 #include <stdexcept>
 
+//forward class declarations (for use in the casting functions of base value class)
+class IntValue;
+class DoubleValue;
+class FloatValue;
+class CharValue;
+class BoolValue;
+class StringValue;
+class FuncDecValue;
+
+class ArrValue;
+
 class Value {
+private:
+
 public:
     ValueType type;
 
     Value();
     virtual ~Value() = default;
+
 
     // Binary operations
     virtual Value* add(Value* other);
@@ -25,7 +39,7 @@ public:
     
     // Container operations
     virtual Value* len();
-    virtual Value* get_item(Value* other);
+    virtual Value* get_item(Value* index);
     virtual Value* set_item(Value* index, Value* value);
 
     // Logical operations
@@ -48,6 +62,8 @@ public:
     virtual Value* to_float();
     virtual Value* to_char();
     virtual Value* to_double();
+
+
 };
 
 class IntValue : public Value{
@@ -55,7 +71,7 @@ class IntValue : public Value{
     int val;
 
     IntValue();
-    explicit IntValue(int v);
+    IntValue(int v);
     
     // override or possible operations for integer values
     Value* add(Value* other) override;
@@ -78,6 +94,139 @@ class IntValue : public Value{
     Value* to_float() override;
     Value* to_double() override;
     Value* to_char() override;
+
+};
+
+class FloatValue : public Value{
+    public:
+    float val;
+
+    FloatValue();
+    FloatValue(float v);
+    
+    // override or possible operations for integer values
+    Value* add(Value* other) override;
+    Value* sub(Value* other) override;
+    Value* mul(Value* other) override;
+    Value* div(Value* other) override;
+    Value* exp(Value* other) override;
+
+    Value* neq_op(Value* other) override;
+    Value* eq_op(Value* other) override;
+    Value* lt_op(Value* other) override;
+    Value* gt_op(Value* other) override;
+    Value* leq_op(Value* other) override;
+    Value* geq_op(Value* other) override;
+
+    Value* to_str() override;
+    Value* to_int() override;
+    Value* to_float() override;
+    Value* to_double() override;
+
+};
+
+class DoubleValue : public Value{
+    public:
+    double val;
+
+    DoubleValue();
+    DoubleValue(double v);
+    
+    // override or possible operations for integer values
+    Value* add(Value* other) override;
+    Value* sub(Value* other) override;
+    Value* mul(Value* other) override;
+    Value* div(Value* other) override;
+    Value* exp(Value* other) override;
+
+    Value* neq_op(Value* other) override;
+    Value* eq_op(Value* other) override;
+    Value* lt_op(Value* other) override;
+    Value* gt_op(Value* other) override;
+    Value* leq_op(Value* other) override;
+    Value* geq_op(Value* other) override;
+
+    Value* to_str() override;
+    Value* to_int() override;
+    Value* to_float() override;
+    Value* to_double() override;
+
+};
+
+class BoolValue : public Value{
+    public:
+    bool val;
+
+    BoolValue();
+    BoolValue(bool v);
+    
+    // override or possible operations for integer values
+    Value* add(Value* other) override;
+    Value* sub(Value* other) override;
+    Value* mul(Value* other) override;
+
+    Value* neq_op(Value* other) override;
+    Value* eq_op(Value* other) override;
+    Value* lt_op(Value* other) override;
+    Value* gt_op(Value* other) override;
+    Value* leq_op(Value* other) override;
+    Value* geq_op(Value* other) override;
+
+    Value* to_str() override;
+    Value* to_int() override;
+    Value* to_float() override;
+    Value* to_double() override;
+    Value* to_bool() override;
+
+};
+
+class CharValue : public Value{
+    public:
+    char val;
+
+    CharValue();
+    CharValue(char v);
+    
+    // override or possible operations for integer values
+    Value* add(Value* other) override;
+    Value* sub(Value* other) override;
+    Value* mul(Value* other) override;
+    Value* div(Value* other) override;
+    Value* exp(Value* other) override;
+    Value* mod(Value* other) override;
+
+    Value* neq_op(Value* other) override;
+    Value* eq_op(Value* other) override;
+    Value* lt_op(Value* other) override;
+    Value* gt_op(Value* other) override;
+    Value* leq_op(Value* other) override;
+    Value* geq_op(Value* other) override;
+
+    Value* to_str() override;
+    Value* to_int() override;
+    Value* to_bool() override;
+    Value* to_float() override;
+    Value* to_double() override;
+    Value* to_char() override;
+
+};
+
+
+class ArrValue : public Value{
+    Value** arr;
+
+    public:
+    const int size;
+
+    ArrValue(int s);
+
+    ~ArrValue();
+
+    ArrValue(const ArrValue& other);
+
+    Value* len() override;
+    Value* get_item(Value* index) override;
+    Value* set_item(Value* index, Value* value) override;
 
 };
 
