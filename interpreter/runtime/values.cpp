@@ -30,6 +30,10 @@ Value* Value::to_float() { throw std::runtime_error("Operation not supported"); 
 Value* Value::to_char() { throw std::runtime_error("Operation not supported"); }
 Value* Value::to_double() { throw std::runtime_error("Operation not supported"); }
 
+
+
+
+
 // IntValue implementations
 IntValue::IntValue() : val(0) {
     type = INT_VAL;
@@ -38,7 +42,6 @@ IntValue::IntValue() : val(0) {
 IntValue::IntValue(int v) : val(v) {
     type = INT_VAL;
 }
-
 
 Value* IntValue::add(Value* other) {
     //type checker ensure types can be added but we still have to check and cast to know how to add
@@ -225,6 +228,10 @@ Value* IntValue::to_char() {
 
 
 
+
+
+
+//Array value implementations
 ArrValue::ArrValue(int s): size(s){
     arr = new Value*[s];
     
@@ -234,7 +241,6 @@ ArrValue::ArrValue(int s): size(s){
     }
 
 }
-
 
 ArrValue::~ArrValue(){
     for(int i = 0; i < size; i++) {
