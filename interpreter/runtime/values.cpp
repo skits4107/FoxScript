@@ -5,6 +5,50 @@
 // Base Value implementations
 Value::Value() : type(NONE_VAL) {}
 
+template<typename T, typename BinaryOp>
+Value* Value::numeric_arithmetic(T v, Value* other, BinaryOp op){
+    //type checker ensure types can be added but we still have to check and cast to know how to add
+    switch(other->type){
+        case INT_VAL:
+            IntValue* other_int = static_cast<IntValue*>(other);
+            return new IntValue(op(v, other_int->val));
+            break;
+        case FLOAT_VAL:
+            FloatValue* other_flt = static_cast<FloatValue*>(other);
+            return new FloatValue(op(v, other_flt->val));
+            break;
+        case DOUBLE_VAL:
+            DoubleValue* other_dbl = static_cast<DoubleValue*>(other);
+            return new DoubleValue(op(v, other_dbl->val));
+            break;
+        default:
+            //this shouldnt happen if the type checker does its job
+            throw std::runtime_error("Can't add integer with this type (this shouldnt happen)");
+    }
+}
+
+template<typename T, typename BinaryOp>
+Value* Value::boolean_arithmetic(T v, Value* other, BinaryOp op){
+    //type checker ensure types can be added but we still have to check and cast to know how to add
+    switch(other->type){
+        case INT_VAL:
+            IntValue* other_int = static_cast<IntValue*>(other);
+            return new BoolValue(op(v, other_int->val));
+            break;
+        case FLOAT_VAL:
+            FloatValue* other_flt = static_cast<FloatValue*>(other);
+            return new BoolValue(op(v, other_flt->val));
+            break;
+        case DOUBLE_VAL:
+            DoubleValue* other_dbl = static_cast<DoubleValue*>(other);
+            return new BoolValue(op(v, other_dbl->val));
+            break;
+        default:
+            //this shouldnt happen if the type checker does its job
+            throw std::runtime_error("Can't add integer with this type (this shouldnt happen)");
+    }
+}
+
 Value* Value::add(Value* other) { throw std::runtime_error("Operation not supported"); }
 Value* Value::sub(Value* other) { throw std::runtime_error("Operation not supported"); }
 Value* Value::mul(Value* other) { throw std::runtime_error("Operation not supported"); }
@@ -117,6 +161,120 @@ Value* IntValue::to_double() {
 Value* IntValue::to_char() {
     return new CharValue(val);
 }
+
+
+
+
+
+Value* FloatValue::add(Value* other) {
+    return numeric_arithmetic(val, other, [](auto a, auto b) { return a + b; });
+}
+
+Value* FloatValue::sub(Value* other) {
+    return numeric_arithmetic(val, other, [](auto a, auto b) { return a - b; });
+}
+Value* FloatValue::mul(Value* other) {
+    return numeric_arithmetic(val, other, [](auto a, auto b) { return a * b; });
+}
+
+Value* FloatValue::div(Value* other) {
+    return numeric_arithmetic(val, other, [](auto a, auto b) { return a / b; });
+}
+
+Value* FloatValue::exp(Value* other) {
+    return numeric_arithmetic(val, other, [](auto a, auto b) { return pow(a,b); });
+}
+
+Value*  FloatValue::lt_op(Value* other) {
+    Value* leq_result = geq_op(other);
+    Value* final_result = leq_result->not_op();
+    delete leq_result;
+    return final_result;
+}
+Value* FloatValue::gt_op(Value* other) {
+    Value* leq_result = leq_op(other);
+    Value* final_result = leq_result->not_op();
+    delete leq_result;
+    return final_result;
+}
+Value*  FloatValue::leq_op(Value* other) {
+    return boolean_arithmetic(val, other, [](auto a, auto b){return a <= b;});
+}
+Value*  FloatValue::geq_op(Value* other) {
+    return boolean_arithmetic(val, other, [](auto a, auto b){return a >= b;});
+}
+
+Value* FloatValue::to_str(){
+    return new StringValue(std::to_string(val));
+}
+Value* FloatValue::to_int() {
+    return new IntValue(static_cast<int>(val));
+}
+Value* FloatValue::to_float() {
+    return this;
+}
+Value* FloatValue::to_double() {
+    return new DoubleValue(val);
+}
+
+
+
+
+
+
+
+Value* DoubleValue::add(Value* other) {
+    return numeric_arithmetic(val, other, [](auto a, auto b) { return a + b; });
+}
+
+Value* DoubleValue::sub(Value* other) {
+    return numeric_arithmetic(val, other, [](auto a, auto b) { return a - b; });
+}
+Value* DoubleValue::mul(Value* other) {
+    return numeric_arithmetic(val, other, [](auto a, auto b) { return a * b; });
+}
+
+Value* DoubleValue::div(Value* other) {
+    return numeric_arithmetic(val, other, [](auto a, auto b) { return a / b; });
+}
+
+Value* DoubleValue::exp(Value* other) {
+    return numeric_arithmetic(val, other, [](auto a, auto b) { return pow(a,b); });
+}
+
+Value*  DoubleValue::lt_op(Value* other) {
+    Value* leq_result = geq_op(other);
+    Value* final_result = leq_result->not_op();
+    delete leq_result;
+    return final_result;
+}
+Value* DoubleValue::gt_op(Value* other) {
+    Value* leq_result = leq_op(other);
+    Value* final_result = leq_result->not_op();
+    delete leq_result;
+    return final_result;
+}
+Value*  DoubleValue::leq_op(Value* other) {
+    return boolean_arithmetic(val, other, [](auto a, auto b){return a <= b;});
+}
+Value*  DoubleValue::geq_op(Value* other) {
+    return boolean_arithmetic(val, other, [](auto a, auto b){return a >= b;});
+}
+
+Value* DoubleValue::to_str(){
+    return new StringValue(std::to_string(val));
+}
+Value* DoubleValue::to_int() {
+    return new IntValue(static_cast<int>(val));
+}
+Value* DoubleValue::to_float() {
+    return new FloatValue(static_cast<float>(val));
+}
+Value* DoubleValue::to_double() {
+    return this;
+}
+
+
 
 
 
