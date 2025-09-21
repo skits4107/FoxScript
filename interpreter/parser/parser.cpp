@@ -451,28 +451,29 @@ std::unique_ptr<Node> Parser::logicalExpression(){
         << currentToken.text << currentToken.startPos << std::endl;
         exit(-1);
     }
-    //if no logical expresison term pass node up
-    if (currentToken != AND && currentToken != OR){ return term; }
+
+    while (true){
+        //if no logical expresison term pass node up
+        if (currentToken != AND && currentToken != OR){ return term; }
 
 
-    std::unique_ptr<ExpressionNode> exp(new ExpressionNode);
-    exp->operand1 = std::move(term);
+        std::unique_ptr<ExpressionNode> exp(new ExpressionNode);
+        exp->operand1 = std::move(term);
 
-    //set operation to 'and' or 'or'
-    exp->operation = currentToken.type;
-    eat(); //eat logic operator token 
+        //set operation to 'and' or 'or'
+        exp->operation = currentToken.type;
+        eat(); //eat logic operator token 
 
-    term = logicalNot();
-    if (term == nullptr){
-        std::cerr << "Error: should not happen. logicalNot should return a node or have error before returning "
-        << currentToken.text << currentToken.startPos << std::endl;
-        exit(-1);
+        term = logicalNot();
+        if (term == nullptr){
+            std::cerr << "Error: should not happen. logicalNot should return a node or have error before returning "
+            << currentToken.text << currentToken.startPos << std::endl;
+            exit(-1);
+        }
+
+        exp->operand2 = std::move(term);
+        term = std::move(exp);
     }
-
-    exp->operand2 = std::move(term);
-    return exp;
-    
-
 }
 
 std::unique_ptr<Node> Parser::expression(){
