@@ -311,25 +311,28 @@ std::unique_ptr<Node> Parser::exponentialExpression(){
         exit(-1);
     }
 
-    //pass node up if there is no exponent operator
-    if (currentToken !=  EXP){ return term;}
-    
-    std::unique_ptr<ExpressionNode> exp(new ExpressionNode);
-    exp->operand1 = std::move(term);
+    while (true){
 
-    //set operation
-    exp->operation = currentToken.type;
-    eat(); //eat logic operator token 
+        //pass node up if there is no exponent operator
+        if (currentToken !=  EXP){ return term;}
+        
+        std::unique_ptr<ExpressionNode> exp(new ExpressionNode);
+        exp->operand1 = std::move(term);
 
-    term = primaryExpression();
-    if (term == nullptr){
-        std::cerr << "Error: should not happen. primaryExpression should return a node or have error before returning "
-        << currentToken.text << currentToken.startPos << std::endl;
-        exit(-1);
+        //set operation
+        exp->operation = currentToken.type;
+        eat(); //eat logic operator token 
+
+        term = primaryExpression();
+        if (term == nullptr){
+            std::cerr << "Error: should not happen. primaryExpression should return a node or have error before returning "
+            << currentToken.text << currentToken.startPos << std::endl;
+            exit(-1);
+        }
+
+        exp->operand2 = std::move(term);
+        term = std::move(exp);
     }
-
-    exp->operand2 = std::move(term);
-    return exp;
 }
 
 std::unique_ptr<Node> Parser::multiplicativeExpression(){
@@ -340,25 +343,28 @@ std::unique_ptr<Node> Parser::multiplicativeExpression(){
         exit(-1);
     }
 
-    //pass node up if there is no multiplicative operator
-    if (currentToken != STAR && currentToken != DIV && currentToken != MOD ){ return term;}
-    
-    std::unique_ptr<ExpressionNode> exp(new ExpressionNode);
-    exp->operand1 = std::move(term);
+    while (true){
 
-    //set operation
-    exp->operation = currentToken.type;
-    eat(); //eat logic operator token 
+        //pass node up if there is no multiplicative operator
+        if (currentToken != STAR && currentToken != DIV && currentToken != MOD ){ return term;}
+        
+        std::unique_ptr<ExpressionNode> exp(new ExpressionNode);
+        exp->operand1 = std::move(term);
 
-    term = exponentialExpression();
-    if (term == nullptr){
-        std::cerr << "Error: should not happen. exponentialExpression should return a node or have error before returning "
-        << currentToken.text << currentToken.startPos << std::endl;
-        exit(-1);
+        //set operation
+        exp->operation = currentToken.type;
+        eat(); //eat logic operator token 
+
+        term = exponentialExpression();
+        if (term == nullptr){
+            std::cerr << "Error: should not happen. exponentialExpression should return a node or have error before returning "
+            << currentToken.text << currentToken.startPos << std::endl;
+            exit(-1);
+        }
+
+        exp->operand2 = std::move(term);
+        term = std::move(exp);
     }
-
-    exp->operand2 = std::move(term);
-    return exp;
 }
 
 std::unique_ptr<Node> Parser::additiveExpression(){
@@ -369,25 +375,27 @@ std::unique_ptr<Node> Parser::additiveExpression(){
         exit(-1);
     }
 
-    //pass node up if there is no additive operator
-    if (currentToken != ADD && currentToken != SUB ){ return term;}
-    
-    std::unique_ptr<ExpressionNode> exp(new ExpressionNode);
-    exp->operand1 = std::move(term);
+    while (true){
+        //pass node up if there is no additive operator
+        if (currentToken != ADD && currentToken != SUB ){ return term;}
+        
+        std::unique_ptr<ExpressionNode> exp(new ExpressionNode);
+        exp->operand1 = std::move(term);
 
-    //set operation
-    exp->operation = currentToken.type;
-    eat(); //eat logic operator token 
+        //set operation
+        exp->operation = currentToken.type;
+        eat(); //eat logic operator token 
 
-    term = multiplicativeExpression();
-    if (term == nullptr){
-        std::cerr << "Error: should not happen. multiplicativeExpression should return a node or have error before returning "
-        << currentToken.text << currentToken.startPos << std::endl;
-        exit(-1);
+        term = multiplicativeExpression();
+        if (term == nullptr){
+            std::cerr << "Error: should not happen. multiplicativeExpression should return a node or have error before returning "
+            << currentToken.text << currentToken.startPos << std::endl;
+            exit(-1);
+        }
+
+        exp->operand2 = std::move(term);
+        term = std::move(exp);
     }
-
-    exp->operand2 = std::move(term);
-    return exp;
 }
 
 
@@ -399,27 +407,28 @@ std::unique_ptr<Node> Parser::relationalExpression(){
         exit(-1);
     }
 
-    //pass node up if there is no relational operator
-    if (currentToken != LT && currentToken != GT && currentToken != LEQ && 
-        currentToken != GEQ && currentToken != EQ && currentToken != NEQ){ return term;}
-    
-    std::unique_ptr<ExpressionNode> exp(new ExpressionNode);
-    exp->operand1 = std::move(term);
+    while (true){
+        //pass node up if there is no relational operator
+        if (currentToken != LT && currentToken != GT && currentToken != LEQ && 
+            currentToken != GEQ && currentToken != EQ && currentToken != NEQ){ return term;}
+        
+        std::unique_ptr<ExpressionNode> exp(new ExpressionNode);
+        exp->operand1 = std::move(term);
 
-    //set operation
-    exp->operation = currentToken.type;
-    eat(); //eat relational operator token 
+        //set operation
+        exp->operation = currentToken.type;
+        eat(); //eat relational operator token 
 
-    term = additiveExpression();
-    if (term == nullptr){
-        std::cerr << "Error: should not happen. additiveExpression should return a node or have error before returning "
-        << currentToken.text << currentToken.startPos << std::endl;
-        exit(-1);
+        term = additiveExpression();
+        if (term == nullptr){
+            std::cerr << "Error: should not happen. additiveExpression should return a node or have error before returning "
+            << currentToken.text << currentToken.startPos << std::endl;
+            exit(-1);
+        }
+
+        exp->operand2 = std::move(term);
+        term = std::move(exp);
     }
-
-    exp->operand2 = std::move(term);
-    return exp;
-
 }
 
 std::unique_ptr<Node> Parser::logicalNot(){
