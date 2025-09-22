@@ -1,6 +1,8 @@
 #include "values.h"
 #include <cmath>
 
+//NOTE: Some method implementations depend on compiler to check compatible types
+
 
 // Base Value implementations
 Value::Value() : type(NONE_VAL) {}
@@ -524,5 +526,10 @@ void ArrValue::set_item(Value* index, Value* value){
 
 
  FuncDecValue::FuncDecValue(){
-    type==FUNC_DEC_VAL;
+    type=FUNC_DEC_VAL;
+ }
+
+
+ NoneValue::NoneValue(){
+    type = NONE_VAL;
  }

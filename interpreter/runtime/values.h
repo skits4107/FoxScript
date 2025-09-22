@@ -70,6 +70,9 @@ public:
     virtual Value* to_char();
     virtual Value* to_double();
 
+    //function stuff
+    virtual Value* callable();
+
 
 };
 
@@ -246,5 +249,12 @@ class FuncDecValue : public Value{
 
     FuncDecValue();
 
+    Value* callable() override;
+
+};
+
+class NoneValue : public Value{
+    public:
+    NoneValue();
 };
 #endif
