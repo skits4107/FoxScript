@@ -522,11 +522,10 @@ void ArrValue::set_item(Value* index,std::shared_ptr<Value> value){
 
 
 
- FuncDecValue::FuncDecValue(std::vector<ByteCode> code){
+ FuncDecValue::FuncDecValue(std::vector<ByteCode>& c) : code(c){
     type=FUNC_DEC_VAL;
-    this->code = code;
  }
- std::vector<ByteCode> FuncDecValue::callable(){
+ std::vector<ByteCode>& FuncDecValue::callable(){
     return code;
  }
 

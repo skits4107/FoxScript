@@ -73,7 +73,7 @@ public:
     virtual Value* to_double();
 
     //function stuff
-    virtual std::vector<ByteCode> callable();
+    virtual std::vector<ByteCode>& callable();
 
 
 };
@@ -248,13 +248,13 @@ class ArrValue : public Value{
 //TODO: come back and finish function value
 class FuncDecValue : public Value{
     private:
-    std::vector<ByteCode> code;
+    std::vector<ByteCode>& code;
 
     public:
 
-    FuncDecValue(std::vector<ByteCode> code);
+    FuncDecValue(std::vector<ByteCode>& c);
 
-    std::vector<ByteCode> callable() override;
+    std::vector<ByteCode>& callable() override;
 
 };
 

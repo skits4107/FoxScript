@@ -38,7 +38,8 @@ enum class ByteCode : uint8_t {
     SAVE_GLOBAL = 32,
     POP = 33,
     DUP = 34,
-    HALT = 35
+    HALT = 35,
+    MAKE_FUNC = 36
 };
 
 #endif

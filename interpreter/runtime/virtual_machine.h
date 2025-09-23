@@ -6,12 +6,23 @@
 #include "fox_frame.h"
 #include <stack>
 
+
 class VirtualMachine{
     private:
+    //manages scopes and tracks states.
     std::stack<FoxFrame*> frames;
+    FoxFrame* global_frame;
+
+    //for sotring all compiled byte code, to be loaded on frame creation or function creation.
+    //maps function names to the correct byte code.
+    //subject to minor changes for now depending on future implementations.
+    std::unordered_map<std::string, std::vector<ByteCode>>& byte_code_consts; 
 
     public:
 
+    VirtualMachine(std::unordered_map<std::string, std::vector<ByteCode>>& compiled_code);
+
+    void execute();
     void pushFrame(FoxFrame* frame);
     void popFrame(); 
 };
