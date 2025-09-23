@@ -68,8 +68,8 @@ Value* Value::lt_op(Value* other) { throw std::runtime_error("Operation not supp
 Value* Value::gt_op(Value* other) { throw std::runtime_error("Operation not supported"); }
 Value* Value::leq_op(Value* other) { throw std::runtime_error("Operation not supported"); }
 Value* Value::geq_op(Value* other) { throw std::runtime_error("Operation not supported"); }
-Value* Value::get_item(Value* other) { throw std::runtime_error("Operation not supported"); }
-void Value::set_item(Value* index, Value* value) { throw std::runtime_error("Operation not supported"); }
+std::shared_ptr<Value> Value::get_item(Value* index) { throw std::runtime_error("Operation not supported"); }
+void Value::set_item(Value* index, std::shared_ptr<Value> value) { throw std::runtime_error("Operation not supported"); }
 Value* Value::to_str() { throw std::runtime_error("Operation not supported"); }
 Value* Value::to_int() { throw std::runtime_error("Operation not supported"); }
 Value* Value::to_bool() { throw std::runtime_error("Operation not supported"); }
@@ -480,7 +480,7 @@ Value* StringValue::to_char() {
 
 //Array value implementations
 ArrValue::ArrValue(int s): size(s){
-    arr = new Value*[s];
+    arr = new std::shared_ptr<Value>[s];
     
 
     for(int i = 0; i < s; i++) {
@@ -490,14 +490,11 @@ ArrValue::ArrValue(int s): size(s){
 }
 
 ArrValue::~ArrValue(){
-    for(int i = 0; i < size; i++) {
-        delete arr[i];  // Delete each contained object
-    }
     delete[] arr;
 }
 
 ArrValue::ArrValue(const ArrValue& other):size(other.size){
-    arr = new Value*[size];
+    arr = new std::shared_ptr<Value>[size];
     for(int i = 0; i < size; i++) {
         arr[i] = other.arr[i];
     }
@@ -507,14 +504,14 @@ Value* ArrValue::len() {
     return new IntValue(size);
 }
 
-Value* ArrValue::get_item(Value* index){
+std::shared_ptr<Value> ArrValue::get_item(Value* index){
     //type checker ensure index is of Integer type
     IntValue* i = static_cast<IntValue*>(index); 
 
     return arr[i->val];
 }
 
-void ArrValue::set_item(Value* index, Value* value){
+void ArrValue::set_item(Value* index,std::shared_ptr<Value> value){
     //type checker ensure index is of Integer type
     IntValue* i = static_cast<IntValue*>(index); 
 
@@ -525,8 +522,12 @@ void ArrValue::set_item(Value* index, Value* value){
 
 
 
- FuncDecValue::FuncDecValue(){
+ FuncDecValue::FuncDecValue(std::vector<ByteCode> code){
     type=FUNC_DEC_VAL;
+    this->code = code;
+ }
+ std::vector<ByteCode> FuncDecValue::callable(){
+    return code;
  }
 
 

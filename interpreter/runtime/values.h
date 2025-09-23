@@ -1,12 +1,14 @@
 #ifndef VALUES_H
 #define VALUES_H
 
+#include "byte_codes.h"
 #include "value_type.h"
 #include <variant>
 #include <string>
 #include <vector>
 #include "../forward_declarations.h"
 #include <stdexcept>
+#include <memory>
 
 //forward class declarations (for use in the casting functions of base value class)
 class IntValue;
@@ -46,8 +48,8 @@ public:
     
     // Container operations
     virtual Value* len();
-    virtual Value* get_item(Value* index);
-    virtual void set_item(Value* index, Value* value);
+    virtual std::shared_ptr<Value> get_item(Value* index);
+    virtual void set_item(Value* index, std::shared_ptr<Value> value);
 
     // Logical operations
     virtual Value* and_op(Value* other);
@@ -71,7 +73,7 @@ public:
     virtual Value* to_double();
 
     //function stuff
-    virtual Value* callable();
+    virtual std::vector<ByteCode> callable();
 
 
 };
@@ -226,7 +228,7 @@ class StringValue : public Value{
 
 
 class ArrValue : public Value{
-    Value** arr;
+    std::shared_ptr<Value>* arr;
 
     public:
     const int size;
@@ -238,18 +240,21 @@ class ArrValue : public Value{
     ArrValue(const ArrValue& other);
 
     Value* len() override;
-    Value* get_item(Value* index) override;
-    void set_item(Value* index, Value* value) override;
+    std::shared_ptr<Value> get_item(Value* index) override;
+    void set_item(Value* index, std::shared_ptr<Value>) override;
 
 };
 
 //TODO: come back and finish function value
 class FuncDecValue : public Value{
+    private:
+    std::vector<ByteCode> code;
+
     public:
 
-    FuncDecValue();
+    FuncDecValue(std::vector<ByteCode> code);
 
-    Value* callable() override;
+    std::vector<ByteCode> callable() override;
 
 };
 
