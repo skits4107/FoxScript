@@ -9,6 +9,7 @@
 #include "../forward_declarations.h"
 #include <stdexcept>
 #include <memory>
+#include "code_obj.h"
 
 //forward class declarations (for use in the casting functions of base value class)
 class IntValue;
@@ -73,7 +74,7 @@ public:
     virtual Value* to_double();
 
     //function stuff
-    virtual std::vector<ByteCode>& callable();
+    virtual CodeObj* callable();
 
 
 };
@@ -248,13 +249,13 @@ class ArrValue : public Value{
 //TODO: come back and finish function value
 class FuncDecValue : public Value{
     private:
-    std::vector<ByteCode>& code;
+    CodeObj* code;
 
     public:
 
-    FuncDecValue(std::vector<ByteCode>& c);
+    FuncDecValue(CodeObj* c);
 
-    std::vector<ByteCode>& callable() override;
+    CodeObj* callable() override;
 
 };
 

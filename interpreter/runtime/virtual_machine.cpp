@@ -1,8 +1,8 @@
 
 #include "virtual_machine.h"
 
-VirtualMachine::VirtualMachine(std::unordered_map<std::string, std::vector<ByteCode>>& compiled_code) : byte_code_consts(compiled_code){
-    global_frame = new FoxFrame(compiled_code["global"]);
+VirtualMachine::VirtualMachine(std::unordered_map<std::string, CodeObj*>& compiled_code) : byte_code_consts(compiled_code){
+    global_frame = new FoxFrame(compiled_code["global"]->code);
     pushFrame(global_frame);
 }
 
