@@ -9,7 +9,6 @@
 #include "../forward_declarations.h"
 #include <stdexcept>
 #include <memory>
-#include "code_obj.h"
 
 //forward class declarations (for use in the casting functions of base value class)
 class IntValue;
@@ -73,8 +72,6 @@ public:
     virtual Value* to_char();
     virtual Value* to_double();
 
-    //function stuff
-    virtual CodeObj* callable();
 
 
 };
@@ -246,18 +243,6 @@ class ArrValue : public Value{
 
 };
 
-//TODO: come back and finish function value
-class FuncDecValue : public Value{
-    private:
-    CodeObj* code;
-
-    public:
-
-    FuncDecValue(CodeObj* c);
-
-    CodeObj* callable() override;
-
-};
 
 class NoneValue : public Value{
     public:

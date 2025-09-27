@@ -13,7 +13,6 @@ struct FoxFrame {
     public:
     std::stack<std::shared_ptr<Value>> operand_stack;
     std::vector<ByteCode>& code;
-    std::unordered_map<std::string,std::shared_ptr<Value>> locals;
     FoxFrame* parent = nullptr;
     FoxFrame* caller = nullptr;
     int current_instruction = 0;

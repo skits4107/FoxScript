@@ -522,13 +522,6 @@ void ArrValue::set_item(Value* index,std::shared_ptr<Value> value){
 
 
 
- FuncDecValue::FuncDecValue(CodeObj* c) : code(c){
-    type=FUNC_DEC_VAL;
- }
- CodeObj* FuncDecValue::callable(){
-    return code;
- }
-
 
  NoneValue::NoneValue(){
     type = NONE_VAL;
