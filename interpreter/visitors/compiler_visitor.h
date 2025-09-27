@@ -13,5 +13,6 @@
 // by making them unique by adding that functions name. 
 // scope levle value only increases by conditionals, loops, and flow control, not functions.
 // maintain a vector of all the variables names so the variables names get mapped to a integer value for byte code.
+// Do simular consts.
 
 #endif
