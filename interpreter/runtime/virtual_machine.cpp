@@ -281,8 +281,17 @@ void VirtualMachine::greater_than(){
 }
 
 void VirtualMachine::load_var(){
+    int arg = get_arg();
 
+    //Search current and parent frames for the variable. compiler ensures scope
+    for (FoxFrame* frame=frames.top(); frame != nullptr; frame=frame->parent){
+        if (frame->locals.find(arg) != frame->locals.end()){
+            frames.top()->operand_stack.push(frame->locals[arg]);
+            break;
+        }
+    }
 }
+
 void VirtualMachine::load_const(){
     int arg = get_arg();
 
@@ -349,13 +358,39 @@ void VirtualMachine::to_bool(){}
 void VirtualMachine::get_arr_element(){}
 void VirtualMachine::set_arr_element(){}
 
-void VirtualMachine::save_var(){}
+void VirtualMachine::save_var(){
+     int arg = get_arg();
+
+    //Search current and parent frames for the variable if it already exists. compiler ensures scope
+    for (FoxFrame* frame=frames.top(); frame != nullptr; frame=frame->parent){
+        if (frame->locals.find(arg) != frame->locals.end()){
+            frame->locals[arg] = frames.top()->operand_stack.top();
+            return;
+        }
+    }
+    // if not save it the current local as a new variable
+    frames.top()->locals[arg] =  frames.top()->operand_stack.top();
+}
 
 void VirtualMachine::push(){}
 void VirtualMachine::pop(){}
 void VirtualMachine::halt(){}
 
-void VirtualMachine::extended_arg(){}
+void VirtualMachine::extended_arg(){
+    int arg = frames.top()->code[frames.top()->current_instruction+1];
 
-void VirtualMachine::conditional_jump(){}
-void VirtualMachine::jump(){}
+    arg_mod = (arg_mod << 8) + arg;
+}
+
+void VirtualMachine::conditional_jump(){
+    //compiler ensures type safety
+    std::shared_ptr<BoolValue> condition = std::static_pointer_cast<BoolValue>(frames.top()->operand_stack.top());
+
+    if (condition->val){
+        jump();
+    }
+}
+void VirtualMachine::jump(){
+    int arg = get_arg();
+    frames.top()->current_instruction += (arg*2) - 2; //subtract because of the incrment in the main loop
+}
