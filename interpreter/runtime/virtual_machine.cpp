@@ -348,12 +348,36 @@ void VirtualMachine::not_logic(){
     frames.top()->operand_stack.push(result);
 }
 
-void VirtualMachine::to_str(){}
-void VirtualMachine::to_int(){}
-void VirtualMachine::to_char(){}
-void VirtualMachine::to_float(){}
-void VirtualMachine::to_double(){}
-void VirtualMachine::to_bool(){}
+void VirtualMachine::to_str(){
+    std::shared_ptr<Value> string = std::shared_ptr<Value>(frames.top()->operand_stack.top()->to_str());
+    frames.top()->operand_stack.pop();
+    frames.top()->operand_stack.push(string);
+}
+void VirtualMachine::to_int(){
+    std::shared_ptr<Value> integer = std::shared_ptr<Value>(frames.top()->operand_stack.top()->to_int());
+    frames.top()->operand_stack.pop();
+    frames.top()->operand_stack.push(integer);
+}
+void VirtualMachine::to_char(){
+    std::shared_ptr<Value> c = std::shared_ptr<Value>(frames.top()->operand_stack.top()->to_char());
+    frames.top()->operand_stack.pop();
+    frames.top()->operand_stack.push(c);
+}
+void VirtualMachine::to_float(){
+    std::shared_ptr<Value> flt = std::shared_ptr<Value>(frames.top()->operand_stack.top()->to_float());
+    frames.top()->operand_stack.pop();
+    frames.top()->operand_stack.push(flt);
+}
+void VirtualMachine::to_double(){
+    std::shared_ptr<Value> dbl = std::shared_ptr<Value>(frames.top()->operand_stack.top()->to_double());
+    frames.top()->operand_stack.pop();
+    frames.top()->operand_stack.push(dbl);
+}
+void VirtualMachine::to_bool(){
+    std::shared_ptr<Value> b = std::shared_ptr<Value>(frames.top()->operand_stack.top()->to_bool());
+    frames.top()->operand_stack.pop();
+    frames.top()->operand_stack.push(b);
+}
 
 void VirtualMachine::get_arr_element(){}
 void VirtualMachine::set_arr_element(){}
@@ -365,11 +389,13 @@ void VirtualMachine::save_var(){
     for (FoxFrame* frame=frames.top(); frame != nullptr; frame=frame->parent){
         if (frame->locals.find(arg) != frame->locals.end()){
             frame->locals[arg] = frames.top()->operand_stack.top();
+            frames.top()->operand_stack.pop();
             return;
         }
     }
     // if not save it the current local as a new variable
     frames.top()->locals[arg] =  frames.top()->operand_stack.top();
+    frames.top()->operand_stack.pop();
 }
 
 void VirtualMachine::push(){}
@@ -385,6 +411,7 @@ void VirtualMachine::extended_arg(){
 void VirtualMachine::conditional_jump(){
     //compiler ensures type safety
     std::shared_ptr<BoolValue> condition = std::static_pointer_cast<BoolValue>(frames.top()->operand_stack.top());
+    frames.top()->operand_stack.pop();
 
     if (condition->val){
         jump();
