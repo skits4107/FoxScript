@@ -2,8 +2,8 @@
 #include "virtual_machine.h"
 #include "byte_codes.h"
 
-VirtualMachine::VirtualMachine(std::unordered_map<std::string, std::vector<ByteCode>>& compiled_code) : byte_code_consts(compiled_code){
-    global_frame = new FoxFrame(compiled_code["global"]);
+VirtualMachine::VirtualMachine(std::vector<CodeObject*>& compiled_code) : byte_code_consts(compiled_code){
+    global_frame = new FoxFrame(compiled_code[0]->code);
     pushFrame(global_frame);
 }
 
@@ -121,9 +121,8 @@ void VirtualMachine::execute(){
         }
 
 
-
         if (instruction_pointer < frames.top()->code.size()-1){
-            frames.top()->current_instruction += 1;
+            frames.top()->current_instruction += 2; //2 because each isntruction is 2 bytes
         }
         else{
             popFrame();
@@ -138,32 +137,204 @@ void VirtualMachine::popFrame(){
     frames.pop();
 }
 
-void VirtualMachine::execute(){}
-void VirtualMachine::pushFrame(FoxFrame* frame){}
-void VirtualMachine::popFrame(){}
-void VirtualMachine::bin_add(){}
-void VirtualMachine::bin_mul(){}
-void VirtualMachine::bin_div(){}
-void VirtualMachine::bin_sub(){}
-void VirtualMachine::bin_mod(){}
-void VirtualMachine::bin_exp(){}
+int VirtualMachine::get_arg(){
+    int arg = frames.top()->code[frames.top()->current_instruction+1]; //current instruction points to op code. plus 1 is arg.
+    int arg = (arg_mod << 8) + arg; //incase of extended arg
+    arg_mod = 0; //reset now that we have the full argument
+    return arg;
+}
 
-void VirtualMachine::less_than(){}
-void VirtualMachine::less_than_eq(){}
-void VirtualMachine::equal(){}
-void VirtualMachine::not_equal(){}
-void VirtualMachine::greater_than_eq(){}
-void VirtualMachine::greater_than(){}
+void VirtualMachine::bin_add(){
+    //get the two operands from frame stack
+    std::shared_ptr<Value> operand1 = frames.top()->operand_stack.top();
+    frames.top()->operand_stack.pop();
+    std::shared_ptr<Value> operand2 = frames.top()->operand_stack.top();
+    frames.top()->operand_stack.pop();
 
-void VirtualMachine::load_var(){}
-void VirtualMachine::load_const(){}
+    //store result in a new shared pointer. value functions dont modifer or take owner ship so get isfine.
+    std::shared_ptr<Value> result = std::shared_ptr<Value>(operand1->add(operand2.get()));
+    frames.top()->operand_stack.push(result);
+}
+void VirtualMachine::bin_mul(){
+     //get the two operands from frame stack
+    std::shared_ptr<Value> operand1 = frames.top()->operand_stack.top();
+    frames.top()->operand_stack.pop();
+    std::shared_ptr<Value> operand2 = frames.top()->operand_stack.top();
+    frames.top()->operand_stack.pop();
 
-void VirtualMachine::return_from(){}
-void VirtualMachine::call(){}
+    //store result in a new shared pointer. value functions dont modifer or take owner ship so get isfine.
+    std::shared_ptr<Value> result = std::shared_ptr<Value>(operand1->mul(operand2.get()));
+    frames.top()->operand_stack.push(result);
+}
+void VirtualMachine::bin_div(){
+     //get the two operands from frame stack
+    std::shared_ptr<Value> operand1 = frames.top()->operand_stack.top();
+    frames.top()->operand_stack.pop();
+    std::shared_ptr<Value> operand2 = frames.top()->operand_stack.top();
+    frames.top()->operand_stack.pop();
 
-void VirtualMachine::and_logic(){}
-void VirtualMachine::or_logic(){}
-void VirtualMachine::not_logic(){}
+    //store result in a new shared pointer. value functions dont modifer or take owner ship so get isfine.
+    std::shared_ptr<Value> result = std::shared_ptr<Value>(operand1->div(operand2.get()));
+    frames.top()->operand_stack.push(result);
+}
+void VirtualMachine::bin_sub(){
+     //get the two operands from frame stack
+    std::shared_ptr<Value> operand1 = frames.top()->operand_stack.top();
+    frames.top()->operand_stack.pop();
+    std::shared_ptr<Value> operand2 = frames.top()->operand_stack.top();
+    frames.top()->operand_stack.pop();
+
+    //store result in a new shared pointer. value functions dont modifer or take owner ship so get isfine.
+    std::shared_ptr<Value> result = std::shared_ptr<Value>(operand1->sub(operand2.get()));
+    frames.top()->operand_stack.push(result);
+}
+void VirtualMachine::bin_mod(){
+     //get the two operands from frame stack
+    std::shared_ptr<Value> operand1 = frames.top()->operand_stack.top();
+    frames.top()->operand_stack.pop();
+    std::shared_ptr<Value> operand2 = frames.top()->operand_stack.top();
+    frames.top()->operand_stack.pop();
+
+    //store result in a new shared pointer. value functions dont modifer or take owner ship so get isfine.
+    std::shared_ptr<Value> result = std::shared_ptr<Value>(operand1->mod(operand2.get()));
+    frames.top()->operand_stack.push(result);
+}
+void VirtualMachine::bin_exp(){
+     //get the two operands from frame stack
+    std::shared_ptr<Value> operand1 = frames.top()->operand_stack.top();
+    frames.top()->operand_stack.pop();
+    std::shared_ptr<Value> operand2 = frames.top()->operand_stack.top();
+    frames.top()->operand_stack.pop();
+
+    //store result in a new shared pointer. value functions dont modifer or take owner ship so get isfine.
+    std::shared_ptr<Value> result = std::shared_ptr<Value>(operand1->exp(operand2.get()));
+    frames.top()->operand_stack.push(result);
+}
+
+void VirtualMachine::less_than(){
+     //get the two operands from frame stack
+    std::shared_ptr<Value> operand1 = frames.top()->operand_stack.top();
+    frames.top()->operand_stack.pop();
+    std::shared_ptr<Value> operand2 = frames.top()->operand_stack.top();
+    frames.top()->operand_stack.pop();
+
+    //store result in a new shared pointer. value functions dont modifer or take owner ship so get isfine.
+    std::shared_ptr<Value> result = std::shared_ptr<Value>(operand1->lt_op(operand2.get()));
+    frames.top()->operand_stack.push(result);
+}
+void VirtualMachine::less_than_eq(){
+     //get the two operands from frame stack
+    std::shared_ptr<Value> operand1 = frames.top()->operand_stack.top();
+    frames.top()->operand_stack.pop();
+    std::shared_ptr<Value> operand2 = frames.top()->operand_stack.top();
+    frames.top()->operand_stack.pop();
+
+    //store result in a new shared pointer. value functions dont modifer or take owner ship so get isfine.
+    std::shared_ptr<Value> result = std::shared_ptr<Value>(operand1->leq_op(operand2.get()));
+    frames.top()->operand_stack.push(result);
+}
+void VirtualMachine::equal(){
+     //get the two operands from frame stack
+    std::shared_ptr<Value> operand1 = frames.top()->operand_stack.top();
+    frames.top()->operand_stack.pop();
+    std::shared_ptr<Value> operand2 = frames.top()->operand_stack.top();
+    frames.top()->operand_stack.pop();
+
+    //store result in a new shared pointer. value functions dont modifer or take owner ship so get isfine.
+    std::shared_ptr<Value> result = std::shared_ptr<Value>(operand1->eq_op(operand2.get()));
+    frames.top()->operand_stack.push(result);
+}
+void VirtualMachine::not_equal(){
+     //get the two operands from frame stack
+    std::shared_ptr<Value> operand1 = frames.top()->operand_stack.top();
+    frames.top()->operand_stack.pop();
+    std::shared_ptr<Value> operand2 = frames.top()->operand_stack.top();
+    frames.top()->operand_stack.pop();
+
+    //store result in a new shared pointer. value functions dont modifer or take owner ship so get isfine.
+    std::shared_ptr<Value> result = std::shared_ptr<Value>(operand1->neq_op(operand2.get()));
+    frames.top()->operand_stack.push(result);
+}
+void VirtualMachine::greater_than_eq(){
+     //get the two operands from frame stack
+    std::shared_ptr<Value> operand1 = frames.top()->operand_stack.top();
+    frames.top()->operand_stack.pop();
+    std::shared_ptr<Value> operand2 = frames.top()->operand_stack.top();
+    frames.top()->operand_stack.pop();
+
+    //store result in a new shared pointer. value functions dont modifer or take owner ship so get isfine.
+    std::shared_ptr<Value> result = std::shared_ptr<Value>(operand1->geq_op(operand2.get()));
+    frames.top()->operand_stack.push(result);
+}
+void VirtualMachine::greater_than(){
+     //get the two operands from frame stack
+    std::shared_ptr<Value> operand1 = frames.top()->operand_stack.top();
+    frames.top()->operand_stack.pop();
+    std::shared_ptr<Value> operand2 = frames.top()->operand_stack.top();
+    frames.top()->operand_stack.pop();
+
+    //store result in a new shared pointer. value functions dont modifer or take owner ship so get isfine.
+    std::shared_ptr<Value> result = std::shared_ptr<Value>(operand1->gt_op(operand2.get()));
+    frames.top()->operand_stack.push(result);
+}
+
+void VirtualMachine::load_var(){
+
+}
+void VirtualMachine::load_const(){
+    int arg = get_arg();
+
+    frames.top()->operand_stack.push(consts[arg]);
+
+}
+
+void VirtualMachine::return_from(){
+    std::shared_ptr<Value> to_return = frames.top()->operand_stack.top();
+    popFrame();
+
+    //put the return value on the callers operand stack
+    frames.top()->operand_stack.push(to_return);
+}
+void VirtualMachine::call(){
+    int arg = get_arg();
+    CodeObject* codeObj = byte_code_consts[arg];
+    FoxFrame* new_frame = new FoxFrame(codeObj->code);
+    
+    for (int param : codeObj->local_params){
+        new_frame->locals[param] = frames.top()->operand_stack.top();
+    }
+    pushFrame(new_frame);
+}
+
+void VirtualMachine::and_logic(){
+     //get the two operands from frame stack
+    std::shared_ptr<Value> operand1 = frames.top()->operand_stack.top();
+    frames.top()->operand_stack.pop();
+    std::shared_ptr<Value> operand2 = frames.top()->operand_stack.top();
+    frames.top()->operand_stack.pop();
+
+    //store result in a new shared pointer. value functions dont modifer or take owner ship so get isfine.
+    std::shared_ptr<Value> result = std::shared_ptr<Value>(operand1->and_op(operand2.get()));
+    frames.top()->operand_stack.push(result);
+}
+void VirtualMachine::or_logic(){
+     //get the two operands from frame stack
+    std::shared_ptr<Value> operand1 = frames.top()->operand_stack.top();
+    frames.top()->operand_stack.pop();
+    std::shared_ptr<Value> operand2 = frames.top()->operand_stack.top();
+    frames.top()->operand_stack.pop();
+
+    //store result in a new shared pointer. value functions dont modifer or take owner ship so get isfine.
+    std::shared_ptr<Value> result = std::shared_ptr<Value>(operand1->or_op(operand2.get()));
+    frames.top()->operand_stack.push(result);
+}
+void VirtualMachine::not_logic(){
+    std::shared_ptr<Value> operand1 = frames.top()->operand_stack.top();
+    frames.top()->operand_stack.pop();
+
+     std::shared_ptr<Value> result = std::shared_ptr<Value>(operand1->not_op());
+    frames.top()->operand_stack.push(result);
+}
 
 void VirtualMachine::to_str(){}
 void VirtualMachine::to_int(){}

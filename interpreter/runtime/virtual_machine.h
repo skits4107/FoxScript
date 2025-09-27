@@ -4,6 +4,7 @@
 
 #include "values.h"
 #include "fox_frame.h"
+#include "code_object.h"
 #include <stack>
 
 
@@ -13,19 +14,23 @@ class VirtualMachine{
     std::stack<FoxFrame*> frames;
     FoxFrame* global_frame;
 
-    //for sotring all compiled byte code, to be loaded on frame creation or function creation.
+    //for sotring all compiled byte code, to be loaded on frame creation.
     //maps function names to the correct byte code.
     //subject to minor changes for now depending on future implementations.
-    std::unordered_map<std::string, std::vector<ByteCode>>& byte_code_consts; 
-    std::unordered_map<std::string, std::shared_ptr<Value>> variables;
+    std::vector<CodeObject*>&  byte_code_consts; 
+
+    std::vector<std::shared_ptr<Value>> consts; // constant values created during compilation. things like literals.
+    int arg_mod = 0; //used by the extend argument instruction to store the upper bits of an arg/
 
     public:
 
-    VirtualMachine(std::unordered_map<std::string, std::vector<ByteCode>>& compiled_code);
+    VirtualMachine(std::vector<CodeObject*>&  compiled_code);
 
     void execute();
     void pushFrame(FoxFrame* frame);
     void popFrame(); 
+    int get_arg();
+
     void bin_add();
     void bin_mul();
     void bin_div();
@@ -51,14 +56,12 @@ class VirtualMachine{
     void to_float();
     void to_double();
     void to_bool();
-    void len();
     void get_arr_element();
     void set_arr_element();
     void save_var();
     void push();
     void pop();
     void halt();
-    void dup();
     void extended_arg();
     void conditional_jump();
     void jump();
