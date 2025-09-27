@@ -10,8 +10,10 @@ VirtualMachine::VirtualMachine(std::vector<CodeObject*>& compiled_code) : byte_c
 void VirtualMachine::execute(){
     while (frames.size() >= 1){
         
-        int instruction_pointer = frames.top()->current_instruction;
-        ByteCode current_instruction = frames.top()->code[instruction_pointer];
+        FoxFrame* current_frame = frames.top();
+
+        int instruction_pointer = current_frame->current_instruction;
+        ByteCode current_instruction = current_frame->code[instruction_pointer];
 
         switch(current_instruction){
             case BINARY_ADD:
@@ -121,8 +123,8 @@ void VirtualMachine::execute(){
         }
 
 
-        if (instruction_pointer < frames.top()->code.size()-1){
-            frames.top()->current_instruction += 2; //2 because each isntruction is 2 bytes
+        if (instruction_pointer < current_frame->code.size()-1){
+            current_frame->current_instruction += 2; //2 because each isntruction is 2 bytes
         }
         else{
             popFrame();
@@ -300,6 +302,7 @@ void VirtualMachine::call(){
     CodeObject* codeObj = byte_code_consts[arg];
     FoxFrame* new_frame = new FoxFrame(codeObj->code);
     
+    //NOTE: byte code needs to enter paramas backward onto operand stack
     for (int param : codeObj->local_params){
         new_frame->locals[param] = frames.top()->operand_stack.top();
     }
