@@ -38,8 +38,8 @@ class VirtualMachine{
     void not_equal();
     void greater_than_eq();
     void greater_than();
-    void load_local();
-    void load_global();
+    void load_var();
+    void load_const();
     void return_from();
     void call();
     void and_logic();
@@ -54,8 +54,7 @@ class VirtualMachine{
     void len();
     void get_arr_element();
     void set_arr_element();
-    void save_local();
-    void save_global();
+    void save_var();
     void push();
     void pop();
     void halt();

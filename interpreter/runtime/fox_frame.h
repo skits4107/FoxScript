@@ -13,8 +13,7 @@ struct FoxFrame {
     public:
     std::stack<std::shared_ptr<Value>> operand_stack;
     std::vector<ByteCode>& code;
-    FoxFrame* parent = nullptr;
-    FoxFrame* caller = nullptr;
+   // FoxFrame* caller = nullptr; since frames a stack and used for function calls only, the previous one should be the caller
     int current_instruction = 0;
 
     FoxFrame(std::vector<ByteCode>& c) : code(c){}
