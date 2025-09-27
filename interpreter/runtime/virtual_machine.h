@@ -61,6 +61,8 @@ class VirtualMachine{
     void halt();
     void dup();
     void extended_arg();
+    void conditional_jump();
+    void jump();
 
 };
 
