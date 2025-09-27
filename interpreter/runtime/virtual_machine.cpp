@@ -379,8 +379,31 @@ void VirtualMachine::to_bool(){
     frames.top()->operand_stack.push(b);
 }
 
-void VirtualMachine::get_arr_element(){}
-void VirtualMachine::set_arr_element(){}
+void VirtualMachine::get_arr_element(){
+    //compiler ensures typer safety
+    std::shared_ptr<IntValue> index = std::static_pointer_cast<IntValue>(frames.top()->operand_stack.top());
+    frames.top()->operand_stack.pop();
+
+    std::shared_ptr<ArrValue> arr = std::static_pointer_cast<ArrValue>(frames.top()->operand_stack.top());
+    
+    std::shared_ptr<Value> val = arr->get_item(index.get());
+    frames.top()->operand_stack.pop();
+
+    frames.top()->operand_stack.push(val);
+}
+void VirtualMachine::set_arr_element(){
+    std::shared_ptr<Value> val = frames.top()->operand_stack.top();
+    frames.top()->operand_stack.pop();
+
+    std::shared_ptr<IntValue> index = std::static_pointer_cast<IntValue>(frames.top()->operand_stack.top());
+    frames.top()->operand_stack.pop();
+
+    std::shared_ptr<ArrValue> arr = std::static_pointer_cast<ArrValue>(frames.top()->operand_stack.top());
+
+    arr->set_item(index.get(), val);
+    frames.top()->operand_stack.pop();
+
+}
 
 void VirtualMachine::save_var(){
      int arg = get_arg();
