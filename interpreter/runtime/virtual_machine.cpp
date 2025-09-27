@@ -9,8 +9,9 @@ VirtualMachine::VirtualMachine(std::unordered_map<std::string, CodeObj*>& compil
 void VirtualMachine::execute(){
 
 
-
-    frames.top()->current_instruction += 1;
+    if (frames.top()->current_instruction < frames.top()->code.size()){
+        frames.top()->current_instruction += 1;
+    }
 }
 void VirtualMachine::pushFrame(FoxFrame* frame){
     frames.push(frame);
