@@ -7,10 +7,17 @@ VirtualMachine::VirtualMachine(std::unordered_map<std::string, CodeObj*>& compil
 }
 
 void VirtualMachine::execute(){
+    while (frames.size() >= 1){
 
 
-    if (frames.top()->current_instruction < frames.top()->code.size()){
-        frames.top()->current_instruction += 1;
+        
+
+        if (frames.top()->current_instruction < frames.top()->code.size()-1){
+            frames.top()->current_instruction += 1;
+        }
+        else{
+            popFrame();
+        }
     }
 }
 void VirtualMachine::pushFrame(FoxFrame* frame){

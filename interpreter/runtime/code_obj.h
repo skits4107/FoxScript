@@ -5,10 +5,12 @@
 #include <vector>
 #include <string>
 
-// so compiled code for functionscan contain paramter names for initalizing locals for function call frames
+// so compiled code for functions can contain paramter names for initalizing locals for function call frames
 struct CodeObj{
-    std::vector<ByteCode> code;
-    std::vector<std::string> locals;
+    std::vector<ByteCode>& code;
+    std::vector<std::string>& locals;
+
+    CodeObj(std::vector<ByteCode>& c, std::vector<std::string>& l) : code(c), locals(l) {}
 };
 
 #endif
