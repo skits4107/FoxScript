@@ -3,7 +3,7 @@
 
 #include <cstdint> // for uint8_t
 
-enum ByteCode : uint8_t {
+enum ByteCode : int8_t {
     BINARY_ADD = 0,
     BINARY_MUL = 1,
     BINARY_DIV = 3,
@@ -35,6 +35,7 @@ enum ByteCode : uint8_t {
     EXTEND_ARG = 29, // for exrtending number of bytes for byte code arguments.
     COND_JUMP = 30,
     JUMP = 31,
+    CALL_DEFAULT = 32
 };
 
 #endif

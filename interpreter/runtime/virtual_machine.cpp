@@ -13,7 +13,7 @@ void VirtualMachine::execute(){
         FoxFrame* current_frame = frames.top();
 
         int instruction_pointer = current_frame->current_instruction;
-        ByteCode current_instruction = current_frame->code[instruction_pointer];
+        ByteCode current_instruction = (ByteCode)current_frame->code[instruction_pointer];
 
         switch(current_instruction){
             case BINARY_ADD:

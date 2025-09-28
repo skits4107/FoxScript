@@ -40,6 +40,8 @@ class Compiler : public Visitor{
 
     int current_scope_level = 0; 
     int variable_arg_reference = 0; //tracks what value to put to refer to the correct variable in scope within the byte code
+    int func_arg_reference = 0;
+    int consts_reference = 0;
 
     public:
     std::vector<CodeObject*>& get_code() {return byte_code_consts;}

@@ -5,10 +5,10 @@
 #include <vector>
 
 struct CodeObject{
-    std::vector<ByteCode>& code;
-    std::vector<int>& local_params; //used for setting function paramaters in fox frames
+    std::vector<int8_t> code;
+    std::vector<int> local_params; //used for setting function paramaters in fox frames
 
-    
+
 };
 
 #endif

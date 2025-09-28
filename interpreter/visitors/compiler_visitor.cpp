@@ -1,25 +1,86 @@
 #include "compiler_visitor.h"
 
 Value Compiler::visit(ProgramNode& node) {
+    function_scope.push_back("global");
 
+    byte_code_consts.push_back(new CodeObject());
+    func_arg_reference++;
+
+    for (const auto& statement : node.statements) {
+        statement->accept(*this);
+    }
 }
 
 Value Compiler::visit(IntLiteralNode& node) {
+    consts.push_back(std::shared_ptr<IntValue>(new IntValue(node.val)));
 
+    byte_code_consts.back()->code.push_back(LOAD_CONST);
+    byte_code_consts.back()->code.push_back((int8_t)consts_reference);
+
+    consts_reference++;
 }
 
 Value Compiler::visit(FloatLiteralNode& node) {
+    consts.push_back(std::shared_ptr<FloatValue>(new FloatValue(node.val)));
+
+    byte_code_consts.back()->code.push_back(LOAD_CONST);
+    byte_code_consts.back()->code.push_back((int8_t)consts_reference);
+
+    consts_reference++;
+}
+Value Compiler::visit(DoubleLiteralNode& node) {
+    consts.push_back(std::shared_ptr<DoubleValue>(new DoubleValue(node.val)));
+
+    byte_code_consts.back()->code.push_back(LOAD_CONST);
+    byte_code_consts.back()->code.push_back((int8_t)consts_reference);
+
+    consts_reference++;
+}
+Value Compiler::visit(CharLiteralNode& node) {
+    consts.push_back(std::shared_ptr<CharValue>(new CharValue(node.val)));
+
+    byte_code_consts.back()->code.push_back(LOAD_CONST);
+    byte_code_consts.back()->code.push_back((int8_t)consts_reference);
+
+    consts_reference++;
+}
+Value Compiler::visit(StringLiteralNode& node) {
+    consts.push_back(std::shared_ptr<StringValue>(new StringValue(node.val)));
+
+    byte_code_consts.back()->code.push_back(LOAD_CONST);
+    byte_code_consts.back()->code.push_back((int8_t)consts_reference);
+
+    consts_reference++;
+}
+Value Compiler::visit(BoolLiteralNode& node) {
+    consts.push_back(std::shared_ptr<BoolValue>(new BoolValue(node.val)));
+
+    byte_code_consts.back()->code.push_back(LOAD_CONST);
+    byte_code_consts.back()->code.push_back((int8_t)consts_reference);
+
+    consts_reference++;
+}
+Value Compiler::visit(ParamterNode& node) {
+    std::string name = function_scope.back() + node.identifer;
+    IdentifierInfo info(current_scope_level, variable_arg_reference);
+    variables[name] = info;
+
+    byte_code_consts.back()->local_params.push_back(variable_arg_reference);
+
+    variable_arg_reference++;
+}
+
+Value Compiler::visit(CodeBlockNode& node) {
+    
+    for (const auto& statement : node.statements) {
+        statement->accept(*this);
+    }
 
 }
-Value Compiler::visit(DoubleLiteralNode& node) {}
-Value Compiler::visit(CharLiteralNode& node) {}
-Value Compiler::visit(StringLiteralNode& node) {}
-Value Compiler::visit(BoolLiteralNode& node) {}
-Value Compiler::visit(ParamterNode& node) {}
 
-Value Compiler::visit(CodeBlockNode& node) {}
-
-Value Compiler::visit(ExpressionNode& node) {}
+Value Compiler::visit(ExpressionNode& node) {
+    
+}
 
 Value Compiler::visit(TypeCastNode& node) {}
 Value Compiler::visit(LogicalNotNode& node) {}
