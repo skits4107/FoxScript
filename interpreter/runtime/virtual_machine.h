@@ -59,12 +59,11 @@ class VirtualMachine{
     void get_arr_element();
     void set_arr_element();
     void save_var();
-    void push();
-    void pop();
-    void halt();
     void extended_arg();
     void conditional_jump();
     void jump();
+
+    ~VirtualMachine();
 
 };
 

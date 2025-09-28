@@ -100,15 +100,6 @@ void VirtualMachine::execute(){
             case SAVE_VAR:
                 save_var();
                 break;
-            case PUSH:
-                push();
-                break;
-            case POP:
-                pop();
-                break;
-            case HALT:
-                halt();
-                break;
             case EXTEND_ARG:
                 extended_arg();
                 break;
@@ -421,9 +412,6 @@ void VirtualMachine::save_var(){
     frames.top()->operand_stack.pop();
 }
 
-void VirtualMachine::push(){}
-void VirtualMachine::pop(){}
-void VirtualMachine::halt(){}
 
 void VirtualMachine::extended_arg(){
     int arg = frames.top()->code[frames.top()->current_instruction+1];
@@ -443,4 +431,13 @@ void VirtualMachine::conditional_jump(){
 void VirtualMachine::jump(){
     int arg = get_arg();
     frames.top()->current_instruction += (arg*2) - 2; //subtract because of the incrment in the main loop
+}
+
+VirtualMachine::~VirtualMachine(){
+    while (!frames.empty()){
+        popFrame();
+    }
+    for (CodeObject* code : byte_code_consts){
+        delete code;
+    }
 }

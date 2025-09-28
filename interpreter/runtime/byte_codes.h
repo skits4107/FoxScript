@@ -32,12 +32,9 @@ enum ByteCode : uint8_t {
     GET_ARR_ELEMENT = 26,
     SET_ARR_ELEMENT = 27,
     SAVE_VAR = 28,
-    POP = 29, //frames operand stack
-    HALT = 30,
-    PUSH = 31, //frames operand stack
-    EXTEND_ARG = 32, // for exrtending number of bytes for byte code arguments.
-    COND_JUMP = 33,
-    JUMP = 34,
+    EXTEND_ARG = 29, // for exrtending number of bytes for byte code arguments.
+    COND_JUMP = 30,
+    JUMP = 31,
 };
 
 #endif
