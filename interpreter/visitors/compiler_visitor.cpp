@@ -79,7 +79,24 @@ Value Compiler::visit(CodeBlockNode& node) {
 }
 
 Value Compiler::visit(ExpressionNode& node) {
-    
+    node.operand1->accept(*this);
+    node.operand2->accept(*this);
+
+    switch (node.operation){
+        case ADD:
+            byte_code_consts.back()->code.push_back(BINARY_ADD);
+            break;
+        case SUB:
+            byte_code_consts.back()->code.push_back(BINARY_SUB);
+            break;
+        case STAR:
+            byte_code_consts.back()->code.push_back(BINARY_MUL);
+            break;
+        case DIV:
+            byte_code_consts.back()->code.push_back(BINARY_DIV);
+            break;
+        //TODO: continue
+    }
 }
 
 Value Compiler::visit(TypeCastNode& node) {}
