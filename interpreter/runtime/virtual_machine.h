@@ -5,6 +5,7 @@
 #include "values.h"
 #include "fox_frame.h"
 #include "code_object.h"
+#include "built_in_func_codes.h"
 #include <stack>
 
 
@@ -62,6 +63,11 @@ class VirtualMachine{
     void extended_arg();
     void conditional_jump();
     void jump();
+    void call_default();
+
+    //callable default functions;
+    void paw_print(std::shared_ptr<StringValue> text);
+    std::shared_ptr<StringValue>& paw_in(std::shared_ptr<StringValue> prmompt);
 
     ~VirtualMachine();
 

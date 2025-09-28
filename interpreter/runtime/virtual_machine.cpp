@@ -109,6 +109,9 @@ void VirtualMachine::execute(){
             case JUMP:
                 jump();
                 break;
+            case CALL_DEFAULT:
+                call_default();
+                break;
             default:
                 break; //nop
         }
@@ -432,6 +435,25 @@ void VirtualMachine::jump(){
     int arg = get_arg();
     frames.top()->current_instruction += (arg*2) - 2; //subtract because of the incrment in the main loop
 }
+
+void VirtualMachine::call_default(){
+    int arg = get_arg();
+
+    switch (arg)
+    {
+    case PAW_PRINT:
+        //TODO finish built ins
+        break;
+    case PAW_IN:
+        
+        break;
+    default:
+        break;
+    }
+}
+
+void VirtualMachine::paw_print(std::shared_ptr<StringValue> text){}
+std::shared_ptr<StringValue>& VirtualMachine::paw_in(std::shared_ptr<StringValue> prmompt){}
 
 VirtualMachine::~VirtualMachine(){
     while (!frames.empty()){
