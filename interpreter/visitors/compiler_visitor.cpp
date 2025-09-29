@@ -95,12 +95,74 @@ Value Compiler::visit(ExpressionNode& node) {
         case DIV:
             byte_code_consts.back()->code.push_back(BINARY_DIV);
             break;
-        //TODO: continue
+        case EXP:
+            byte_code_consts.back()->code.push_back(BINARY_EXP);
+            break;
+        case AND:
+             byte_code_consts.back()->code.push_back(AND_LOGIC);
+            break;
+        case OR:
+             byte_code_consts.back()->code.push_back(OR_LOGIC);
+            break;
+        case EQ:
+            byte_code_consts.back()->code.push_back(EQUAL);
+            break;
+        case NEQ:
+            byte_code_consts.back()->code.push_back(NOT_EQUAL);
+            break;
+        case LT:
+            byte_code_consts.back()->code.push_back(LESS_THAN);
+            break;
+        case LEQ:
+            byte_code_consts.back()->code.push_back(LESS_THAN_EQUAL);
+            break;
+        case GT:
+            byte_code_consts.back()->code.push_back(GREATER_THAN);
+            break;
+        case GEQ:
+            byte_code_consts.back()->code.push_back(GREATER_THAN_EQUAL);
+            break;
+        case MOD:
+            byte_code_consts.back()->code.push_back(BINARY_MOD);
+            break;
+        default:
+            break;
     }
 }
 
-Value Compiler::visit(TypeCastNode& node) {}
-Value Compiler::visit(LogicalNotNode& node) {}
+Value Compiler::visit(TypeCastNode& node) {
+    node.expression->accept(*this);
+
+    switch (node.type)
+    {
+    case STRING_T:
+        byte_code_consts.back()->code.push_back(TO_STR);
+        break;
+    case INT_T:
+        byte_code_consts.back()->code.push_back(TO_INT);
+        break;
+    case DOUBLE_T:
+        byte_code_consts.back()->code.push_back(TO_DOUBLE);
+        break;
+    case FLOAT_T:
+        byte_code_consts.back()->code.push_back(TO_FLOAT);
+        break;
+    case CHAR_T:
+        byte_code_consts.back()->code.push_back(TO_CHAR);
+        break;
+    case BOOL_T:
+        byte_code_consts.back()->code.push_back(TO_BOOL);
+        break;
+    default:
+        std::cerr << "Invalid type cast" << std::endl;
+        //TODO: add exit function call safely
+        break;
+    }
+}
+Value Compiler::visit(LogicalNotNode& node) {
+    node.operand1->accept(*this);
+    byte_code_consts.back()->code.push_back(NOT_LOGIC);
+}
 Value Compiler::visit(AssignmentStatementNode& node) {}
 Value Compiler::visit(FuncCallStatementNode& node) {}
 Value Compiler::visit(ConditionStatementNode& node) {}
