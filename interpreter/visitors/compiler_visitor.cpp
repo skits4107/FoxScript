@@ -68,6 +68,9 @@ Value Compiler::visit(BoolLiteralNode& node) {
 }
 Value Compiler::visit(ParamterNode& node) {
     std::string name = function_scope.back() + node.identifer;
+    if (variables.find(name) != variables.end()){
+        compileError("variable "+name+" already defined.");
+    }
     IdentifierInfo info(current_scope_level, variable_arg_reference);
     variables[name] = info;
 
