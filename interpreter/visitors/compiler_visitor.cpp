@@ -18,6 +18,7 @@ Value Compiler::visit(IntLiteralNode& node) {
     byte_code_consts.back()->code.push_back((int8_t)consts_reference);
 
     consts_reference++;
+    current_type = INT_T;
 }
 
 Value Compiler::visit(FloatLiteralNode& node) {
@@ -27,6 +28,7 @@ Value Compiler::visit(FloatLiteralNode& node) {
     byte_code_consts.back()->code.push_back((int8_t)consts_reference);
 
     consts_reference++;
+    current_type = FLOAT_T;
 }
 Value Compiler::visit(DoubleLiteralNode& node) {
     consts.push_back(std::shared_ptr<DoubleValue>(new DoubleValue(node.val)));
@@ -35,6 +37,7 @@ Value Compiler::visit(DoubleLiteralNode& node) {
     byte_code_consts.back()->code.push_back((int8_t)consts_reference);
 
     consts_reference++;
+    current_type = DOUBLE_T;
 }
 Value Compiler::visit(CharLiteralNode& node) {
     consts.push_back(std::shared_ptr<CharValue>(new CharValue(node.val)));
@@ -43,6 +46,7 @@ Value Compiler::visit(CharLiteralNode& node) {
     byte_code_consts.back()->code.push_back((int8_t)consts_reference);
 
     consts_reference++;
+    current_type = CHAR_T;
 }
 Value Compiler::visit(StringLiteralNode& node) {
     consts.push_back(std::shared_ptr<StringValue>(new StringValue(node.val)));
@@ -51,6 +55,7 @@ Value Compiler::visit(StringLiteralNode& node) {
     byte_code_consts.back()->code.push_back((int8_t)consts_reference);
 
     consts_reference++;
+    current_type = STRING_T;
 }
 Value Compiler::visit(BoolLiteralNode& node) {
     consts.push_back(std::shared_ptr<BoolValue>(new BoolValue(node.val)));
@@ -59,6 +64,7 @@ Value Compiler::visit(BoolLiteralNode& node) {
     byte_code_consts.back()->code.push_back((int8_t)consts_reference);
 
     consts_reference++;
+    current_type = BOOL_T;
 }
 Value Compiler::visit(ParamterNode& node) {
     std::string name = function_scope.back() + node.identifer;
@@ -142,28 +148,42 @@ Value Compiler::visit(TypeCastNode& node) {
         byte_code_consts.back()->code.push_back(TO_INT);
         break;
     case DOUBLE_T:
+        if (current_type == BOOL_T){compileError("cant convert bool to double");}
+        if (current_type == CHAR_T){compileError("cant convert char to double");}
         byte_code_consts.back()->code.push_back(TO_DOUBLE);
         break;
     case FLOAT_T:
+        if (current_type == BOOL_T){compileError("cant convert bool to float");}
+        if (current_type == CHAR_T){compileError("cant convert char to float");}
         byte_code_consts.back()->code.push_back(TO_FLOAT);
         break;
     case CHAR_T:
+        if (current_type == BOOL_T){compileError("cant convert bool to char");}
+        if (current_type == DOUBLE_T){compileError("cant convert double to char");}
+        if (current_type == FLOAT_T){compileError("cant convert float to char");}
         byte_code_consts.back()->code.push_back(TO_CHAR);
         break;
     case BOOL_T:
+        if (current_type == DOUBLE_T){compileError("cant convert double to bool");}
+        if (current_type == FLOAT_T){compileError("cant convert float to bool");}
+        if (current_type == CHAR_T){compileError("cant convert char to bool");}
+        if (current_type == STRING_T){compileError("cant convert string to bool");}
         byte_code_consts.back()->code.push_back(TO_BOOL);
         break;
     default:
-        std::cerr << "Invalid type cast" << std::endl;
-        //TODO: add exit function call safely
+        compileError("cant cast to invalid type");
         break;
     }
 }
 Value Compiler::visit(LogicalNotNode& node) {
     node.operand1->accept(*this);
+    if (current_type != BOOL_T){
+        compileError("logical not expected bool type");
+    }
     byte_code_consts.back()->code.push_back(NOT_LOGIC);
 }
-Value Compiler::visit(AssignmentStatementNode& node) {}
+Value Compiler::visit(AssignmentStatementNode& node) {
+}
 Value Compiler::visit(FuncCallStatementNode& node) {}
 Value Compiler::visit(ConditionStatementNode& node) {}
 Value Compiler::visit(ForLoopNode& node) {}

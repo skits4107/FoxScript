@@ -43,6 +43,18 @@ class Compiler : public Visitor{
     int func_arg_reference = 0;
     int consts_reference = 0;
 
+    // used for static tpye checking. set by nodes producing values of given types, 
+    //checked by nodes defening the correct type
+    DataType current_type = VOID_T;
+
+    void compileError(std::string error_msg){
+        std:: cerr << error_msg << std::endl;
+        for (CodeObject* code : byte_code_consts){
+            delete code;
+        }
+        exit(-1);
+    }
+
     public:
     std::vector<CodeObject*>& get_code() {return byte_code_consts;}
     std::vector<std::shared_ptr<Value>>& get_consts() {return consts;}
