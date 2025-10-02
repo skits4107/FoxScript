@@ -186,6 +186,24 @@ Value Compiler::visit(LogicalNotNode& node) {
     byte_code_consts.back()->code.push_back(NOT_LOGIC);
 }
 Value Compiler::visit(AssignmentStatementNode& node) {
+    std::string name = function_scope.back() + node.identifer;
+    if (variables.find(name) != variables.end() && variables[name].scope_level > current_scope_level){
+        compileError("variable "+name+" already defined.");
+    }
+
+    node.expression->accept(*this);
+
+    if (current_type != node.type){
+        compileError("variable "+name+" expresion returns wrong type");
+    }
+
+    IdentifierInfo info(current_scope_level, variable_arg_reference);
+    variables[name] = info;
+
+    byte_code_consts.back()->code.push_back(SAVE_VAR);
+    byte_code_consts.back()->code.push_back((int8_t)variable_arg_reference);
+
+    variable_arg_reference++;
 }
 Value Compiler::visit(FuncCallStatementNode& node) {}
 Value Compiler::visit(ConditionStatementNode& node) {}
