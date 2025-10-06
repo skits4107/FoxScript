@@ -210,8 +210,22 @@ Value Compiler::visit(AssignmentStatementNode& node) {
 
     variable_arg_reference++;
 }
-Value Compiler::visit(FuncCallStatementNode& node) {}
-Value Compiler::visit(ConditionStatementNode& node) {}
+Value Compiler::visit(FuncCallStatementNode& node) {
+    // NOTES for later:
+    // check if function has been register/compiled.
+    // check if calling it is in scope.
+    // compile arg expressions one by one and check each type. (may require storing extra meta info on function defenitions)
+    // call function.
+    // set current_type to function return type. (Again may require sotring meta informaiton during compilation)
+}
+Value Compiler::visit(ConditionStatementNode& node) {
+    node.accept(*this);
+    if (current_type != BOOL_T){
+        compileError("Condiiotnal requires a bool");
+    }
+
+    
+}
 Value Compiler::visit(ForLoopNode& node) {}
 Value Compiler::visit(WhileLoopNode& node) {}
 Value Compiler::visit(ReturnStatementNode& node) {}
