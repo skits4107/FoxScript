@@ -187,8 +187,10 @@ Value Compiler::visit(LogicalNotNode& node) {
 }
 Value Compiler::visit(AssignmentStatementNode& node) {
     std::string name = function_scope.back() + node.identifer;
+
+    //if the variable exists and is in a higher scope then it should error
     if (variables.find(name) != variables.end() && variables[name].scope_level > current_scope_level){
-        compileError("variable "+name+" already defined.");
+        compileError("variable "+name+" no longer in scope.");
     }
 
     node.expression->accept(*this);
@@ -197,8 +199,11 @@ Value Compiler::visit(AssignmentStatementNode& node) {
         compileError("variable "+name+" expresion returns wrong type");
     }
 
-    IdentifierInfo info(current_scope_level, variable_arg_reference);
-    variables[name] = info;
+    // if it is a new variable add it to map.
+    if (variables.find(name) == variables.end()){
+        IdentifierInfo info(current_scope_level, variable_arg_reference);
+        variables[name] = info;
+    }
 
     byte_code_consts.back()->code.push_back(SAVE_VAR);
     byte_code_consts.back()->code.push_back((int8_t)variable_arg_reference);
