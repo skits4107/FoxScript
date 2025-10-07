@@ -236,10 +236,23 @@ Value Compiler::visit(ConditionStatementNode& node) {
     }
     
     make_instruction(COND_JUMP, 0); // 0 is placeholder for now
-    int jump_offset_index = byte_code_consts.size()-1; 
+    int jump_offset_index = byte_code_consts.back()->code.size()-2; 
 
     node.elseBlock->accept(*this);
     make_instruction(JUMP, 0); //0 is temporary
+
+    //set the jump amount for when the condition is true
+    int jump_offset = byte_code_consts.back()->code.size() - jump_offset_index;
+    byte_code_consts.back()->code[jump_offset_index+1] = (int8_t)jump_offset;
+
+    jump_offset_index = byte_code_consts.back()->code.size()-2; //time for the else jump
+
+    node.block->accept(*this);
+
+    //set jump amount for the else to skip over the true block
+    int jump_offset = byte_code_consts.back()->code.size() - jump_offset_index;
+    byte_code_consts.back()->code[jump_offset_index+1] = (int8_t)jump_offset;
+    
     
 }
 Value Compiler::visit(ForLoopNode& node) {}
