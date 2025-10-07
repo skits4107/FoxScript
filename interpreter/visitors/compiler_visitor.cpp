@@ -89,8 +89,12 @@ Value Compiler::visit(CodeBlockNode& node) {
 
 Value Compiler::visit(ExpressionNode& node) {
     node.operand1->accept(*this);
-    node.operand2->accept(*this);
+    DataType op1_type = current_type;
 
+    node.operand2->accept(*this);
+    DataType op2_type = current_type;
+
+    //TODO: add type checking here
     switch (node.operation){
         case ADD:
             byte_code_consts.back()->code.push_back(BINARY_ADD);
@@ -177,6 +181,7 @@ Value Compiler::visit(TypeCastNode& node) {
         compileError("cant cast to invalid type");
         break;
     }
+    current_type = node.type;
 }
 Value Compiler::visit(LogicalNotNode& node) {
     node.operand1->accept(*this);
@@ -213,6 +218,7 @@ Value Compiler::visit(AssignmentStatementNode& node) {
 Value Compiler::visit(FuncCallStatementNode& node) {
     // NOTES for later:
     // check if function has been register/compiled.
+    // check for default/built in functions
     // check if calling it is in scope.
     // compile arg expressions one by one and check each type. (may require storing extra meta info on function defenitions)
     // call function.

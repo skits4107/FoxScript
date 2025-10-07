@@ -25,6 +25,11 @@ class Compiler : public Visitor{
     struct IdentifierInfo {
         int scope_level;
         int byte_code_val;
+
+        //for functions only
+        std::vector<DataType> param_types;
+        DataType returnType = INVALID_TYPE;
+
         IdentifierInfo(int sl, int bcv) : scope_level(sl), byte_code_val(bcv) {}
     };
 
