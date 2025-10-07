@@ -52,13 +52,9 @@ class Compiler : public Visitor{
     //checked by nodes defening the correct type
     DataType current_type = VOID_T;
 
-    void compileError(std::string error_msg){
-        std:: cerr << error_msg << std::endl;
-        for (CodeObject* code : byte_code_consts){
-            delete code;
-        }
-        exit(-1);
-    }
+    void compileError(std::string error_msg);
+
+    void make_instruction(ByteCode instruction, int8_t arg);
 
     public:
     std::vector<CodeObject*>& get_code() {return byte_code_consts;}

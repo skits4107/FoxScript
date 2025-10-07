@@ -1,5 +1,16 @@
 #include "compiler_visitor.h"
 
+void Compiler::compileError(std::string error_msg){
+    std:: cerr << error_msg << std::endl;
+    for (CodeObject* code : byte_code_consts){
+        delete code;
+    }
+    exit(-1);
+}
+void Compiler::make_instruction(ByteCode instruction, int8_t arg){
+    byte_code_consts.back()->code.push_back(instruction);
+    byte_code_consts.back()->code.push_back(arg);
+}
 Value Compiler::visit(ProgramNode& node) {
     function_scope.push_back("global");
 
@@ -14,8 +25,7 @@ Value Compiler::visit(ProgramNode& node) {
 Value Compiler::visit(IntLiteralNode& node) {
     consts.push_back(std::shared_ptr<IntValue>(new IntValue(node.val)));
 
-    byte_code_consts.back()->code.push_back(LOAD_CONST);
-    byte_code_consts.back()->code.push_back((int8_t)consts_reference);
+    make_instruction(LOAD_CONST, consts_reference);
 
     consts_reference++;
     current_type = INT_T;
@@ -24,8 +34,7 @@ Value Compiler::visit(IntLiteralNode& node) {
 Value Compiler::visit(FloatLiteralNode& node) {
     consts.push_back(std::shared_ptr<FloatValue>(new FloatValue(node.val)));
 
-    byte_code_consts.back()->code.push_back(LOAD_CONST);
-    byte_code_consts.back()->code.push_back((int8_t)consts_reference);
+    make_instruction(LOAD_CONST, consts_reference);
 
     consts_reference++;
     current_type = FLOAT_T;
@@ -33,8 +42,7 @@ Value Compiler::visit(FloatLiteralNode& node) {
 Value Compiler::visit(DoubleLiteralNode& node) {
     consts.push_back(std::shared_ptr<DoubleValue>(new DoubleValue(node.val)));
 
-    byte_code_consts.back()->code.push_back(LOAD_CONST);
-    byte_code_consts.back()->code.push_back((int8_t)consts_reference);
+    make_instruction(LOAD_CONST, consts_reference);
 
     consts_reference++;
     current_type = DOUBLE_T;
@@ -42,8 +50,7 @@ Value Compiler::visit(DoubleLiteralNode& node) {
 Value Compiler::visit(CharLiteralNode& node) {
     consts.push_back(std::shared_ptr<CharValue>(new CharValue(node.val)));
 
-    byte_code_consts.back()->code.push_back(LOAD_CONST);
-    byte_code_consts.back()->code.push_back((int8_t)consts_reference);
+    make_instruction(LOAD_CONST, consts_reference);
 
     consts_reference++;
     current_type = CHAR_T;
@@ -51,8 +58,7 @@ Value Compiler::visit(CharLiteralNode& node) {
 Value Compiler::visit(StringLiteralNode& node) {
     consts.push_back(std::shared_ptr<StringValue>(new StringValue(node.val)));
 
-    byte_code_consts.back()->code.push_back(LOAD_CONST);
-    byte_code_consts.back()->code.push_back((int8_t)consts_reference);
+    make_instruction(LOAD_CONST, consts_reference);
 
     consts_reference++;
     current_type = STRING_T;
@@ -60,8 +66,7 @@ Value Compiler::visit(StringLiteralNode& node) {
 Value Compiler::visit(BoolLiteralNode& node) {
     consts.push_back(std::shared_ptr<BoolValue>(new BoolValue(node.val)));
 
-    byte_code_consts.back()->code.push_back(LOAD_CONST);
-    byte_code_consts.back()->code.push_back((int8_t)consts_reference);
+    make_instruction(LOAD_CONST, consts_reference);
 
     consts_reference++;
     current_type = BOOL_T;
@@ -98,45 +103,46 @@ Value Compiler::visit(ExpressionNode& node) {
     switch (node.operation){
         case ADD:
             byte_code_consts.back()->code.push_back(BINARY_ADD);
+            make_instruction(BINARY_ADD, 0);
             break;
         case SUB:
-            byte_code_consts.back()->code.push_back(BINARY_SUB);
+            make_instruction(BINARY_SUB, 0);
             break;
         case STAR:
-            byte_code_consts.back()->code.push_back(BINARY_MUL);
+            make_instruction(BINARY_MUL, 0);
             break;
         case DIV:
-            byte_code_consts.back()->code.push_back(BINARY_DIV);
+            make_instruction(BINARY_DIV, 0);
             break;
         case EXP:
-            byte_code_consts.back()->code.push_back(BINARY_EXP);
+            make_instruction(BINARY_EXP, 0);
             break;
         case AND:
-             byte_code_consts.back()->code.push_back(AND_LOGIC);
+            make_instruction(AND_LOGIC, 0);
             break;
         case OR:
-             byte_code_consts.back()->code.push_back(OR_LOGIC);
+             make_instruction(OR_LOGIC, 0);
             break;
         case EQ:
-            byte_code_consts.back()->code.push_back(EQUAL);
+            make_instruction(EQUAL, 0);
             break;
         case NEQ:
-            byte_code_consts.back()->code.push_back(NOT_EQUAL);
+            make_instruction(NOT_EQUAL, 0);
             break;
         case LT:
-            byte_code_consts.back()->code.push_back(LESS_THAN);
+            make_instruction(LESS_THAN, 0);
             break;
         case LEQ:
-            byte_code_consts.back()->code.push_back(LESS_THAN_EQUAL);
+            make_instruction(LESS_THAN_EQUAL, 0);
             break;
         case GT:
-            byte_code_consts.back()->code.push_back(GREATER_THAN);
+            make_instruction(GREATER_THAN, 0);
             break;
         case GEQ:
-            byte_code_consts.back()->code.push_back(GREATER_THAN_EQUAL);
+            make_instruction(GREATER_THAN_EQUAL, 0);
             break;
         case MOD:
-            byte_code_consts.back()->code.push_back(BINARY_MOD);
+            make_instruction(BINARY_MOD, 0);
             break;
         default:
             break;
@@ -149,33 +155,33 @@ Value Compiler::visit(TypeCastNode& node) {
     switch (node.type)
     {
     case STRING_T:
-        byte_code_consts.back()->code.push_back(TO_STR);
+        make_instruction(TO_STR, 0);
         break;
     case INT_T:
-        byte_code_consts.back()->code.push_back(TO_INT);
+        make_instruction(TO_INT, 0);
         break;
     case DOUBLE_T:
         if (current_type == BOOL_T){compileError("cant convert bool to double");}
         if (current_type == CHAR_T){compileError("cant convert char to double");}
-        byte_code_consts.back()->code.push_back(TO_DOUBLE);
+        make_instruction(TO_DOUBLE, 0);
         break;
     case FLOAT_T:
         if (current_type == BOOL_T){compileError("cant convert bool to float");}
         if (current_type == CHAR_T){compileError("cant convert char to float");}
-        byte_code_consts.back()->code.push_back(TO_FLOAT);
+        make_instruction(TO_FLOAT, 0);
         break;
     case CHAR_T:
         if (current_type == BOOL_T){compileError("cant convert bool to char");}
         if (current_type == DOUBLE_T){compileError("cant convert double to char");}
         if (current_type == FLOAT_T){compileError("cant convert float to char");}
-        byte_code_consts.back()->code.push_back(TO_CHAR);
+        make_instruction(TO_CHAR, 0);
         break;
     case BOOL_T:
         if (current_type == DOUBLE_T){compileError("cant convert double to bool");}
         if (current_type == FLOAT_T){compileError("cant convert float to bool");}
         if (current_type == CHAR_T){compileError("cant convert char to bool");}
         if (current_type == STRING_T){compileError("cant convert string to bool");}
-        byte_code_consts.back()->code.push_back(TO_BOOL);
+        make_instruction(TO_BOOL, 0);
         break;
     default:
         compileError("cant cast to invalid type");
@@ -188,7 +194,7 @@ Value Compiler::visit(LogicalNotNode& node) {
     if (current_type != BOOL_T){
         compileError("logical not expected bool type");
     }
-    byte_code_consts.back()->code.push_back(NOT_LOGIC);
+    make_instruction(NOT_LOGIC, 0);
 }
 Value Compiler::visit(AssignmentStatementNode& node) {
     std::string name = function_scope.back() + node.identifer;
@@ -210,8 +216,7 @@ Value Compiler::visit(AssignmentStatementNode& node) {
         variables[name] = info;
     }
 
-    byte_code_consts.back()->code.push_back(SAVE_VAR);
-    byte_code_consts.back()->code.push_back((int8_t)variable_arg_reference);
+    make_instruction(SAVE_VAR, variable_arg_reference);
 
     variable_arg_reference++;
 }
@@ -225,11 +230,16 @@ Value Compiler::visit(FuncCallStatementNode& node) {
     // set current_type to function return type. (Again may require sotring meta informaiton during compilation)
 }
 Value Compiler::visit(ConditionStatementNode& node) {
-    node.accept(*this);
+    node.expression->accept(*this);
     if (current_type != BOOL_T){
         compileError("Condiiotnal requires a bool");
     }
+    
+    make_instruction(COND_JUMP, 0); // 0 is placeholder for now
+    int jump_offset_index = byte_code_consts.size()-1; 
 
+    node.elseBlock->accept(*this);
+    make_instruction(JUMP, 0); //0 is temporary
     
 }
 Value Compiler::visit(ForLoopNode& node) {}
