@@ -232,7 +232,7 @@ Value Compiler::visit(FuncCallStatementNode& node) {
 Value Compiler::visit(ConditionStatementNode& node) {
     node.expression->accept(*this);
     if (current_type != BOOL_T){
-        compileError("Condiiotnal requires a bool");
+        compileError("Conditiotnal requires a bool");
     }
     
     make_instruction(COND_JUMP, 0); // 0 is placeholder for now
@@ -252,7 +252,7 @@ Value Compiler::visit(ConditionStatementNode& node) {
     //set jump amount for the else to skip over the true block
     int jump_offset = byte_code_consts.back()->code.size() - jump_offset_index;
     byte_code_consts.back()->code[jump_offset_index+1] = (int8_t)jump_offset;
-    
+
     
 }
 Value Compiler::visit(ForLoopNode& node) {}
