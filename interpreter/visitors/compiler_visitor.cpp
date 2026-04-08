@@ -102,7 +102,7 @@ Value Compiler::visit(ExpressionNode& node) {
     //TODO: add type checking here
     switch (node.operation){
         case ADD:
-            byte_code_consts.back()->code.push_back(BINARY_ADD);
+            //byte_code_consts.back()->code.push_back(BINARY_ADD);
             make_instruction(BINARY_ADD, 0);
             break;
         case SUB:
@@ -218,7 +218,7 @@ Value Compiler::visit(AssignmentStatementNode& node) {
 
     make_instruction(SAVE_VAR, variable_arg_reference);
 
-    variable_arg_reference++;
+    variable_arg_reference++; //TODO: maybe put this in the new variable condiitonal
 }
 Value Compiler::visit(FuncCallStatementNode& node) {
     // NOTES for later:
